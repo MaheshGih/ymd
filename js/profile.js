@@ -1,0 +1,28 @@
+$(document).ready(function(){
+    $.ajax({
+        url:'../controller/user_controller.php',
+        method:'POST',
+        data:{'getuserdata':'1'},
+        success:function(res){
+            res = res.split("+");
+            $("#txtUserName").val(res[0]);
+            $("#txtEmail").val(res[1]);
+            $("#txtMobile").val(res[2]);
+            $("#txtLoginId").val(res[3]);
+            $("#txtAccName").val(res[4]);
+            $("#txtAccNo").val(res[5]);
+            $("#txtBankName").val(res[6]);
+            $("#txtIFSC").val(res[7]);
+            $("#txtAdd1").val(res[8]);
+            $("#txtAdd2").val(res[9]);
+            $("#txtGpay").val(res[10]);
+            $("#txtPhonePe").val(res[11]);
+            $("#txtPaytm").val(res[12]);
+            $("#txtCity").val(res[13]);
+            $("#txtState").val(res[14]);
+        },
+        error:function(erres){
+            console.log(erres);
+            }
+    });
+});

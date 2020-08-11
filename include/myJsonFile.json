@@ -1,0 +1,58 @@
+[{
+    "head": "Shivaji",
+    "id": "aa",
+    "contents": "Rewards",
+    "children": [
+        {
+            "head": "Chiranjeevi ",
+            "id": "a1",
+            "contents": "Rewards",
+            "children": [
+                { 
+                    "head": "Nares h", 
+                    "id": "a11",
+                     "contents": "Rewards",
+                     "children":[
+                         {"head":"Sharan ","id":"a111","contents":"Rewards"},
+                         {"head":"Priyanka ","id":"a112","contents":"Rewards"}
+                     ]
+                },
+                 {
+                      "head": "Suresh ", 
+                      "id": "a22", 
+                      "contents": "Rewards" ,
+                      "children":[
+                        {"head":"Sharan ","id":"a111","contents":"Rewards"},
+                        {"head":"Priyanka ","id":"a112","contents":"Rewards"}
+                    ]
+                }
+            ]
+        },
+        {
+            "head": "Ravi ",
+            "id": "a2",
+            "contents": "Rewards",
+            "children": [
+                { 
+                    "head": "Divya ", 
+                    "id": "a23", 
+                    "contents": "Rewards",
+                    "children":[
+                      {"head":"Sharan ","id":"a111","contents":"Rewards"},
+                      {"head":"Priyanka ","id":"a112","contents":"Rewards"}
+                  ]
+                    
+                },
+                { 
+                    "head": "Kumar ", 
+                    "id": "a24", 
+                    "contents": "Rewards" ,
+                    "children":[
+                      {"head":"Sharan ","id":"a111","contents":"Rewards"},
+                      {"head":"Priyanka ","id":"a112","contents":"Rewards"}
+                  ]
+                }
+            ]
+        }
+    ]
+}]
