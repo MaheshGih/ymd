@@ -13,7 +13,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <!-- App favicon -->
         <link rel="shortcut icon" href="../assets/images/favico.png">
-
+		<!-- Jquery Toast css -->
+        <link href="../assets/libs/jquery-toast/jquery.toast.min.css" rel="stylesheet" type="text/css" />
+        
         <!-- App css -->
         <link href="../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
         <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
@@ -136,7 +138,7 @@
                                             <div class="card-box">
                                                 <h4 class="header-title mb-4">BANK DETAILS</h4>
             
-                                                <form class="form-horizontal" action="../kyc_controller.php" method="POST">
+                                                <form class="form-horizontal" action="../controller/kyc_controller.php" method="POST">
                                                     <div class="form-group row">
                                                          <label class="col-md-3 col-form-label" for="example-password">Acc. Holder Name</label>
                                                             <div class="col-md-9">
@@ -177,7 +179,7 @@
                                         <div class="col-6"> <!-- Start col -->
                                             <div class="card-box">
                                             <h4 class="header-title mb-4">PAYMENT DETAILS</h4>   
-                                            <form class="form-horizontal" action="../kyc_controller.php" method="POST">
+                                            <form class="form-horizontal" action="../controller/kyc_controller.php" method="POST">
                                                     <div class="form-group row">
                                                          <label class="col-md-3 col-form-label" for="txtGpay">GPay</label>
                                                             <div class="col-md-9">
@@ -236,7 +238,39 @@
 
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
+        <!-- Tost-->
+        <script src="../assets/libs/jquery-toast/jquery.toast.min.js"></script>
+        <script src="../assets/js/pages/toastr.init.js"></script>
+        
         <script src="../js/profile.js"></script>
+        
+        <script>
+            $(document).ready(function () {
+                     $(document).ready(function(){
+                     var  res = location.search;
+                     res = decodeURIComponent(res);
+                     res = res.split("=");
+                     displayNotification(res[1],res[2],res[3]);
+                });
+                function displayNotification(result,type, message){
+					var toastObj = {
+                            text: message,
+                            position: "top-right",
+                            loaderBg: "red",
+                            icon: "success",
+                            hideAfter: 4e3,
+                            stack: 1
+                     }
+                    
+                	if(result !== 'success'){
+                		toastObj.loaderBg = 'red';
+                		toastObj.icon = 'failed'
+                    }
+					$.toast(toastObj);
+					
+                }
+            });
+        </script>
     </body>
 
 

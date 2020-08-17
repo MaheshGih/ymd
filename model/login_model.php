@@ -5,8 +5,8 @@ class LoginModel{
     public $full_name="";
     public $email="";
     public $mobile ="";
-    public $sponsor_id ="";
-    public $spill_id="";
+    public $sponsor_id =NULL;
+    public $spill_id=NULL;
     public $side ="";
     public $date_created ="";
 
@@ -123,7 +123,7 @@ class LoginModel{
     public function AddUserBasic(){
 
         global $con;
-        $ins_user_det_qry = "INSERT INTO `user_details` VALUES(null,'".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".self::getSpillId().",'".self::getUserId()."','".self::getPassword()."','','','','','','','','','','".self::getDate()."',0,'".self::getSide()."','','')";
+        $ins_user_det_qry = "INSERT INTO `user_details` VALUES(null,'".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".(self::getSpillId()==NULL ? "null" : self::getSpillId()).",'".self::getUserId()."','".self::getPassword()."','','','','','','','','','','".self::getDate()."',0,'".self::getSide()."','','','',null,false)";
 
         $rand_user_id = self::getUserId();
         $check_user_id  = "select count(*) as cnt from user_details where login_id='".$rand_user_id."'";
@@ -164,6 +164,11 @@ class LoginModel{
             return "YMD".$userid;
         }
     }
+    
+    public function generateOTP(){
+        return rand(10,10000);    
+    }
+    
     /*
         Get User details based on Id
      */

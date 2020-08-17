@@ -12,11 +12,115 @@ include('../model/user_model.php');
     $master_name = $_SESSION['fname'];
     $master_logid = $_SESSION['loginid'];
     $warning = "";
-    
+    if(isset($_GET['masterid'])){
+        $res_mast =$objUserModel->GetUserDetailsById($_GET['masterid']);
+        $warning = "";
+        if($res_mast!= false){
+            $master = $res_mast['id'];
+            $master_name = $res_mast['full_name'];
+            $master_logid = $res_mast['login_id'];
+            $warning = "";
+        }else{
+            $warning = "NO DATA FOUND";
+        }
+    }
+    if(isset($_POST['todo-input-text'])){
+        $res_master =$objUserModel->GetUserDetailsByLog($_SESSION['userid'],$_POST['todo-input-text']);
+        $warning = "";
+        if($res_master != false){
+            $master = $res_master['id'];
+            $master_name = $res_master['full_name'];
+            $master_logid = $res_master['login_id']; 
+            $warning = "";
+        }else{
+            $warning = "NO DATA FOUND";
+        }
+    }
 ?>
 <?php
 
+$left =""; $left_icon ="maninactive.png";$left_id="";$left_login_id=""; $left_name="";$left_param="";$left_datatarget="#activateusersmodal";$left_spill_id="";
+$right = ""; $right_icon = "maninactive.png";$right_id="";$right_login_id="";$right_name="";$right_param="";$right_datatarget = "#activateusersmodal";$right_spill_id="";
+$left_left=""; $left_left_icon ="maninactive.png";$left_left_id="";$left_left_login_id="";$left_left_name="";$left_left_param="";$left_left_datatarget ="#activateusersmodal";$left_left_spill_id="";
+$left_right =""; $left_right_icon="maninactive.png";$left_right_id="";$left_right_login_id="";$left_right_name="";$left_right_param="";$left_right_datatarget="#activateusersmodal";$left_right_spill_id="";
+$right_left =""; $right_left_icon = "maninactive.png";$right_left_id="";$right_left_login_id="";$right_left_name="";$right_left_param="";$right_left_datatarget="#activateusersmodal";$right_left_spill_id="";
+$right_right = ""; $right_right_icon = "maninactive.png";$right_right_id="";$right_right_login_id="";$right_right_name="";$right_right_param ="";$right_right_datatarget ="#activateusersmodal";$right_right_spill_id="";
 
+$spill_id_master =$master;
+$res_conc =  $objUserModel->GetChildCount($master);
+$res = explode('-',$res_conc);
+$childs = $objUserModel->GetChildsByUserId($master,1);
+//print_r($childs);
+while($row = mysqli_fetch_assoc($childs)){
+    if($row['side'] == "left" &&  $row['spill_id'] == $spill_id_master &&  $left_spill_id == "" && $row['position']="l1"){
+        //print_r($row);
+        $left = "alloted";
+        $left_icon = "man.png";
+        $left_id = $row['id'];
+        $left_login_id = $row['login_id'];
+        $left_name =$row['full_name'];
+        $left_param = $left_id;
+        $left_spill_id = $row['sponsor_id'];
+        $left_datatarget="#userdetailsmodal";
+        continue;
+    }
+    if($row['side'] == "right" &&  $row['spill_id'] == $spill_id_master  &&  $right_spill_id =="" && $row['position']="r1"){
+        $right = "alloted";
+        $right_icon = "man.png";
+        $right_id = $row['id'];
+        $right_login_id = $row['login_id'];
+        $right_name = $row['full_name'];
+        $right_param = $right_id;
+        $right_spill_id = $row['sponsor_id'];
+        $right_datatarget="#userdetailsmodal";
+        continue;
+    }
+    if($row['side'] == "left" &&  $left !=""  &&  $left_left_spill_id==""){
+        $left_left = "alloted";
+        $left_left_icon = "man.png";
+        $left_left_id = $row['id'];
+        $left_left_login_id = $row['login_id'];
+        $left_left_name = $row['full_name'];
+        $left_left_param = $left_left_id;
+        $left_left_spill_id = $row['sponsor_id'];
+        $left_left_datatarget="#userdetailsmodal";
+        continue;
+    }
+    if($row['side'] == "right" &&  $left !=""  &&  $left_right_spill_id ==""){
+        $left_right = "alloted";
+        $left_right_icon = "man.png";
+        $left_right_id = $row['id'];
+        $left_right_login_id = $row['login_id'];
+        $left_right_name = $row['full_name'];
+        $left_right_param = $left_right_id;
+        $left_right_spill_id = $row['sponsor_id'];
+        $left_right_datatarget="#userdetailsmodal";
+        continue;
+    }
+    if($row['side'] == "left"  && $right !=""  &&  $right_left_spill_id==""){
+        $right_left = "alloted";
+        $right_left_icon = "man.png";
+        $right_left_id = $row['id'];
+        $right_left_login_id = $row['login_id'];
+        $right_left_name = $row['full_name'];
+        $right_left_param = $right_left_id;
+        $right_left_spill_id = $row['sponsor_id'];
+        $right_left_datatarget ="#userdetailsmodal";
+        continue;
+    }
+    if($row['side'] == "right" && $right !="" &&  $right_right_spill_id == ""){
+        $right_right = "alloted";
+        $right_right_icon = "man.png";
+        $right_right_id = $row['id'];
+        $right_right_login_id = $row['login_id'];
+        $right_right_name = $row['full_name'];
+        $right_right_param = $right_right_id;
+        $right_right_spill_id = $row['sponsor_id'];
+        $right_right_datatarget ="#userdetailsmodal";
+        continue;
+    }
+}
+$rowcount=mysqli_num_rows($childs);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,31 +141,6 @@ include('../model/user_model.php');
     <link href="../assets/libs/datatables/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
     <link href="../assets/libs/datatables/buttons.bootstrap4.css" rel="stylesheet" type="text/css" />
     <link href="../assets/libs/datatables/responsive.bootstrap4.css" rel="stylesheet" type="text/css" />
-    <link href="https://visjs.github.io/vis-network/dist/vis-network.min.css"></link>
-<style>
-html,
-body {
-  height: 100%;
-  width: 100%;
-  margin: 0px;
-  padding: 0px;
-}
-
-.mycontainer {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-#mynetwork {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
-  border : 0px 0px 0px 0px !important;
-}
-</style>
-    
 </head>
 
 <body>
@@ -105,9 +184,7 @@ body {
 
         <div class="content-page">
             <div class="content">
-				<input type="hidden" id="master_id" name="master_id" value="<?php echo $master?>"></input>
-				<input type="hidden" id="full_name" name="full_name" value="<?php echo $master_name?>"></input>
-				
+
                 <!-- Start Content-->
                 <div class="container-fluid">
 
@@ -156,11 +233,97 @@ body {
                         <div class="col-12">
                             <div class="card-box" id="dvTree">
                                 <h4 class="header-title mb-4">User Network</h4>
-                                <div class="row text-center" style="height: 500px">
-                                    <div id="mynetwork" >
-                                        
+                                <!-- First Node -->
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <span class="badge label-table badge-success"> LEFT : <?php echo $res[0];?>
+                                        </span>
+                                    </div>
+                                    <div class="col-4">
+                                        <img src="../assets/images/man.png" width="50" onclick="getdata(<?php echo $master;?>,'user','master')" data-toggle="modal" data-target="#userdetailsmodal" />
+                                        <br />
+                                        <br />
+                                        <h6 class="text-pink"><?php echo $master_logid;?>
+                                        </h6>
+                                        <h7 class="text-success"><?php echo $master_name;?>
+                                        </h7>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="badge label-table badge-success">RIGHT : <?php echo $res[1];?>
+                                        </span>
                                     </div>
                                 </div>
+                                <!-- First Node -->
+                                <hr />
+                                <div class="row text-center">
+                                    <!-- Second Node -- level 1 -->
+                                    <div class="col-6">
+                                        <!-- left child -->
+                                        <img src="../assets/images/<?php echo $left_icon;?>" width="50" onclick="getdata('<?php echo $left_id;?>','<?php echo $left_param;?>','left','<?php echo $_SESSION['userid']; ?>')" data-toggle="modal" data-target="<?php echo $left_datatarget; ?>" />
+                                        <br />
+                                        <br />
+                                        <a href="tree.php?masterid=<?php echo $left_id;?>"><h6 class="text-warning"><?php echo $left_login_id;?></h6></a>
+                                        <h7 class="text-success"><?php echo $left_name;?>
+                                        </h7>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <!-- right child -->
+                                        <img src="../assets/images/<?php echo $right_icon;?>" width="50" onclick="getdata('<?php echo $right_id;?>','<?php echo $right_param; ?>','right','<?php echo $_SESSION['userid']; ?>')" data-toggle="modal" data-target="<?php echo $right_datatarget;?>" />
+                                        <br />
+                                        <br />
+                                        <a href="tree.php?masterid=<?php echo $right_id;?>"><h6 class="text-warning"><?php echo $right_login_id;?></h6></a>
+                                        <h7 class="text-success"><?php echo $right_name;?>
+                                        </h7>
+                                    </div>
+
+                                </div><!-- Second Node -->
+                                <hr />
+                                <!-- Third Node -- level 2-->
+                                <div class="row text-center">
+
+                                    <div class="col-3">
+                                        <!-- left child -->
+                                        <img src="../assets/images/<?php echo $left_left_icon;?>" width="50" onclick="getdata('<?php echo $left_left_id;?>','<?php echo $left_left_param; ?>','left','<?php echo $left_id; ?>')" data-toggle="modal" data-target="<?php if($left_id !=''){ echo $left_left_datatarget;} else{ echo "#" ;}  ?>" />
+                                        <br />
+                                        <br />
+                                        <a href="tree.php?masterid=<?php echo $left_left_id;?>"> <h6 class="text-warning"><?php echo $left_left_login_id;?></h6></a>
+                                        <h7 class="text-success"><?php echo $left_left_name;?>
+                                        </h7>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <!-- right child -->
+                                        <img src="../assets/images/<?php echo $left_right_icon;?>" width="50" onclick="getdata('<?php echo $left_right_id;?>','<?php echo $left_right_param; ?>','right','<?php echo $left_id; ?>')" data-toggle="modal" data-target="<?php if($left_id != ''){ echo $left_right_datatarget; } else{ echo "#" ;} ?>" />
+                                        <br />
+                                        <br />
+                                        <a href="tree.php?masterid=<?php echo $left_right_id;?>"><h6 class="text-warning"><?php echo $left_right_login_id;?></h6></a>
+                                        <h7 class="text-success"><?php echo $left_right_name;?>
+                                        </h7>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <!-- left child -->
+                                        <img src="../assets/images/<?php echo $right_left_icon;?>" width="50" onclick="getdata('<?php echo $right_left_id;?>','<?php echo $right_left_param; ?>','left','<?php echo $right_id; ?>')" data-toggle="modal" data-target="<?php if($right_id != ''){  echo $right_left_datatarget; } else{ echo "#" ;} ?>" />
+                                        <br />
+                                        <br />
+                                        <a href="tree.php?masterid=<?php echo $right_left_id;?>"><h6 class="text-warning"><?php echo $right_left_login_id;?></h6></a>
+                                        <h7 class="text-success"><?php echo $right_left_name;?>
+                                        </h7>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <!-- right child -->
+                                        <img src="../assets/images/<?php echo $right_right_icon;?>" width="50" onclick="getdata('<?php echo $right_right_id;?>','<?php echo $right_right_param; ?>','right','<?php echo $right_id; ?>')" data-toggle="modal" data-target="<?php if($right_id != ''){  echo $right_right_datatarget; } else{ echo "#" ;} ?>" />
+                                        <br />
+                                        <br />
+                                        <a href="tree.php?masterid=<?php echo $right_right_id;?>"><h6 class="text-warning"><?php echo $right_right_login_id;?></h6></a>
+                                        <h7 class="text-success"><?php echo $right_right_name;?>
+                                        </h7>
+                                    </div>
+
+                                </div><!-- Third Node -->
+                                <hr />
                             </div>
                         </div>
 
@@ -221,41 +384,7 @@ body {
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-		 <div class="modal fade bs-example-modal-center" id="otpModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel2" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title mt-0 text-center" > Validate OTP</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="card-box table-responsive">
-                            <!--<h4 class="header-title">User Details</h4>-->
-                            <form class="form-horizontal" action="../controller/tree_controller.php" method="POST">
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <span class="success" for="msg" id="otpmsg"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <label for="username">OTP</label>
-                                        <input type="hidden" id="otpMobile" name="otpMobile" />
-                                        
-                                        <input class="form-control" type="text" id="otp" name="otp" placeholder="OTP" required="required"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row text-center mt-2">
-                                    <div class="col-6">
-                                        <button id="btnOTPValidate" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Submit OTP</button>
-                                    </div>
-                                </div>
-                             </form>  
-                           </div>
-                     </div>
-                 </div>
-             </div>
-         </div>       
+
          <div class="modal fade bs-example-modal-center" id="activateusersmodal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel2" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -270,8 +399,8 @@ body {
                                 <div class="form-group row">
                                     <div class="col-6">
                                         <label for="username">Sponsor Id</label>
-                                        <!-- <input type="hidden" id="hdnSide" name="hdnSide" /> -->
-                                        <input type="hidden" id="hdnSpillId" name="hdnSpillId" />
+                                        <input type="text" id="hdnSide" name="hdnSide" />
+                                        <input type="text" id="hdnSpillId" name="hdnSpillId" />
                                         <input class="form-control" type="text" id="txtSponsorId" name="txtSponsorId" required="" placeholder="YMDXXXXXXX" onchange="getSponsorName(this.value)" readonly value="<?php echo $_SESSION['loginid']; ?>">
                                     </div>
                                     <div class="col-6">
@@ -280,17 +409,9 @@ body {
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <div class="col-6">
+                                    <div class="col-12">
                                         <label for="username">Full Name</label>
                                         <input class="form-control" type="text" id="txtFirstName" name="txtFirstName" required="" placeholder="Michael Zenaty">
-                                    </div>
-                                    <div class="col-6">
-                                        <label for="inputState" class="col-form-label">Chose your Side</label>
-                                        <select id="ddlSide" name="ddlSide" class="form-control">
-                                            <option value="0">Choose</option>
-                                            <option value="left">Left</option>
-                                            <option value="right">Right</option>
-                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -410,13 +531,7 @@ body {
     <script src="../assets/js/pages/jquery.todo.js"></script>
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
-    
-    <script src="https://visjs.github.io/vis-network/standalone/umd/vis-network.min.js"></script>
     <script src="../js/tree.js"></script>
-    
-    <script type="text/javascript">
-     
-    </script>
 </body>
 
 

@@ -1,11 +1,13 @@
 <?php
 include("../model/login_model.php");
+include('../model/user_model.php');
 ?>
 <?php
 if(isset($_POST['txtFirstName'])){
     $objLoginModel->setName($_POST['txtFirstName']);
     $objLoginModel->setEmail($_POST['txtEmail']);
-    $objLoginModel->setMobile($_POST['txtMobile']);
+    $mobile = $_POST['txtMobile'];
+    $objLoginModel->setMobile($mobile);
     $spons_res = $objLoginModel->GetUserById($_POST['txtSponsorId']);
     $objLoginModel->setSponsorId(($spons_res['id']=="")?0:$spons_res['id']);
    // $objLoginModel->setSide($_POST['ddlSide']);
@@ -16,14 +18,42 @@ if(isset($_POST['txtFirstName'])){
     $objLoginModel->setDate();
     $res = $objLoginModel->AddUserBasic();
     if($res){
-        $msg = "Congratulations ! ".$_POST['txtFirstName'].". Thank you for joining us.Your Login Id is ".$_POST['txtUserId'].". and Password is ".$_POST['txtPassword']." Visit www.ymdonate.us";    //Message Here
-        $url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".$_POST['txtMobile']."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
-        $ret = file($url);    //Call Url variable by using file() function
+        $otp = $objLoginModel->generateOTP();
+        $smsMsg = "Congratulations ! ".$_POST['txtFirstName'].". Thank you for joining us.Your OTP is ".$otp." Login Id is ".$_POST['txtUserId'].". and Password is ".$_POST['txtPassword']." Visit www.ymdonate.us";    //Message Here
+        //$url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".$_POST['txtMobile']."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
+        //$ret = file($url);    //Call Url variable by using file() function
        // print_r($ret);    //$ret stores the msg-id
-        echo "<script> location.href='../view/tree.php?=success=insert';</script>";
+        $smsids = $objUserModel->sendSms($mobile, $smsMsg);
+        $deliveryStatus = $objUserModel->smsDeliveryStatus($smsids[0]);
+        $rep = explode('-',$deliveryStatus[0]);
+        $smsmsg = '';
+        if( strcasecmp($rep[1] , "Delivered")==0){
+            $smsmsg = 'We have send an OTP to your registered mobile number *******'.$mobileEnd.' for Verification';
+        }else{
+            $smsmsg = 'Sms delivering failed , Please click on resend button';
+        }
+        $mobileEnd = substr($mobile, -3);
+         
+        echo "<script> location.href='../view/tree.php?=success=OTPValidate=msg=".$smsmsg."=mobile=".$mobile."';</script>";
     }else{
         echo "<script> location.href='../view/tree.php?=failure=insert';</script>";
     }
 }
+if(isset($_GET['loadspills'])){
+    $tree_data = $objUserModel->GetSponsorChilds($_GET['sponsor_id']);
+    // set response code - 200 OK
+    http_response_code(200);
+    echo $tree_data;
+}
 
+if(isset($_POST['btnOTPValidate'])){
+    $res = $objUserModel->validateOTP($_POST['otpMobile'], $_POST['otp']);
+    if($res){
+        $msg = "Registion done successfully.";
+        echo "<script> location.href='../view/tree.php?=success=OTPValidated=msg=".$msg."';</script>";
+    }else{
+        $msg = "OTP validation failed.";
+        echo "<script> location.href='../view/tree.php?=failure=OTPValidationFailed=msg=".$msg."';</script>";
+    }
+}
 ?>

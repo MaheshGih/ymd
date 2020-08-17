@@ -94,7 +94,7 @@
             </li>
 
             <li>
-                <a href="request_money">
+                <a href="request_money.php">
                     <i class=" fas fa-rupee-sign "></i>
                     <span> Request Money </span>
                 </a>

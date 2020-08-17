@@ -18,26 +18,26 @@ class UserModel{
     public $provide_help ="";
     public $date_today;
 
-    public function getUserId(){return $user_id;}
+    public function getUserId(){return $this->user_id;}
     public function setUserId($vuserid){$this->user_id = $vuserid;}
-    public function getAdress1(){ return $address_1;}
+    public function getAdress1(){return $this->address_1;}
     public function setAddress1($vadd1){$this->address_1 = $vadd1;}
-    public function getAddress2(){return $address_2;}
+    public function getAddress2(){return $this->address_2;}
     public function setAddress2($vadd2){$this->address_2 = $vadd2;}
-    public function getBankName(){return $bank_name;}
+    public function getBankName(){return $this->bank_name;}
     public function setBankName($vbankname){$this->bank_name = $vbankname;}
-    public function getAccNo(){return $acc_no;}
+    public function getAccNo(){return $this->acc_no;}
     public function setAccNo($vaccno){$this->acc_no = $vaccno;}
-    public function getIFSC(){return $ifsc;}
+    public function getIFSC(){return $this->ifsc;}
     public function setIFSC($vifsc){$this->ifsc = $vifsc;}
-    public function getAccName(){return $acc_name;}
+    public function getAccName(){return $this->acc_name;}
     public function setAccName($vaccname){$this->acc_name = $vaccname;}
-    public function getGPay(){return $gpay;}
+    public function getGPay(){return $this->gpay;}
     public function setGPay($vgpay){$this->gpay=$vgpay;}
-    public function getPhonePe(){return $PhonePe;}
+    public function getPhonePe(){return $this->PhonePe;}
     public function setPhonePe($vphonepe){$this->PhonePe = $vphonepe;}
-    public function getPayTm(){return $PayTm;}
-    public function setPayTm($vpaytm){$this->Paytm = $vpaytm;}
+    public function getPayTm(){return $this->PayTm;}
+    public function setPayTm($vpaytm){$this->PayTm = $vpaytm;}
     public function getCity(){return $this->city;}
     public function setCity($vcity){$this->city = $vcity;}
     public function getState(){return $this->state;}
@@ -161,15 +161,29 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
     public function GetUserDetailsById($vid){
         global $con;
         //$qry = " select * from user_details where id =".$vid;
-        $qry = "select * from user_details where sponsor_id=".$vid." OR id=".$vid." OR spill_id=".$vid;
+        $qry = "select * from user_details where sponsor_id='".$vid."' OR id='".$vid."' OR spill_id='".$vid."'";
         $res = mysqli_query($con,$qry);
-        if(mysqli_num_rows($res)>0){
+        if(!is_bool($res) && mysqli_num_rows($res)>0){
             $rest = mysqli_fetch_assoc($res);
             return $rest;
         }else{
             return false;
         }
     }
+    
+    public function GetUserDetailsByMobile($mobile){
+        global $con;
+        //$qry = " select * from user_details where id =".$vid;
+        $qry = "select * from user_details where mobile='".$mobile."'";
+        $res = mysqli_query($con,$qry);
+        if(!is_bool($res) && mysqli_num_rows($res)>0){
+            $rest = mysqli_fetch_assoc($res);
+            return $rest;
+        }else{
+            return false;
+        }
+    }
+    
     public function GetUserDetailsByLog($vlog,$vid){
         global $con;
         $find_id  = mysqli_fetch_assoc(mysqli_query($con,"select count(id) as cn from user_details where sponsor_id=".$vlog." and login_id='".$vid."'"));
@@ -190,19 +204,21 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
     }
     public function UpdateAdress($uid){
         global $con;
-        $upd_add_qry = "Update user_details set address_1='".self::getAdress1()."', address_2 ='".self::getAddress2()."', city='".self::getCity()."', state='".self::getState()."'  where user_id=".$uid;
+        $upd_add_qry = "Update user_details set address_1='".self::getAdress1()."', address_2 ='".self::getAddress2()."', city='".self::getCity()."', state='".self::getState()."'  where id=".$uid;
         $res = mysqli_query($con,$upd_add_qry);
         return $res;
     }
     public function UdpateBankDetails($lid){
         global $con;
-        $upd_bank_qry = "Update user_details set bank_name='".self::getBankName()."',acc_no='".self::getAccNo()."',ifsc='".self::getIFSC()."',acc_name='".self::getAccName()."' where user_id=".$lid;
+        $upd_bank_qry = "Update user_details set bank_name='".self::getBankName()."',acc_no='".self::getAccNo()."',ifsc='".self::getIFSC()."',acc_name='".self::getAccName()."' where id=".$lid;
         $res = mysqli_query($con,$upd_bank_qry);
+        return $res;
     }
     public function UpdatePaymentDetails($pid){
         global $con;
-        $upd_pay_qry = "Update user_details set Gpay='".self::getGPay()."', PhonePPe='".self::getPhonePe()."', PayTm='".self::getPayTm()."' user_id=".$pid;
+        $upd_pay_qry = "Update user_details set Gpay='".self::getGPay()."', PhonePe='".self::getPhonePe()."', PayTm='".self::getPayTm()."' where id=".$pid;
         $res = mysqli_query($con,$upd_pay_qry);
+        return $res;
     }
     public function GetChildCount($vid){
         $f_cnt = self::RecursiveChildCount($vid);
@@ -423,6 +439,77 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
             $res = mysqli_query($con,$ins);
             // $res = $ins;
         }
+        return $res;
+    }
+    public function GetAllSpillIds($sponsorId) {
+        global $con;
+        $spl_qry = "select id,sponsor_id,spill_id,full_name from user_details";
+        $spill_result= mysqli_query($con,$spl_qry);
+        $data = array();
+        $tree_data = array();
+        $tree_spillids = array();
+        if ($spill_result->num_rows > 0) {
+            while($row = $spill_result->fetch_assoc()) {
+                array_push($data,$row);
+                if($row['sponsor_id'] == $sponsorId){
+                    //array_push($sponsor_spillids, $row);
+                    array_push($tree_spillids, $row["id"]);
+                }
+            }
+            $data_copy = new ArrayObject($data) ; 
+            for ($i = 0; $i < count($data_copy); $i++) {
+                $row = $data[$i];
+                print $i;
+                if(in_array($row['spill_id'],$tree_spillids)) {
+                    array_push($tree_spillids, $row["id"]);
+                    array_push($tree_data, $row);
+                    array_slice($data_copy, $i);
+                    $i=0;
+                    print $i;
+                }
+            }
+        }
+        return $tree_data;
+    }
+    public function GetSponsorChilds($sponsorId) {
+        $sql_qry = "with recursive cte (id,sponsor_id,spill_id,full_name,side ) as (
+              select id,sponsor_id,spill_id,full_name,side from user_details 
+              where      sponsor_id = $sponsorId
+              union all
+              select u.id,u.sponsor_id,u.spill_id,u.full_name,u.side from user_details as u
+              inner join cte
+                      on u.sponsor_id = cte.id
+            )
+            select * from cte order by spill_id,side";
+        global $con;
+        $spill_result= mysqli_query($con,$sql_qry);
+        $data = array();
+        while($row = $spill_result->fetch_assoc()) {
+            array_push($data,$row);
+        }
+        return json_encode($data);;
+    }
+    
+    public function sendSms($mobile, $msg) {
+        $url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".trim($mobile)."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
+        $ret = file($url);    //Call Url variable by using file() function
+        return $ret;
+    }
+    public function smsDeliveryStatus($smsid) {
+        // this link is used to get delivery result
+        //http://smslogin.mobi/spanelv2/api.php?username=xxxx&password=xxxx&msgid=417a3b098442ba35
+        $del_url= "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&msgid=".$smsid;
+        $del_ret = file($del_url);
+        return $del_ret;
+    }
+    
+    public function validateOTP($mobile, $otp) {
+        global $con;
+        $spl_qry = "update user_details set is_reg_verified=? where mobile = ? and reg_otp=?";
+        $stmt = $con->prepare($spl_qry);
+        $stmt->bind_param(true, $mobile, $otp);
+        $res = $stmt.execute();
+        $stmt.close();
         return $res;
     }
     #endregion

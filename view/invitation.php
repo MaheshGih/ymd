@@ -105,7 +105,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-3 col-form-label" for="txtProvideHelp">Provide Help to </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="txtProvideHelp" id="txtProvideHelp" class="form-control" placeholder="YMDXXXXXXX" onchange="getProvideHelp(this.value)" required/>
+                                                <input type="text" name="txtProvideHelp" id="txtProvideHelp" class="form-control" placeholder="YMDXXXXXXX" required/>
                                             </div>
                                         </div>
                                         <div class="form-group row" style="display:none;">
@@ -186,40 +186,47 @@
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
         <script>
-                 $(document).ready(function(){
-                    var  res = location.search;
-                     res = res.split("=");
-                          displayNotification(res[1],res[2]);
-                });
-                function displayNotification(result,type){
-                    if(result == "failure"){
-                        Swal.fire({
-                            type: "error",
-                            title: "Oops...",
-                            text: "Something went wrong!",
-                            confirmButtonClass: "btn btn-confirm mt-2",
-                            footer: 'Invitation message not sent successfully.Please enter valid mobiel or try again later.'
-                        });
-                    }
-                    if(result == 'success'){
-                         Swal.fire({title:"Good job!",
-                             text: getUserMessages(result, type),
-                            type:"success",
-                            confirmButtonClass:"btn btn-confirm mt-2"});
-                    }
+             $(document).ready(function(){
+                var  res = location.search;
+                res = res.split("=");
+                displayNotification(res[1],res[2]);
+
+
+                $('#btnPreview').on('click',function(){
+                	var helperMobile = $('#txtMobile').val(); 
+                	var reciverId = $('#txtProvideHelp').val();
+                	getProvideHelp(reciverId, helperMobile);
+                });onchange=""
+             });
+             function displayNotification(result,type){
+                if(result == "failure"){
+                    Swal.fire({
+                        type: "error",
+                        title: "Oops...",
+                        text: "Something went wrong!",
+                        confirmButtonClass: "btn btn-confirm mt-2",
+                        footer: 'Invitation message not sent successfully.Please enter valid mobiel or try again later.'
+                    });
                 }
-                function getUserMessages(result,type){
-                    var successActivMsg ="Hurray : Invitation sent Successfully.";
-                    if (result == "success" && type == "invitation"){
-                        return successActivMsg;
-                    }
+                if(result == 'success'){
+                     Swal.fire({title:"Good job!",
+                         text: getUserMessages(result, type),
+                        type:"success",
+                        confirmButtonClass:"btn btn-confirm mt-2"});
+                }
             }
+            function getUserMessages(result,type){
+                var successActivMsg ="Hurray : Invitation sent Successfully.";
+                if (result == "success" && type == "invitation"){
+                    return successActivMsg;
+                }
+        }
           
-            function getProvideHelp(helperid) {
+            function getProvideHelp(reciverId, helperMobile) {
                 $.ajax({
                     url: '../controller/user_controller.php',
                     method: 'POST',
-                    data: { 'helperid': helperid },
+                    data: { 'reciverId': reciverId, 'helperMobile':helperMobile },
                     success: function (result) {
                         $("#dvPreviewMessage").html(result);
                         $("#txtMessage").val(result);
