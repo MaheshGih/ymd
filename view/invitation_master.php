@@ -4,10 +4,11 @@
 ?>
 <?php
     include('../model/user_model.php');
+    include('../model/withdraw_model.php');
 ?>
 <?php
     $ph_list = $objUserModel->GetProvideHelpersList();
-    $gh_list = $objUserModel->GetHelpersList();
+    $gh_list = $objWithdrawModel->GetRequestHelperList();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -150,35 +151,7 @@
                                             <?php
                                             }
                                             ?>
-                                            <tr>
-                                                <td>
-                                                    <span id="spnGName_55">Ramesh</span>
-                                                </td>
-                                                <td>
-                                                    <span id="spnGMobile_55"> 9030729193 </span>
-                                                </td>
-                                                <td>Rs.3000</td>
-                                                <td>
-                                                    <span id="spnGId_100"> YMD1452369  </span>
-                                                </td>
-                                                <td>
-                                                    <button id="55" class="btnGetUser btn btn-success" onclick="getUserFunction(this.id)"> Click here </button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td> 
-                                                    <span id="spnGName_100">Ramesh</span>
-                                                </td>
-                                                <td> 
-                                                    <span id="spnGMobile_100"> 8639473221  </span>
-                                                </td>
-                                                <td>Rs.5000</td>
-                                                <td>
-                                                    <span id="spnGId_100"> YMD1478523 </span>
-                                                </td>
-                                                <td>
-                                                    <button id="100" class="btnGetUser btn btn-success" onclick="getUserFunction(this.id)"> Click here </button>
-                                                </td>
+                                            
                                             </tr>
                                         </tbody>
                                     </table>
@@ -191,6 +164,7 @@
                                     <table id="providehelpdatatable" class="table table-bordered  dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                             <tr>
+                                            	<th></th>
                                                 <th>Name</th>
                                                 <th>Mobile</th>
                                                 <th>Joined Date</th>
@@ -203,6 +177,7 @@
                                                 while($r=mysqli_fetch_assoc($ph_list)){
                                             ?>
                                             <tr>
+                                            	<td> <input type="checkbox" id="id_<?php echo $r['id']; ?>" name="<?php echo $r['id']; ?>" value="<?php echo $r['id']; ?>"/></td>
                                                 <td>
                                                      <span id="spnPName_<?php echo $r['id']; ?>"> <?php  echo $r['full_name']; ?> </span>
                                                 </td>
@@ -235,16 +210,20 @@
                                     <h4 class="header-title mb-4">SEND INVITATION</h4>
                                     <form class="form-horizontal" action="../controller/user_controller.php" method="POST">
                                         <div class="form-group row">
-                                            <label class="col-md-3 col-form-label" for="txtMobile">Provide Help No</label>
+                                            <label class="col-md-3 col-form-label" for="provideHelpMobile">Provide Help No</label>
                                                 <div class="col-md-9">
-                                                    <input type="text" name="txtMobile" id="txtMobile" class="form-control" placeholder="9XXXXXXXX" required>
-                                                    <input type="hidden" id="hdnGetHelpMobile" name="hdnGetHelpMobile" />  
+                                                    <input type="text" name="provideHelpMobile" id="provideHelpMobile" class="form-control" placeholder="9XXXXXXXX" required>
+                                                    <input type="hidden" name="provideHelpId" id="provideHelpId" class="form-control" placeholder="YMDXXXXXXX" onchange="getProvideHelp(this.value)" required/>
+                                                    <input type="hidden" id="provideHelpName" name="provideHelpName"/>
+                                                    <input type="hidden" id="withdrawReqId" name="withdrawReqId"/>  
                                                 </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-md-3 col-form-label" for="txtProvideHelp">Get Help to </label>
+                                            <label class="col-md-3 col-form-label" for="getHelpId">Get Help to </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="txtProvideHelp" id="txtProvideHelp" class="form-control" placeholder="YMDXXXXXXX" onchange="getProvideHelp(this.value)" required/>
+                                                <input type="text" name="getHelpId" id="getHelpId" class="form-control" placeholder="YMDXXXXXXX" onchange="getProvideHelp(this.value)" required/>
+                                                <input type="hidden" id="hdnGetHelpMobile" name="hdnGetHelpMobile" />
+                                                <input type="hidden" id="getHelpName" name="getHelpName" />
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -387,7 +366,7 @@
                 $.ajax({
                     url: '../controller/user_controller.php',
                     method: 'POST',
-                    data: { 'helperid': helperid, 'gethelperid':gethelperid },
+                    data: { 'provideHelpMsg':'provideHelpMsg','helperid': helperid, 'gethelperid':gethelperid },
                     success: function (result) {
                         var res_arr = result.split("@@@@");
                         $("#dvPreviewMessage").html("<b>Provide Help SMS :</b> <br/>"+res_arr[0] + "<br/> <br/><b>Get Hekp SMS : </b><br/>" + res_arr[1]);
@@ -415,15 +394,21 @@
             }
             function getUserFunction(bid) {
                 $("#hdnGetHelperId").val(bid);
-                var gid = $("#spnGId_" + bid).text();
-                var gmobile = $("#spnGMobile_" + bid).text();
-                $("#txtMobile").val(gmobile);
+                var gid = $("#spnGId_" + bid).text().trim();
+                var gname = $('#spnGName_'+bid).text().trim();
+                var gmobile = $("#spnGMobile_" + bid).text().trim();
+                $("#hdnGetHelpMobile").val(gmobile.trim());
+                $("#getHelpId").val(gid);
+                $("#getHelpName").val(gname);
+                $("#withdrawReqId").val(bid);
             }
             function getProviders(pid) {
-                var p_id = $("#spnPId_" + pid).text();
-                var pmobile =  $("#spnPMobile_" + pid).text();
-                $("#txtProvideHelp").val(p_id);
-                $("#hdnGetHelpMobile").val(pmobile.trim());
+                var p_id = $("#spnPId_" + pid).text().trim();
+                var pmobile =  $("#spnPMobile_" + pid).text().trim();
+                var pname =  $("#spnPName_" + pid).text().trim();
+                $("#provideHelpMobile").val(pmobile);
+                $("#provideHelpId").val(p_id);
+                $("#provideHelpName").val(pname);
                 getProvideHelp(pid);
             }
         </script>

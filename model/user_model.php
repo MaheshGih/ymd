@@ -17,7 +17,15 @@ class UserModel{
     public $to_mobile="";
     public $provide_help ="";
     public $date_today;
-
+    public $reg_otp="";
+    public $reg_verified;
+    public $status="";
+    
+    public $status_list = [ "REGISTERED" => "REGISTERED", "REG_VERIFIED" => "REG_VERIFIED", 
+        "REG_NOT_VERIFIED" => "REG_NOT_VERIFIED", "HELP_REQ_INITIATED" => "HELP_REQ_INITIATED", "HELP_PROVIDED" => "HELP_PROVIDED", 
+        "HELP_REQ_REJECTED" => "HELP_REQ_REJECTED", "HELP_REQ_EXPIRED" => "HELP_REQ_EXPIRED", "ACTIVE" => "ACTIVE", 
+        "BLOCKED" => "BLOCKED", "EXPIRED" => "EXPIRED"];
+    
     public function getUserId(){return $this->user_id;}
     public function setUserId($vuserid){$this->user_id = $vuserid;}
     public function getAdress1(){return $this->address_1;}
@@ -51,6 +59,19 @@ class UserModel{
         date_default_timezone_set("Asia/Calcutta");
         $this->date_today = date("Y-m-d h:i:s");
     }
+    public function setRegOtp($votp){$this->reg_otp= $votp;}
+    public function getRegOtp(){ return $this->reg_otp;}
+    public function setRegVerified($vreg_verified){$this->reg_verified= $vreg_verified;}
+    public function getRegVerified(){ return $this->reg_verified;}
+    
+    public function setStatus($vstatus){$this->status= $vstatus;}
+    public function getStatus(){ return $this->status;}
+    
+    
+    public function getStausByKey($vstatus){
+        return array_search($vstatus, $this->status_list);
+    }
+    
     #region  Old Methods
     // Old Methods
     public function GetUserDetailsOld(){
@@ -158,6 +179,7 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
         $res = mysqli_fetch_assoc(mysqli_query($con,$select_qry));
         return $res;
     }
+    
     public function GetUserDetailsById($vid){
         global $con;
         //$qry = " select * from user_details where id =".$vid;
@@ -171,6 +193,18 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
         }
     }
     
+    public function GetUserDetailsByUserId($vid){
+        global $con;
+        //$qry = " select * from user_details where id =".$vid;
+        $qry = "select * from user_details where id=".$vid;
+        $res = mysqli_query($con,$qry);
+        if(!is_bool($res) && mysqli_num_rows($res)>0){
+            $rest = mysqli_fetch_assoc($res);
+            return $rest;
+        }else{
+            return false;
+        }
+    }
     public function GetUserDetailsByMobile($mobile){
         global $con;
         //$qry = " select * from user_details where id =".$vid;
@@ -391,17 +425,37 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
         $user_list = mysqli_query($con," select full_name, mobile, date_created from user_details where sponsor_id !=0 order by date_created desc LIMIT 5");
         return $user_list;
     }
+    
     public function AddInvitation(){
         global $con;
         $helper_name= mysqli_fetch_assoc(mysqli_query($con,"select full_name from user_details where login_id='".self::getProvideHelp()."'"));
         $inv_res = mysqli_query($con,"insert into invitations values(null,'".self::getToMobile()."','".self::getProvideHelp()."','".$helper_name['full_name']."','".self::getDate()."')");
         return $inv_res;
     }
+    
+    public function AddUserInvitation($provideUser, $getHelpUser, $withdrawReqId){
+        global $con;
+        self::setDate();
+        $sentDate = self::getDate();
+        $sql = "insert into invitations(id,to_mobile,provide_help_id,provide_help_name,date_sent,to_user_id,provide_mobile,to_user_name,withdraw_req_id)
+        values(null,'".$getHelpUser['getHelpMobile']."','".$provideUser['provideHelpId']."','".$provideUser['provideHelpName']."',
+        '".$sentDate."','".$getHelpUser['getHelpId']."','".$provideUser['provideHelpMobile']."','".$getHelpUser['getHelpName']."',".$withdrawReqId." ) ";
+        $inv_res = mysqli_query($con,$sql);
+        return $inv_res;
+    }
+    
     public function GetTotalInvitations(){
         global $con;
         $tot_inv = mysqli_fetch_assoc(mysqli_query($con,"select count(id) as totinv from invitations"));
         return $tot_inv['totinv'];
     }
+    
+    public function GetInvitationsByUserId($loginId){
+        global $con;
+        $res= mysqli_query($con,"select * from invitations where provide_help_id='".$loginId."' or to_user_id='".$loginId."'");
+        return $res;
+    }
+    
     public function GetActiveUsers(){
         global $con;
         $tot_act_users = mysqli_fetch_assoc(mysqli_query($con,"select count(id) as totactusers from user_details where is_active=1"));
@@ -503,15 +557,54 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
         return $del_ret;
     }
     
-    public function validateOTP($mobile, $otp) {
+    public function validateOTP($login_id, $otp) {
         global $con;
-        $spl_qry = "update user_details set is_reg_verified=? where mobile = ? and reg_otp=?";
+        $status = self::getStausByKey("REG_VERIFIED");
+        $spl_qry = "update user_details set reg_verified=?, status=? where login_id = ? and reg_otp=?";
         $stmt = $con->prepare($spl_qry);
-        $stmt->bind_param(true, $mobile, $otp);
-        $res = $stmt.execute();
-        $stmt.close();
+        $verified = intval(true);
+        $stmt->bind_param("isss", $verified, $status, $login_id, $otp);
+        $otp = $con->real_escape_string($otp);  
+        $login_id = $con->real_escape_string($login_id);
+        $res = $stmt->execute();
+        $stmt->close();
         return $res;
     }
+    
+    public function updateUserStatusById($login_id,$status) {
+        global $con;
+        $spl_qry = "update user_details set  status=? where login_id = ?";
+        $stmt = $con->prepare($spl_qry);
+        $stmt->bind_param("ss", $status, $login_id);
+        $res = $stmt->execute();
+        $stmt->close();
+        return $res;
+    }
+    
+    public function updateUserOTP($login_id, $otp) {
+        global $con;
+        $spl_qry = "update user_details set reg_otp = ? where login_id=?";
+        $stmt = $con->prepare($spl_qry);
+        $stmt->bind_param("ss",$otp, $login_id);
+        $otp = $con->real_escape_string($otp);
+        $login_id = $con->real_escape_string($login_id);
+        $res = $stmt->execute();
+        $stmt->close();
+        return $res;
+    }
+    
+    public function GetUsersByStatus($status){
+        //date_created
+        global $con;
+        $qry = "select * from user_details where status=?";
+        $stmt = $con->prepare($qry);
+        $stmt->bind_param("s", $status);
+        $res = $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+    
     #endregion
 }
 $objUserModel =  new UserModel();

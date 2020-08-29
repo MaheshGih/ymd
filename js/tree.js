@@ -10,15 +10,31 @@ var network = undefined;
       hierarchical: {
         direction: "UD",
         sortMethod: "directed",
-        shakeTowards:"roots"
+        //blockShifting : true,
+        shakeTowards:"roots",
+        //parentCentralization:true
+        enabled:true,
+      levelSeparation: 150,
+      nodeSpacing: 100,
+      treeSpacing: 200,
+      blockShifting: false,
+      edgeMinimization: true,
+      parentCentralization: true,
       }
+    },
+    nodes:{
+    	fixed: {
+	      x:true,
+	      y:false
+	    },
+	    physics:false,
     },
     edges: {
       arrows: "to",
     },
     interaction : {
     	selectable: true,
-    	//zoomView: true
+    	zoomView: true
     }
   };
   
@@ -41,24 +57,38 @@ var network = undefined;
     	url: "../controller/tree_controller.php?loadspills=loadspills&sponsor_id="+master_id, 
     	success: function(result){
     		var users = JSON.parse(result);
-			var nodes = [{id:master_id, label:full_name}];
+			var nodes = [{id:0, master_id:master_id, label:full_name}];
 			var edges = []; 
 			var edge = { from : undefined, to : undefined};
 			for( var i=0; i<users.length;i++){
 				var user = $.extend(true,{},users[i]);
+				user['master_id'] = user['id'];
+				user['id'] = i+1;
 				user['label'] = user.full_name;
 				nodes.push(user);
-				var u_edge = $.extend(true,{},edge);
-				u_edge.from = user.spill_id;
-				u_edge.to = user.id;
-				edges.push(u_edge);
-				if(user.spill_id == master_id ){
-					var u_edge = $.extend(true,{},edge);
-					u_edge.from = master_id;
-					u_edge.to = user.id;
-					edges.push(u_edge);
-				}
 			}
+			
+			for( var i=0; i<nodes.length;i++){
+				var node = $.extend(true,{},nodes[i]);	
+				var u_edge = $.extend(true,{},edge);
+				for( var j=0; j<nodes.length;j++){
+					var searchNode = nodes[j];
+					if(searchNode['master_id'] == node.spill_id){
+						u_edge.from = searchNode['id'];
+						u_edge.to = node.id;
+						edges.push(u_edge);
+						if(node.spill_id == master_id ){
+							var u_edge = $.extend(true,{},edge);
+							u_edge.from = 0;
+							u_edge.to = node.id;
+							edges.push(u_edge);
+						}		
+					} 
+				}
+				
+			}
+			console.log(nodes);
+			console.log(edges);
 			var visNodes = new vis.DataSet(nodes);
 	        var visEdges = new vis.DataSet(edges);
 	        
@@ -70,12 +100,27 @@ var network = undefined;
 			
 			network.on("selectNode", function(properties){
 				var ids = properties.nodes;
+				var nodeEdges = properties.edges;
 			    var clickedNodes = visNodes.get(ids);
 			    console.log('clicked nodes:', clickedNodes);
-			    if(properties.edges.length<2){
-				    $('#hdnSpillId').val(clickedNodes[0].id);
+			    if(nodeEdges.length<=2){
+			    	if(nodeEdges.length==2){
+			    		var nodeEdge = visEdges.get(nodeEdges[1]);
+			    		var childNode = visNodes.get(nodeEdge.from);
+			    		var side = '';
+			    		if(childNode.side=='left'){
+			    			side = 'right';
+			    		}else{
+			    			side = 'left';
+			    		}
+			    		$('#ddlSide').val(side);
+			    		$('#ddlSide').prop('disabled','true');
+			    	}
+			    	
+				    $('#hdnSpillId').val(clickedNodes[0].master_id);
 					$('#activateusersmodal').modal('show');	
 				}else{
+					$('#ddlSide').removeAttr('disabled');
 					$('#activateusersmodal2').modal('show');
 				}
 			});
@@ -96,8 +141,9 @@ var network = undefined;
 	  $('#activateusersmodal').show();
   }
 
-  function showOTPModal(status, type, msg, mobile){
+  function showOTPModal(status, type, msg, mobile,loginId){
     $('#otpMobile').val(mobile);
+    $('#otpLoginId').val(loginId);
     $('#otpmsg').text(msg);
   	$('#otpModal').modal('show');
   }
@@ -118,7 +164,7 @@ var network = undefined;
     }
     if (status == 'success') {
     	if( type=='OTPValidate'){
-    		showOTPModal(status, type, msg, res[6]);
+    		showOTPModal(status, type, msg, res[6],res[8]);
     	}else if( type=='OTPValidated'){
     		Swal.fire({
 	            title: "Good job!",

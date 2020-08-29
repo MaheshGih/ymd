@@ -12,6 +12,7 @@
             $_SESSION["loginid"] = $_POST['txtLoginId'];  
             $_SESSION["fname"] = $details['fname'];  
             $_SESSION['userid'] = $details['userid'];
+            $_SESSION['mobile'] = $details['mobile'];
             $_SESSION['start'] = time();
             $_SESSION['expire'] = $_SESSION['start'] + (1440* 60);
             echo "<script> location.href='../view/index.php?=success=login';</script>";

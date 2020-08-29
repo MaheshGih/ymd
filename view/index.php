@@ -109,7 +109,7 @@
                                         </div>
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Wallet Balance</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $tot_det[0]; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo 0; ?></span></h3>
                                             <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
                                         </div>
                                     </div>

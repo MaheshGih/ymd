@@ -1,6 +1,5 @@
 <?php
 include("../model/login_model.php");
-include('../model/user_model.php');
 ?>
 <?php
 if(isset($_POST['txtFirstName'])){
@@ -10,12 +9,15 @@ if(isset($_POST['txtFirstName'])){
     $objLoginModel->setMobile($mobile);
     $spons_res = $objLoginModel->GetUserById($_POST['txtSponsorId']);
     $objLoginModel->setSponsorId(($spons_res['id']=="")?0:$spons_res['id']);
-   // $objLoginModel->setSide($_POST['ddlSide']);
-    $objLoginModel->setSide($_POST['hdnSide']);
+    $objLoginModel->setSide($_POST['ddlSide']);
+    //$objLoginModel->setSide($_POST['hdnSide']);
     $objLoginModel->setSpillId($_POST['hdnSpillId']);
-    $objLoginModel->setUserId($_POST['txtUserId']);
+    $login_id = $_POST['txtUserId'];
+    $objLoginModel->setUserId($login_id);
     $objLoginModel->setPassword($_POST['txtPassword']);
     $objLoginModel->setDate();
+    $status = $objUserModel->getStausByKey("REGISTERED");
+    $objLoginModel->setStatus($status);
     $res = $objLoginModel->AddUserBasic();
     if($res){
         $otp = $objLoginModel->generateOTP();
@@ -27,14 +29,18 @@ if(isset($_POST['txtFirstName'])){
         $deliveryStatus = $objUserModel->smsDeliveryStatus($smsids[0]);
         $rep = explode('-',$deliveryStatus[0]);
         $smsmsg = '';
-        if( strcasecmp($rep[1] , "Delivered")==0){
+        
+        if( strpos($rep[1] , "Delivered")!== false || strpos($rep[1] , "Submitted")!== false){
+            
+            $objUserModel->updateUserOTP($login_id,$otp);
+            $mobileEnd = substr($mobile, -3);
             $smsmsg = 'We have send an OTP to your registered mobile number *******'.$mobileEnd.' for Verification';
         }else{
             $smsmsg = 'Sms delivering failed , Please click on resend button';
         }
-        $mobileEnd = substr($mobile, -3);
+        
          
-        echo "<script> location.href='../view/tree.php?=success=OTPValidate=msg=".$smsmsg."=mobile=".$mobile."';</script>";
+        echo "<script> location.href='../view/tree.php?=success=OTPValidate=msg=".$smsmsg."=mobile=".$mobile."=login_id=".$login_id."';</script>";
     }else{
         echo "<script> location.href='../view/tree.php?=failure=insert';</script>";
     }
@@ -47,7 +53,7 @@ if(isset($_GET['loadspills'])){
 }
 
 if(isset($_POST['btnOTPValidate'])){
-    $res = $objUserModel->validateOTP($_POST['otpMobile'], $_POST['otp']);
+    $res = $objUserModel->validateOTP($_POST['otpLoginId'], $_POST['otp']);
     if($res){
         $msg = "Registion done successfully.";
         echo "<script> location.href='../view/tree.php?=success=OTPValidated=msg=".$msg."';</script>";

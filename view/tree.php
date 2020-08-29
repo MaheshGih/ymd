@@ -1,4 +1,3 @@
-
 <?php
 include('../include/session.php');
 include('../model/user_model.php');
@@ -11,8 +10,7 @@ include('../model/user_model.php');
     $master = $_SESSION['userid'];
     $master_name = $_SESSION['fname'];
     $master_logid = $_SESSION['loginid'];
-    $warning = "";
-    
+    $warning = "";    
 ?>
 <?php
 
@@ -241,13 +239,13 @@ body {
                                     <div class="col-6">
                                         <label for="username">OTP</label>
                                         <input type="hidden" id="otpMobile" name="otpMobile" />
-                                        
+                                        <input type="hidden" id="otpLoginId" name="otpLoginId"/>
                                         <input class="form-control" type="text" id="otp" name="otp" placeholder="OTP" required="required"/>
                                     </div>
                                 </div>
                                 <div class="form-group row text-center mt-2">
                                     <div class="col-6">
-                                        <button id="btnOTPValidate" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Submit OTP</button>
+                                        <button id="btnOTPValidate" name="btnOTPValidate" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Submit OTP</button>
                                     </div>
                                 </div>
                              </form>  

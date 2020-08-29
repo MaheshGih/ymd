@@ -1,4 +1,8 @@
-<?php include('../include/config.php');?>
+<?php 
+include('../include/config.php');
+include('../model/user_model.php');
+?>
+
 <?php
 class LoginModel{
     public $id="";
@@ -12,7 +16,8 @@ class LoginModel{
 
     public $user_id="";
     public $pwd="";
-
+    public $status="";
+    
     public function getId(){ return $this->id;}
     public function setId($vid){ $this->id = $vid;}
     public function getName(){ return $this->full_name;}
@@ -40,12 +45,15 @@ class LoginModel{
     public function setPassword($vPwd){ $this->pwd=$vPwd;}
     public function getSpillId(){ return $this->spill_id;}
     public function setSpillId($vspillid){ $this->spill_id = $vspillid; }
-
+    public function getStatus(){ return $this->status;}
+    public function setStatus($vstatus){ $this->status = $vstatus; }
+    
+    
     #region Old Methods
     public function AddUserBasicOld(){
 
         //$ins_user_basic_qry = "insert into user_basic values(null,'".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",'".self::getSide()."','".self::getDate()."',0)";
-
+        
         global $con;
         $ins_user_det_qry = "INSERT INTO `user_details` VALUES(null,'".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId()."',".self::getSpillId().",'".self::getLoginId()."','".self::getPassword()."','','','','','','','','','','','".self::getDate()."',0)";
 
@@ -123,8 +131,8 @@ class LoginModel{
     public function AddUserBasic(){
 
         global $con;
-        $ins_user_det_qry = "INSERT INTO `user_details` VALUES(null,'".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".(self::getSpillId()==NULL ? "null" : self::getSpillId()).",'".self::getUserId()."','".self::getPassword()."','','','','','','','','','','".self::getDate()."',0,'".self::getSide()."','','','',null,false)";
-
+        
+        $ins_user_det_qry = "INSERT INTO `user_details` VALUES(null,'".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".(self::getSpillId()==NULL ? "null" : self::getSpillId()).",'".self::getUserId()."','".self::getPassword()."','','','','','','','','','','".self::getDate()."',0,'".self::getSide()."','','','',null,false,'".self::getStatus()."')";
         $rand_user_id = self::getUserId();
         $check_user_id  = "select count(*) as cnt from user_details where login_id='".$rand_user_id."'";
         $cnt = mysqli_fetch_assoc( mysqli_query($con,$check_user_id));
@@ -192,7 +200,7 @@ class LoginModel{
     public function GetLogUserDetails($vlogid){
         global $con;
         $get_user_id = mysqli_fetch_assoc(mysqli_query($con,"select id as userid from user_details where login_id='".$vlogid."'"));
-        $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid from user_details where id=".$get_user_id['userid'])) ;
+        $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid,mobile from user_details where id=".$get_user_id['userid'])) ;
         return $get_det;
     }
     /*

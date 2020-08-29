@@ -6,6 +6,7 @@ class PaymentModel{
     public $trans_id = "";
     public $paid_date = "";
     public $paid_to = "";
+    public $withdraw_req_id = "";
 
     public function getUserId(){return $this->user_id;}
     public function setUserId($vuserid){$this->user_id=$vuserid;}
@@ -17,10 +18,13 @@ class PaymentModel{
     public function setPaidDate($vpaiddate){$this->paid_date = $vpaiddate;}
     public function getPaidTo(){return $this->paid_to;}
     public function setPaidTo($vpaidto){$this->paid_to = $vpaidto;}
-
+    public function getWithdrawReqId(){return $this->withdraw_req_id;}
+    public function setWithdrawReqId($vreqid){$this->withdraw_req_id = $vreqid;}
+    
     public function AddPaymentReciept(){
         global $con;
-        $ins_qry = "insert into user_paid_reciept values(null,1,'".self::getTransId()."','".self::getImgPath()."','".self::getPaidDate()."')";
+        $ins_qry = "insert into user_paid_reciept(id,user_id,trans_id,img_path,paid_date,paid_to,withdraw_req_id) values(null,".self::getUserId().",'".self::getTransId()."',
+    '".self::getImgPath()."','".self::getPaidDate()."','".self::getPaidTo()."',".self::getWithdrawReqId().")";
         $res = mysqli_query($con,$ins_qry);
         return self::getResult($res);
     }

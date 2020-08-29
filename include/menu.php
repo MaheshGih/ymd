@@ -1,6 +1,6 @@
 <style>
     .slimScrollBar{
-        background: #fff !important; opacity: 0.9 !important;
+        background: #fff !important; opacity: 0.9 !important;width:10px !important;
     }
 </style>
 <div class="left-side-menu">
@@ -130,7 +130,13 @@
                     <span> Activate Users </span>
                 </a>
             </li>
-
+			<li>
+                <a href="providers.php">
+                    <i class="fas fa-users-cog"></i>
+                    <!-- <span class="badge badge-warning badge-pill float-right">12</span> -->
+                    <span> Providers </span>
+                </a>
+            </li>
             <li class="menu-title">Rewards</li>
 
             <!--<li>
