@@ -79,6 +79,7 @@ class LoginModel{
             return $res;
         }
     }
+    
     public function GetUserByIdOld($sponsid){
         global $con;
         $sel_qry ="SELECT ub.id,ub.full_name,ul.login_id FROM `user_basic` as ub join user_login as ul on ub.id = ul.user_id  where ul.login_id ='".$sponsid."'";
@@ -132,7 +133,7 @@ class LoginModel{
 
         global $con;
         
-        $ins_user_det_qry = "INSERT INTO `user_details` VALUES(null,'".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".(self::getSpillId()==NULL ? "null" : self::getSpillId()).",'".self::getUserId()."','".self::getPassword()."','','','','','','','','','','".self::getDate()."',0,'".self::getSide()."','','','',null,false,'".self::getStatus()."')";
+        $ins_user_det_qry = "INSERT INTO `user_details` VALUES(null,'".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".(self::getSpillId()==NULL ? "null" : self::getSpillId()).",'".self::getUserId()."','".self::getPassword()."','','','','','','','','','','".self::getDate()."',0,'".self::getSide()."','','','',null,false,'".self::getStatus()."','ROLE_USER')";
         $rand_user_id = self::getUserId();
         $check_user_id  = "select count(*) as cnt from user_details where login_id='".$rand_user_id."'";
         $cnt = mysqli_fetch_assoc( mysqli_query($con,$check_user_id));
@@ -146,6 +147,26 @@ class LoginModel{
         }
        // return $ins_user_det_qry;
     }
+    
+    public function AddEmp(){
+        
+        global $con;
+        
+        $ins_user_det_qry = "INSERT INTO `user_details` VALUES(null,'".self::getName()."','".self::getEmail()."','".self::getMobile()."',0,0,'".self::getUserId()."','".self::getPassword()."','','','','','','','','','','".self::getDate()."',1,'','','','',null,false,'".self::getStatus()."','ROLE_EMP')";
+        $rand_user_id = self::getUserId();
+        $check_user_id  = "select count(*) as cnt from user_details where login_id='".$rand_user_id."'";
+        $cnt = mysqli_fetch_assoc( mysqli_query($con,$check_user_id));
+        
+        if($cnt['cnt']>0){
+            return false;
+        }
+        else{
+            $res =  mysqli_query($con,$ins_user_det_qry);
+            return $res;
+        }
+        // return $ins_user_det_qry;
+    }  
+    
     /*
         to add user into helper list 
     */
@@ -200,7 +221,7 @@ class LoginModel{
     public function GetLogUserDetails($vlogid){
         global $con;
         $get_user_id = mysqli_fetch_assoc(mysqli_query($con,"select id as userid from user_details where login_id='".$vlogid."'"));
-        $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid,mobile from user_details where id=".$get_user_id['userid'])) ;
+        $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid,mobile,role from user_details where id=".$get_user_id['userid'])) ;
         return $get_det;
     }
     /*

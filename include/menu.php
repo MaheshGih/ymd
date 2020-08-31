@@ -1,3 +1,9 @@
+<?php 
+
+$isAdmin = $_SESSION['role']=='ROLE_ADMIN'?true:false;
+$isEmp = $_SESSION['role']=='ROLE_EMP'?true:false;
+$isUser= $_SESSION['role']=='ROLE_USER'?true:false;
+?>
 <style>
     .slimScrollBar{
         background: #fff !important; opacity: 0.9 !important;width:10px !important;
@@ -37,14 +43,22 @@
                     <!-- <span class="menu-arrow"></span> -->
                 </a>
             </li>
-
-            <li>
-                <a href="upload_reciept.php">
-                    <i class=" fas fa-cloud-upload-alt "></i>
-                    <span> Upload Payment </span>
+            <?php if($isAdmin){ ?>
+			<li>
+                <a href="employees.php">
+                    <i class=" fas fa-file-alt "></i>
+                    <span> Employees </span>
                     <!-- <span class="menu-arrow"></span> -->
                 </a>
             </li>
+            <?php } ?>
+            <!-- <li>
+                <a href="upload_reciept.php">
+                    <i class=" fas fa-cloud-upload-alt "></i>
+                    <span> Upload Payment </span>
+                    
+                </a>
+            </li> -->
 
             <li class="menu-title">Referrals</li>
 
@@ -76,14 +90,14 @@
                     <span> Send Invitations </span>
                 </a>
             </li>
-
+			<?php if($isAdmin || $isEmp){ ?>
             <li>
                 <a href="invitation_master.php">
                     <i class=" fas fa-hands-helping "></i>
                     <span> Get/Provide Help </span>
                 </a>
             </li>
-
+			<?php }?>
             <li class="menu-title">Finance</li>
 
             <li>
@@ -91,22 +105,13 @@
                     <i class=" fas fa-wallet "></i>
                     <span> Wallet </span>
                 </a>
-            </li>
-
-            <li>
-                <a href="request_money.php">
-                    <i class=" fas fa-rupee-sign "></i>
-                    <span> Request Money </span>
-                </a>
-            </li>
-
+            </li>            
             <li>
                 <a href="transactions.php">
                     <i class=" fas fa-chart-line "></i>
                     <span>  Transactions </span>
                 </a>
             </li>
-
             <li class="menu-title">Tree</li>
 
             <li>
@@ -115,14 +120,6 @@
                     <span> View User Tree </span>
                 </a>
             </li>
-
-            <!--<li>
-        <a href="tree1.php">
-            <i class=" fab fa-mendeley "></i>
-            <span> View User Tree 2 </span>
-        </a>
-    </li>-->
-
             <li>
                 <a href="activate_users.php">
                     <i class="fas fa-users-cog"></i>
@@ -130,21 +127,8 @@
                     <span> Activate Users </span>
                 </a>
             </li>
-			<li>
-                <a href="providers.php">
-                    <i class="fas fa-users-cog"></i>
-                    <!-- <span class="badge badge-warning badge-pill float-right">12</span> -->
-                    <span> Providers </span>
-                </a>
-            </li>
+			
             <li class="menu-title">Rewards</li>
-
-            <!--<li>
-        <a href="#">
-            <i class="fas fa-list-alt "></i>
-            <span> Plans </span>
-        </a>
-    </li>-->
 
             <li>
                 <a href="royalty_points.php">

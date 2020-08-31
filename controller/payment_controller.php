@@ -1,6 +1,9 @@
 <?php
 include('../include/session.php');
-include('../model/payment_model.php');?>
+include('../model/payment_model.php');
+include('../model/user_model.php');
+?>
+
 <?php
     if(isset($_POST['btnUpload'])){
         //txtTransactionId
@@ -34,7 +37,7 @@ include('../model/payment_model.php');?>
       }
     }
     
-    if(isset($_POST['submitPBtnName'])){
+    if(isset($_POST['submitPBtnName']) && $_POST['submitPBtnName']=='paymentPDoneBtn'){
         $rec_path = "";
         if(isset($_FILES['recieptPFile'])){
             $recieptPFile = $_FILES['recieptPFile'];
@@ -56,18 +59,28 @@ include('../model/payment_model.php');?>
             }
         }
         if($rec_path != ""){
+            $invitationId = $_POST['invitationId'];
             $objPaymentModel->setuserId($_SESSION['userid']);
             $objPaymentModel->setTransId(null);
             $objPaymentModel->setImgPath($rec_path);
             $objPaymentModel->setPaidDate(date("Y-m-d h:i:s"));
             $objPaymentModel->setWithdrawReqId($_POST['withdrawReqId']);
             $objPaymentModel->setPaidTo($_POST['receiverUserId']);
+            $objPaymentModel->setInvitationId($invitationId);
             $res = $objPaymentModel->AddPaymentReciept();
             //echo $res;
+            
+            $status=$objUserModel->getInvitationStausByKey("PAYMENT_DONE");
+            $res = $objUserModel->UpdateInvitationStatus($status,$invitationId);
+            echo $res;
         }
-    }
-    
-    if(isset($_POST['btnUpload'])){
-        
+    }else if(isset($_POST['submitPBtnName']) && $_POST['submitPBtnName']=='acceptGBtn'){
+        $invitationId = $_POST['invitationId'];
+        $provideHelpId = $_POST['provideHelpId'];
+        $status=$objUserModel->getInvitationStausByKey("ACCEPTED");
+        $res = $objUserModel->UpdateInvitationStatus($status,$invitationId);
+        $helper_details = $objUserModel->GetUserDetails($provideHelpId);
+        $objUserModel->ActivateUserById($helper_details['id']);
+        echo $res;
     }
 ?>

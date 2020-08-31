@@ -4,22 +4,24 @@ $(document).ready(function(){
         method:'POST',
         data:{'getuserdata':'1'},
         success:function(res){
-            res = res.split("+");
-            $("#txtUserName").val(res[0]);
-            $("#txtEmail").val(res[1]);
-            $("#txtMobile").val(res[2]);
-            $("#txtLoginId").val(res[3]);
-            $("#txtAccName").val(res[4]);
-            $("#txtAccNo").val(res[5]);
-            $("#txtBankName").val(res[6]);
-            $("#txtIFSC").val(res[7]);
-            $("#txtAdd1").val(res[8]);
-            $("#txtAdd2").val(res[9]);
-            $("#txtGpay").val(res[10]);
-            $("#txtPhonePe").val(res[11]);
-            $("#txtPaytm").val(res[12]);
-            $("#txtCity").val(res[13]);
-            $("#txtState").val(res[14]);
+        	res = JSON.parse(res);
+            //res = res.split("+");
+            $("#txtUserName").val(res['full_name']);
+            $("#txtEmail").val(res["email"]);
+            $("#txtMobile").val(res["mobile"]);
+            $("#txtLoginId").val(res["login_id"]);
+            $("#txtAccName").val(res["acc_name"]);
+            $("#txtAccNo").val(res["acc_no"]);
+            $("#txtBankName").val(res["bank_name"]);
+            $("#txtIFSC").val(res["ifsc"]);
+            $("#txtAdd1").val(res["address_1"]);
+            $("#txtAdd2").val(res["address_2"]);
+            $("#txtGpay").val(res["Gpay"]);
+            $("#txtPhonePe").val(res["PhonePe"]);
+            $("#txtPaytm").val(res["PayTm"]);
+            $("#txtCity").val(res["city"]);
+            $("#txtState").val(res["state"]);
+            
         },
         error:function(erres){
             console.log(erres);

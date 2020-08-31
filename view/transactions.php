@@ -4,7 +4,8 @@ include("../include/session.php");
 include('../model/payment_model.php');
 include('../model/user_model.php');
 //$reciepts = $objPaymentModel->GetUploadedReciepts($_SESSION['userid']);
-$invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
+$objUserModel->invitationStatus["SENT"];
+$invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid'],);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,10 +19,12 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!-- App favicon -->
 <link rel="shortcut icon" href="../assets/images/favico.png">
+<link href="../assets/libs/jquery-toast/jquery.toast.min.css" rel="stylesheet" type="text/css" />
 
 <!-- Plugins css -->
 <link href="../assets/libs/dropzone/dropzone.min.css" rel="stylesheet" type="text/css" />
 <link href="../assets/libs/lightbox2/lightbox.min.css" rel="stylesheet" type="text/css" />
+<link href="../assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
 <!-- App css -->
 <link href="../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
 <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
@@ -109,13 +112,17 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
                                 	<h4 class="header-title">Provide Help</h4>
                                     <p class="sub-header">
                                     </p>
+                                    <?php if($r['status']!='PAYMENT_DONE'){ ?>
+                                    
                                     <form action="../controller/payment_controller.php" id="from_<>" method="POST" class=""  enctype="multipart/form-data">
                                         <h6 class="header-title">Upload your Payment reciept here</h6>
                                         <div class="">
-                                            <input id="recieptPFile_<?php echo $r['id']?>" recieptPFile="" name="recieptPFile_<?php echo $r['id']?>" type="file"  />
+                                            <input parsley-trigger="change" required id="recieptPFile_<?php echo $r['id']?>" recieptPFile="" name="recieptPFile_<?php echo $r['id']?>" type="file"/>
+                                            <span class=""></span>
                        						<input type="hidden" name="withdrawReqId" withdrawReqId="" value="<?php echo $r['withdraw_req_id']?>"/>
-                       						<input type="hidden" name="receiverUserId" receiverUserId="" value="<?php echo $r['to_user_id']?>"/>                     
-                                            <button type="submit" id="btnPUpload" name="btnPUpload" class="btn btn-danger"> <i class="fa fa-thumbs-o-down"></i>Upload</button>
+                       						<input type="hidden" name="receiverUserId" receiverUserId="" value="<?php echo $r['to_user_id']?>"/>
+                       						<input type="hidden" name="invitationId" invitationId="" value="<?php echo $r['id']?>"/>                     
+                                            <!-- <button type="submit" id="btnPUpload" name="btnPUpload" class="btn btn-danger"> <i class="fa fa-thumbs-o-down"></i>Upload</button> -->
                                         </div>
         
                                         <div class="dz-message needsclick">
@@ -128,13 +135,24 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
                                             <label>Message : </label>
                                             <span class="text-muted font-13">You have to Provide help Rs.1,000/- ($14.2) to <?php echo $r['to_user_name']?> (<?php echo $r['to_user_id']?>). Please Contact <?php echo $r['to_mobile']?>. Thanking you www.ymd1000us.com</span>
                                         </div>
+                                        <input type="hidden" submitPBtnName=""  id="submitPBtnName_<?php echo $r['id']?>" name="submitBtnName_<?php echo $r['id']?>"/>
                                         <div class="clearfix text-left">
-                                        	<input type="hidden" submitPBtnName=""  id="submitPBtnName_<?php echo $r['id']?>" name="submitBtnName_<?php echo $r['id']?>"/>
-                                        	<button type="button" paymentPDoneBtn="" id="paymentPDoneBtn" name="paymentPDoneBtn" class="btn btn-success" > <i class="fa fa-thumbs-o-down"></i>Payment Done</button>
-                                        	
+                                        	<button type="button" paymentPDoneBtn="" id="paymentPDoneBtn" name="paymentPDoneBtn" class="btn btn-success" > <i class="fa fa-thumbs-o-down"></i>Payment Done</button>	
                                             <button type="button" rejectPBtn="" id="rejectPBtn" name="rejectPBtn" class="btn btn-danger"> <i class="fa fa-thumbs-o-down"></i>Reject</button>
                                         </div>
+                                        
                                     </form>
+                                    <?php }else{?>
+                                    	<div class="">
+                                        	<?php if ($r['img_path']!=null){ ?>
+                                        		<img height="300px" src="../<?php echo trim($r['img_path'])?>"/>
+                                        	<?php }?>
+                                    	</div>    
+                                        <div class="dz-message needsclick">
+                                        	<label>Message : </label>
+                                        	<span class="text-muted font-13"> Your payment receipt uploded successfully. Helpper will accept your payment soon. Thanking you www.ymd1000us.com</span>
+                                    	</div>
+                                    <?php } ?>
                                     
                                 </div> <!-- end card-box -->
                             </div> <!-- end col-->
@@ -150,18 +168,21 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
                                     <p class="sub-header">
                                     </p>
                                     <form action="../controller/payment_controller.php" method="POST" class=""  enctype="multipart/form-data">
-                                        
-                                        <div class="">
-                                        	<img height="300px" src="../images/Digital Assistant.PNG"/>
-                                        </div>
+                                        <input type="hidden" invitationId="" name="invitationId" value="<?php echo $r['id']?>"/>
+                                        <input type="hidden" provideHelpId="" name="provide_help_id" value="<?php echo $r['provide_help_id']?>"/>
+                                        <?php if ($r['img_path']!=null){ ?>
+                                        	<img height="300px" src="../<?php echo trim($r['img_path'])?>"/>
+                                        <?php }?>
                                         <br/>
                                         <div class="dz-message needsclick">
                                             <label>Message : </label>
                                             <span class="text-muted font-13">Hello '<?php echo $_SESSION['loginid']?>', You will get Help of Rs 1000/- ($14.2) from '<?php echo $r['provide_help_name']?>' ('<?php echo $r['provide_help_id']?>').Please Contact '<?php echo $r['provide_mobile']?>' .Thanking you www.ymd1000us.com"</span>
                                         </div>
                                         <div class="clearfix text-left">
-                                        	<button type="submit" id="rejectGBtn" name="rejectBtn" class="btn btn-danger"> <i class="fa fa-thumbs-o-down"></i>Reject</button>
-                                            <button type="submit" id="acceptGBtn" name="acceptBtn" class="btn btn-success"> <i class="fa fa-thumbs-o-up"></i> Accept</button>
+                                        	<button type="button" id="acceptGBtn" acceptGBtn="" name="acceptGBtn" class="btn btn-success"> <i class="fa fa-thumbs-o-up"></i> Accept</button>
+                                        	
+                                        	<button type="button" id="rejectGBtn" name="rejectGBtn" class="btn btn-danger"> <i class="fa fa-thumbs-o-down"></i>Reject</button>
+                                            
                                         </div>
                                     </form>
                                     
@@ -199,52 +220,125 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
 
 <!-- Vendor js -->
 <script src="../assets/js/vendor.min.js"></script>
-
+<script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+<script src="../assets/libs/custombox/custombox.min.js"></script>
+<script src="../assets/js/pages/sweet-alerts.init.js"></script>
 <!-- Plugins js -->
 <script src="../assets/libs/dropzone/dropzone.min.js"></script>
 <script src="../assets/libs/lightbox2/lightbox.min.js"></script>
-
+<script src="../assets/libs/jquery-toast/jquery.toast.min.js"></script>
+<script src="../assets/js/pages/toastr.init.js"></script>
+<script src="../assets/libs/parsleyjs/parsley.min.js"></script>
 <!-- App js -->
-	<script src="../assets/js/app.min.js"></script>
-	<script>
+<script src="../assets/js/app.min.js"></script>
+<script>
         $(document).ready(function () {
             
             var res = location.search;
             res = res.split("=");
             displayNotification(res[1],res[2]);
             var loginid = $('#loginid').val();
-			$('button[paymentPDoneBtn]').on('click', function($event){
-				$event.preventDefault();
-				var recieptFiles = $(this).closest("form").find("input[recieptPFile]");
-				var receiverUserId = $(this).closest("form").find("input[receiverUserId]").val();
-				var withdrawReqId = $(this).closest("form").find("input[withdrawReqId]").val();
-				//var submitPBtnName = this.closest("input[submitPBtnName]");
-				//$(submitPBtnName).val('paymentDoneBtn');
-				var fd = new FormData();    
-        		fd.append( 'recieptPFile', recieptFiles.prop('files')[0] );
-				fd.append('submitPBtnName', 'paymentPDoneBtn');
-				fd.append('receiverUserId',receiverUserId);
-				fd.append('withdrawReqId',withdrawReqId);
-				paymentDone(fd)
+			$('button[paymentPDoneBtn]').on('click', function(event){
+				event.preventDefault();
+				paymentDone(event)
+			});
+			$('button[acceptGBtn]').on('click', function(event){
+				event.preventDefault();
+				acceptPayment(event);
 			});
         });
 
-        function paymentDone(fd){
-        	
+        function fileReuiredToast(msg){
+        	$.toast({
+                text: msg,
+                position: "top-right",
+                loaderBg: "#5ba035",
+                icon: "error",
+                hideAfter: 3e3,
+                stack: 1
+            });
+        }
+        
+        function paymentDone(event){
+        	var recieptFiles = $(event.target).closest("form").find("input[recieptPFile]");
+			if(recieptFiles.val() == '' ){ 
+				fileReuiredToast("Receipt file Required.");
+				return;
+            }
+			var receiverUserId = $(event.target).closest("form").find("input[receiverUserId]").val();
+			var withdrawReqId = $(event.target).closest("form").find("input[withdrawReqId]").val();
+			var invitationId = $(event.target).closest("form").find("input[invitationId]").val();
+			//var submitPBtnName = this.closest("input[submitPBtnName]");
+			//$(submitPBtnName).val('paymentDoneBtn');
+			var fd = new FormData();    
+    		fd.append( 'recieptPFile', recieptFiles.prop('files')[0] );
+			fd.append('submitPBtnName', 'paymentPDoneBtn');
+			fd.append('receiverUserId',receiverUserId);
+			fd.append('withdrawReqId',withdrawReqId);
+			fd.append('invitationId',invitationId);
         	$.ajax({
         	  url: '../controller/payment_controller.php',
         	  data: fd,
         	  processData: false,
         	  contentType: false,
         	  type: 'POST',
-        	  success: function(data){
-        	    alert(data);
+        	  success: function(res){
+        	    if(res){
+        	    	Swal.fire({
+                        type: "success",
+                        title: "Good job!",
+                        text: "Payment receipt upload",
+                        confirmButtonClass: "btn btn-confirm mt-2",
+                        footer: 'Payment receipt sent successfully. Helpper will accept your payment soon.'
+                    }).then((value) => {
+                    	window.location.reload();
+                    });
+                    
+            	}else{
+            		Swal.fire({
+                        type: "error",
+                        title: "Oops...",
+                        text: "Something went wrong!",
+                        confirmButtonClass: "btn btn-confirm mt-2",
+                        footer: 'Please contact admin or try again later!'
+                    });
+               	}
         	  }
         	});
        }
         
-        function onSubmit(){
-			
+	function acceptPayment(event){
+
+    		var invitationId = $(event.target).closest("form").find("input[invitationId]").val();
+    		var provideHelpId = $(event.target).closest("form").find("input[provideHelpId]").val();
+    		if(invitationId == '' ){ 
+    			fileReuiredToast("Something wen wrong. Please try again.!");
+    			return;
+            }
+			var data = { "invitationId" : invitationId, 'provideHelpId': provideHelpId, 'submitPBtnName' :'acceptGBtn'};
+    		$.post('../controller/payment_controller.php', data, function(res){
+    			if(res){
+        	    	Swal.fire({
+                        type: "success",
+                        title: "Good job!",
+                        text: "Payment Accepted",
+                        confirmButtonClass: "btn btn-confirm mt-2",
+                        footer: 'Payment accepted successfully.'
+                    }).then((value) => {
+                    	window.location.reload();
+                    });
+                    
+            	}else{
+            		Swal.fire({
+                        type: "error",
+                        title: "Oops...",
+                        text: "Something went wrong!",
+                        confirmButtonClass: "btn btn-confirm mt-2",
+                        footer: 'Please contact admin or try again later!'
+                    });
+               	}
+        	});
+    		
         }
         
         function displayNotification(result,type){
@@ -318,7 +412,7 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
             $("#provideHelpId").val(p_id);
             $("#provideHelpName").val(pname);
             getProvideHelp(pid);
-        }
+        }                
 	</script>
 </body>
 

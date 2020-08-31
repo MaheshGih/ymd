@@ -2,11 +2,14 @@
     // session_start();
     include("../include/session.php");
     include("../model/user_model.php");
+    include("../model/wallet_model.php");
+    
+    $wallet = $objWalletContactModel->GetWalletByUserId($_SESSION['userid']);
     $tot_con =  $objUserModel->GetTotalDetails($_SESSION['userid']);
     $tot_det = explode('-',$tot_con);
-    $user_list = $objUserModel->GetUsersList();
+    $user_list = $objUserModel->GetRecentUsers();
     $tot_invitation = $objUserModel->GetTotalInvitations();
-    $tot_activ_users = $objUserModel->GetActiveUsers();
+    $tot_activ_users = $objUserModel->GetActiveUsersCount();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,7 +112,7 @@
                                         </div>
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Wallet Balance</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo 0; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h3>
                                             <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
                                         </div>
                                     </div>

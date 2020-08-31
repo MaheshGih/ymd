@@ -20,11 +20,16 @@ class UserModel{
     public $reg_otp="";
     public $reg_verified;
     public $status="";
+    public $role="";
     
     public $status_list = [ "REGISTERED" => "REGISTERED", "REG_VERIFIED" => "REG_VERIFIED", 
         "REG_NOT_VERIFIED" => "REG_NOT_VERIFIED", "HELP_REQ_INITIATED" => "HELP_REQ_INITIATED", "HELP_PROVIDED" => "HELP_PROVIDED", 
-        "HELP_REQ_REJECTED" => "HELP_REQ_REJECTED", "HELP_REQ_EXPIRED" => "HELP_REQ_EXPIRED", "ACTIVE" => "ACTIVE", 
+        "HELP_REQ_REJECTED" => "HELP_REQ_REJECTED", "HELP_REQ_EXPIRED" => "HELP_REQ_EXPIRED", "ACTIVE" => "ACTIVE", "INACTIVE" => "INACTIVE",
         "BLOCKED" => "BLOCKED", "EXPIRED" => "EXPIRED"];
+    
+    public $invitationStatus = ["REJECTED"=>"REJECTED", "ACCEPTED"=>"ACCEPTED","PAYMENT_DONE"=>"PAYMENT_DONE","SENT"=>"SENT"];
+    
+    public $roles = [ "ROLE_ADMIN"=>"ROLE_ADMIN", "ROLE_EMP"=>"ROLE_ADMIN", "ROLE_USER"=>"ROLE_USER"];
     
     public function getUserId(){return $this->user_id;}
     public function setUserId($vuserid){$this->user_id = $vuserid;}
@@ -66,10 +71,19 @@ class UserModel{
     
     public function setStatus($vstatus){$this->status= $vstatus;}
     public function getStatus(){ return $this->status;}
-    
+    public function setRole($vrole){ $this->role = $vrole; }
+    public function getRole(){ return $this->role; }
     
     public function getStausByKey($vstatus){
         return array_search($vstatus, $this->status_list);
+    }
+    
+    public function getInvitationStausByKey($vstatus){
+        return array_search($vstatus, $this->invitationStatus);
+    }
+    
+    public function getRoleByKey($vrole){
+        return array_search($vrole, $this->roles);
     }
     
     #region  Old Methods
@@ -172,10 +186,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     #region New Methods
     public function GetUserDetails($logid){
         global $con;
-        $select_qry = "select full_name as fname,email as email,mobile as mobile,login_id as loginid,
-acc_name as accname,acc_no as accno,bank_name as bankname,ifsc as ifsc,
-address_1 as address1,address_2 as address2,Gpay as gpay,PhonePe as phonepe,
-PayTm as paytm,city as city,state as state from user_details where login_id='".$logid."'";
+        $select_qry = "select * from user_details where login_id='".$logid."'";
         $res = mysqli_fetch_assoc(mysqli_query($con,$select_qry));
         return $res;
     }
@@ -232,7 +243,7 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
     public function GetReferredUsers($spnid){
         //date_created
         global $con;
-        $qry = "select * from user_basic where sponsor_id=".$spnid;
+        $qry = "select * from user_details where sponsor_id=".$spnid;
         $res = mysqli_query($con,$qry);
         return $res;
     }
@@ -306,27 +317,32 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
     public function GetChildsByUserId($vuserid,$isactiv){
         global $con;
         // $child_list = mysqli_query($con,"SELECT * FROM `user_details`  where sponsor_id=".$vuserid." OR spill_id=".$vuserid." and is_active=".$isactiv." order by date_created asc limit 6");
-        $child_list1 = mysqli_query($con,"SELECT * FROM `user_details`  where (sponsor_id=".$vuserid." ) and is_active=".$isactiv." order by date_created asc limit 6");
-        if(mysqli_num_rows($child_list1)>0){
-           return $child_list1;
-        }
+        $child_list1 = mysqli_query($con,"SELECT * FROM `user_details`  where (sponsor_id=".$vuserid." ) and is_active=".$isactiv." order by date_created asc");
+        return $child_list1;
         //else{
         //    $child_list2 = mysqli_query($con,"SELECT * FROM `user_details`  where (spill_id=".$vuserid." ) and is_active=".$isactiv." order by date_created asc limit 6");
         //    return  $child_list2;
         //}
         //return $child_list;
     }
+    
+    public function GetEmployees(){
+        global $con;
+        $res = mysqli_query($con,"SELECT * FROM `user_details` where role='ROLE_EMP'");
+        return $res;
+    }
+    
     public function ActivateUserById($vusid){
         global $con;
         $get_spill_id="";$sponsor_lvl_1_qry="";$sponsor_lvl_2_qry="";$sponsor_lvl_3_qry="";
         $q1="";$q2="";$q3="";
         $ins_1="";$ins_2="";$ins_3="";
-        $get_spill_id = "select spill_id from user_details where id = ".$vusid;
+        $get_spill_id = "select spill_id, sponsor_id from user_details where id = ".$vusid;
         $spill_id = mysqli_fetch_assoc(mysqli_query($con,$get_spill_id));
         $sponsor_lvl_1_qry = "select spill_id,full_name,id from user_details where id = ".$spill_id['spill_id'];
         //$sponsor_lvl_1_qry = "select sponsor_id,full_name,id from user_details where id = ".$spill_id['spill_id'];
         $sponsor_lvl_1 = mysqli_fetch_assoc(mysqli_query($con,$sponsor_lvl_1_qry));
-        $sponsor_lvl_2_qry = "select spill_id,full_name,id from user_details where id=".$sponsor_lvl_1['spill_id'];
+        $sponsor_lvl_2_qry = "select spill_id,full_name,id from user_details where id=".$get_spill_id['sponsor_id'];
         $sponsor_lvl_2 = mysqli_fetch_assoc(mysqli_query($con,$sponsor_lvl_2_qry));
         if($sponsor_lvl_1['spill_id'] !=0){
             $ins_1 ="insert";
@@ -344,7 +360,8 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
         }
         $dat = self::setDate();
         //$activate_user = true;
-        $activate_user = mysqli_query($con,"update user_details set is_active=1 where id=".$vusid);
+        $user_status = self::getStausByKey("ACTIVE");
+-        $activate_user = mysqli_query($con,"update user_details set is_active=1,status='".$user_status."' where id=".$vusid);
         $res = false;
         if($activate_user){
             if($ins_1 =="insert"){
@@ -420,7 +437,7 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
         $tot_trans = mysqli_fetch_assoc(mysqli_query($con,"SELECT count(trans_id) as tottrans FROM `user_paid_reciept` where user_id=".$userid));
         return $tot_amount['total_amount']."-".$tot_user_sposnored['totusers']."-".$tot_trans['tottrans'];
     }
-    public function GetUsersList(){
+    public function GetRecentUsers(){
         global $con;
         $user_list = mysqli_query($con," select full_name, mobile, date_created from user_details where sponsor_id !=0 order by date_created desc LIMIT 5");
         return $user_list;
@@ -433,13 +450,20 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
         return $inv_res;
     }
     
+    public function UpdateInvitationStatus($vstatus, $vinvitationId){
+        global $con;
+        $res= mysqli_query($con,"update invitations set status = '".$vstatus."' where id=".$vinvitationId);
+        return $res;
+    }
+    
     public function AddUserInvitation($provideUser, $getHelpUser, $withdrawReqId){
         global $con;
         self::setDate();
         $sentDate = self::getDate();
-        $sql = "insert into invitations(id,to_mobile,provide_help_id,provide_help_name,date_sent,to_user_id,provide_mobile,to_user_name,withdraw_req_id)
+        $status = self::getInvitationStausByKey("SENT");
+        $sql = "insert into invitations(id,to_mobile,provide_help_id,provide_help_name,date_sent,to_user_id,provide_mobile,to_user_name,status,withdraw_req_id)
         values(null,'".$getHelpUser['getHelpMobile']."','".$provideUser['provideHelpId']."','".$provideUser['provideHelpName']."',
-        '".$sentDate."','".$getHelpUser['getHelpId']."','".$provideUser['provideHelpMobile']."','".$getHelpUser['getHelpName']."',".$withdrawReqId." ) ";
+        '".$sentDate."','".$getHelpUser['getHelpId']."','".$provideUser['provideHelpMobile']."','".$getHelpUser['getHelpName']."','".$status."',".$withdrawReqId." ) ";
         $inv_res = mysqli_query($con,$sql);
         return $inv_res;
     }
@@ -452,15 +476,23 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
     
     public function GetInvitationsByUserId($loginId){
         global $con;
-        $res= mysqli_query($con,"select * from invitations where provide_help_id='".$loginId."' or to_user_id='".$loginId."'");
+        $sql = "SELECT i.*, r.id as receipt_id, r.img_path,r.paid_date FROM invitations i left outer join user_paid_reciept r on i.id=r.invitation_id where (provide_help_id='".$loginId."' or to_user_id='".$loginId."') and status in('SENT','PAYMENT_DONE')";
+        $res= mysqli_query($con,$sql);
         return $res;
     }
     
-    public function GetActiveUsers(){
+    public function GetActiveUsersCount(){
         global $con;
         $tot_act_users = mysqli_fetch_assoc(mysqli_query($con,"select count(id) as totactusers from user_details where is_active=1"));
         return $tot_act_users['totactusers'];
     }
+    
+    public function GetActiveUsers(){
+        global $con;
+        $res = mysqli_fetch_assoc(mysqli_query($con,"select * from user_details where is_active=1"));
+        return $res;
+    }
+    
     public function GetInactiveUsers($vsponsorid){
         global $con;
         $in_act_users = mysqli_query($con,"select id,full_name from user_details where sponsor_id=".$vsponsorid." and is_active=0");
@@ -576,6 +608,16 @@ PayTm as paytm,city as city,state as state from user_details where login_id='".$
         $spl_qry = "update user_details set  status=? where login_id = ?";
         $stmt = $con->prepare($spl_qry);
         $stmt->bind_param("ss", $status, $login_id);
+        $res = $stmt->execute();
+        $stmt->close();
+        return $res;
+    }
+    
+    public function updateUserStatusAndIsActiveById($login_id,$status,$isActive) {
+        global $con;
+        $spl_qry = "update user_details set  status=?,is_active=? where login_id = ?";
+        $stmt = $con->prepare($spl_qry);
+        $stmt->bind_param("sis", $status, $isActive, $login_id);
         $res = $stmt->execute();
         $stmt->close();
         return $res;

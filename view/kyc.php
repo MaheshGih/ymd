@@ -101,25 +101,25 @@
                                                     <div class="form-group row">
                                                         <label for="txtAdd1" class="col-3 col-form-label">House No./Flat No.</label>
                                                         <div class="col-9">
-                                                            <textarea class="form-control" rows="3" name="txtAdd1" id="txtAdd1"></textarea>
+                                                            <textarea class="form-control" rows="3" name="txtAdd1" id="txtAdd1" required="required"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="txtAdd2" class="col-3 col-form-label">Street Name</label>
                                                         <div class="col-9">
-                                                            <textarea class="form-control" rows="3" name="txtAdd2" id="txtAdd2"></textarea>
+                                                            <textarea class="form-control" rows="3" name="txtAdd2" id="txtAdd2" required="required"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="txtCity" class="col-3 col-form-label">City</label>
                                                         <div class="col-9">
-                                                            <input type="text" class="form-control" id="txtCity" name="txtCity"  />
+                                                            <input type="text" class="form-control" id="txtCity" name="txtCity"  required="required"/>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="txtState" class="col-3 col-form-label">State</label>
                                                         <div class="col-9">
-                                                            <input type="text" class="form-control" id="txtState" name="txtState"  />
+                                                            <input type="text" class="form-control" id="txtState" name="txtState"  required="required"/>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -142,25 +142,25 @@
                                                     <div class="form-group row">
                                                          <label class="col-md-3 col-form-label" for="example-password">Acc. Holder Name</label>
                                                             <div class="col-md-9">
-                                                                <input type="text" name="txtAccName" id="txtAccName" class="form-control"  >
+                                                                <input type="text" name="txtAccName" id="txtAccName" class="form-control"  required="required">
                                                             </div>
                                                     </div>
                                                     <div class="form-group row">
                                                             <label class="col-md-3 col-form-label" for="txtAccNo">Acc. No</label>
                                                             <div class="col-md-9">
-                                                                <input type="text" name="txtAccNo" id="txtAccNo" class="form-control"  >
+                                                                <input type="text" name="txtAccNo" id="txtAccNo" class="form-control"  required="required">
                                                             </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label class="col-md-3 col-form-label" for="example-email">Bank </label>
                                                             <div class="col-md-9">
-                                                                <input type="text" name="txtBankName" id="txtBankName" class="form-control"  >
+                                                                <input type="text" name="txtBankName" id="txtBankName" class="form-control"  required="required">
                                                             </div>
                                                     </div>
                                                     <div class="form-group row">
                                                          <label class="col-md-3 col-form-label" for="example-placeholder">IFSC</label>
                                                             <div class="col-md-9">
-                                                                <input type="text" name="txtIFSC" id="txtIFSC" class="form-control" >
+                                                                <input type="text" name="txtIFSC" id="txtIFSC" class="form-control" required="required">
                                                             </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -183,19 +183,19 @@
                                                     <div class="form-group row">
                                                          <label class="col-md-3 col-form-label" for="txtGpay">GPay</label>
                                                             <div class="col-md-9">
-                                                                <input type="text" name="txtGpay" id="txtGpay" class="form-control"  >
+                                                                <input type="text" name="txtGpay" id="txtGpay" class="form-control"  required="required">
                                                             </div>
                                                     </div>
                                                     <div class="form-group row">
                                                             <label class="col-md-3 col-form-label" for="txtPhonePe">PhonePe</label>
                                                             <div class="col-md-9">
-                                                                <input type="text" name="txtPhonePe" id="txtPhonePe" class="form-control"  >
+                                                                <input type="text" name="txtPhonePe" id="txtPhonePe" class="form-control"  required="required">
                                                             </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label class="col-md-3 col-form-label" for="txtPaytm">Paytm </label>
                                                             <div class="col-md-9">
-                                                                <input type="text" name="txtPaytm" id="txtPaytm" class="form-control"  >
+                                                                <input type="text" name="txtPaytm" id="txtPaytm" class="form-control" required="required" >
                                                             </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -241,35 +241,39 @@
         <!-- Tost-->
         <script src="../assets/libs/jquery-toast/jquery.toast.min.js"></script>
         <script src="../assets/js/pages/toastr.init.js"></script>
-        
+        <script src="../assets/libs/parsleyjs/parsley.min.js"></script>
         <script src="../js/profile.js"></script>
         
         <script>
-            $(document).ready(function () {
-                     $(document).ready(function(){
-                     var  res = location.search;
-                     res = decodeURIComponent(res);
-                     res = res.split("=");
-                     displayNotification(res[1],res[2],res[3]);
-                });
-                function displayNotification(result,type, message){
-					var toastObj = {
-                            text: message,
-                            position: "top-right",
-                            loaderBg: "red",
-                            icon: "success",
-                            hideAfter: 4e3,
-                            stack: 1
-                     }
-                    
-                	if(result !== 'success'){
-                		toastObj.loaderBg = 'red';
-                		toastObj.icon = 'failed'
-                    }
-					$.toast(toastObj);
-					
+            $(document).ready(function(){
+                var  res = location.search;
+                res = decodeURIComponent(res);
+                res = res.split("=");
+                displayNotification(res[1],res[2],res[3]);
+
+                $('form').parsley().on('field:validated', function() {
+              	  
+          	  	});
+            	  
+           });
+           function displayNotification(result,type, message){
+    			var toastObj = {
+                       text: message,
+                       position: "top-right",
+                       loaderBg: "red",
+                       icon: "success",
+                       hideAfter: 4e3,
+                       stack: 1
                 }
-            });
+               
+           	if(result !== 'success'){
+           		toastObj.loaderBg = 'red';
+           		toastObj.icon = 'failed'
+               }
+    			$.toast(toastObj);
+    			
+           }
+        
         </script>
     </body>
 

@@ -1,6 +1,8 @@
-<?php   
-    // session_start();
-    include("../include/session.php");
+<?php
+// session_start();
+include("../include/session.php");
+include("../model/login_model.php");
+$loginId = $objLoginModel->UserIdGenerator();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,46 +89,46 @@
                                             <li class="breadcrumb-item active">Profile </li>
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Basic Details</h4>
+                                    <h4 class="page-title">Add Employee</h4>
                                 </div>
                             </div>
                         </div>     
                         <!-- end page title --> 
-
+									<form class="form-horizontal" id="addEmpForm" method="post" action="../controller/emp_controller.php">
                                     <div class="row">
-
                                         <div class="col-md-6">
                                             <div class="card-box">
                                                 <h4 class="header-title mb-4">PROFILE</h4>
-            
-                                                <form class="form-horizontal">
-
                                                     <div class="form-group row">
-                                                        <label for="inputName" class="col-3 col-form-label">Login Id</label>
+                                                        <label for="txtLoginId" class="col-3 col-form-label">Login Id</label>
                                                         <div class="col-9">
-                                                            <input type="text" class="form-control" name="txtLoginId" id="txtLoginId" readonly>
+                                                            <input type="text" class="form-control" name="txtLoginId" value="<?php echo $loginId?>" id="txtLoginId" readonly required="required">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="inputName" class="col-3 col-form-label">Name</label>
+                                                        <label for="txtPassword" class="col-3 col-form-label">Password</label>
                                                         <div class="col-9">
-                                                            <input type="text" class="form-control" name="txtUserName" id="txtUserName" readonly>
+                                                            <input type="password" class="form-control" name="txtPassword" id="txtPassword" required="required">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="inputEmail" class="col-3 col-form-label">Email</label>
+                                                        <label for="txtUserName" class="col-3 col-form-label">Name</label>
                                                         <div class="col-9">
-                                                            <input type="email" class="form-control" name="txtEmail" id="txtEmail"  readonly>
+                                                            <input type="text" class="form-control" name="txtUserName" id="txtUserName" required="required">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="inputMobile" class="col-3 col-form-label">Mobile</label>
+                                                        <label for="txtEmail" class="col-3 col-form-label">Email</label>
                                                         <div class="col-9">
-                                                            <input type="text" class="form-control" name="txtMobile" id="txtMobile"  readonly>
+                                                            <input type="email"  class="form-control" name="txtEmail" id="txtEmail" required="required">
                                                         </div>
                                                     </div>
-                                                    
-                                                </form>
+                                                    <div class="form-group row">
+                                                        <label for="txtMobile" class="col-3 col-form-label">Mobile</label>
+                                                        <div class="col-9">
+                                                            <input type="text" class="form-control" name="txtMobile" id="txtMobile" required="required">
+                                                        </div>
+                                                    </div>
                                             </div>
                                         </div>
             
@@ -136,111 +138,42 @@
                                             <div class="card-box">
                                                 <h4 class="header-title mb-4">CONTACT DETAILS</h4>
             
-                                                <form class="form-horizontal">
+                                                
                                                     <div class="form-group row">
                                                         <label for="inputAddress1" class="col-3 col-form-label">House No./Flat No.</label>
                                                         <div class="col-9">
-                                                            <textarea class="form-control" rows="3" name="txtAdd1" id="txtAdd1"  readonly></textarea>
+                                                            <textarea class="form-control" rows="3" name="txtAdd1" id="txtAdd1" required="required"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="inputAddress2" class="col-3 col-form-label">Street Name</label>
                                                         <div class="col-9">
-                                                            <textarea class="form-control" rows="3" name="txtAdd2" id="txtAdd2"  readonly></textarea>
+                                                            <textarea class="form-control" rows="3" name="txtAdd2" id="txtAdd2" required="required"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="txtCity" class="col-3 col-form-label">City</label>
                                                         <div class="col-9">
-                                                            <input type="text" class="form-control" id="txtCity" name="txtCity" readonly/>
+                                                            <input type="text" class="form-control" id="txtCity" name="txtCity" required="required"/>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="txtState" class="col-3 col-form-label">State</label>
                                                         <div class="col-9">
-                                                            <input type="text" class="form-control" id="txtState" name="txtState" readonly/>
+                                                            <input type="text" class="form-control" id="txtState" name="txtState" required="required"/>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                
                                             </div>
                                         </div>
-            
+            							
                                     </div>
                                     <!-- end row -->
-
-
-
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="card-box">
-                                                <h4 class="header-title mb-4">BANK DETAILS</h4>
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <div>
-                                                            <form class="form-horizontal">
-                                                                <div class="form-group row">
-                                                                    <label class="col-md-2 col-form-label" for="simpleinput">Account No</label>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" name="txtAccNo" id="txtAccNo" class="form-control"  readonly>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group row">
-                                                                    <label class="col-md-2 col-form-label" for="example-email">Bank Name</label>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" name="txtBankName" id="txtBankName" class="form-control"  readonly>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group row">
-                                                                    <label class="col-md-2 col-form-label" for="example-password">Account Holder Name</label>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" name="txtAccName" id="txtAccName" class="form-control"  readonly>
-                                                                    </div>
-                                                                </div>
-            
-                                                                <div class="form-group row">
-                                                                    <label class="col-md-2 col-form-label" for="example-placeholder">IFSC</label>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" name="txtIFSC" id="txtIFSC" class="form-control" readonly>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                            </form>
-                                                        </div>
-                                                    </div>
-            
-                                                </div>
-                                                <!-- end row -->
-            
-                                            </div> <!-- end card-box -->
-                                        </div><!-- end col -->
-                                        <div class="col-6">
-                                            <div class="card-box">
-                                            <h4 class="header-title mb-4">PAYMENT DETAILS</h4>
-                                            <form class="form-horizontal">
-                                                    <div class="form-group row">
-                                                        <label for="txtGpay" class="col-3 col-form-label">GPay</label>
-                                                        <div class="col-9">
-                                                            <input type="text" class="form-control" name="txtGpay" id="txtGpay" readonly>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <label for="txtPhonePe" class="col-3 col-form-label">PhonePe</label>
-                                                        <div class="col-9">
-                                                            <input type="text" class="form-control" name="txtPhonePe" id="txtPhonePe" readonly>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <label for="txtPaytm" class="col-3 col-form-label">Paytm</label>
-                                                        <div class="col-9">
-                                                            <input type="email" class="form-control" name="txtPaytm" id="txtPaytm"  readonly>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div><!-- end card-box -->
-                                        </div><!-- end col -->
-                                    </div>
                                     <!-- end row -->
-                        
+                                     <button type="submit" name="btnSaveEmp" id="btnSaveEmp" class="btn btn-success waves-effect waves-light"> 
+                                     	<i class="fas fa-save mr-1"></i> <span>Save</span> 
+                                     </button>
+                        		</form>
                     </div> <!-- end container-fluid -->
 
                 </div> <!-- end content -->
@@ -269,11 +202,16 @@
 
         <!-- Vendor js -->
         <script src="../assets/js/vendor.min.js"></script>
-
+		<script src="../assets/libs/parsleyjs/parsley.min.js"></script>
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
-        <script src="../js/profile.js"></script>
-        
+        <script type="text/javascript">
+        $(function () {
+    	  $('#addEmpForm').parsley().on('field:validated', function() {
+        	  
+    	  });
+        });
+        </script>
     </body>
 
 

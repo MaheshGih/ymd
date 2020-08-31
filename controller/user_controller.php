@@ -6,22 +6,7 @@ include("../model/user_model.php");
 $uploadOk = 1;
 if(isset($_POST['getuserdata'])){
         $res = $objUserModel->GetUserDetails($_SESSION['loginid']);
-        $str = $res['fname']."+";
-        $str .= $res['email']."+";
-        $str .= $res['mobile']."+";
-        $str .= $res['loginid']."+";
-        $str .= $res['accname']."+";
-        $str .= $res['accno']."+";
-        $str .= $res['bankname']."+";
-        $str .= $res['ifsc']."+";
-        $str .= $res['address1']."+";
-        $str .= $res['address2']."+";
-        $str .= $res['gpay']."+";
-        $str .= $res['phonepe']."+";
-        $str .= $res['paytm']."+";
-        $str .= $res['city']."+";
-        $str .= $res['state'];
-        echo $str;
+        echo json_encode($res);
 }
 if(isset($_POST['btnSendInvitation'])){
     $provide_help = $_POST['txtProvideHelp'];

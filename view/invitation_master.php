@@ -345,7 +345,7 @@
                         title: "Oops...",
                         text: "Something went wrong!",
                         confirmButtonClass: "btn btn-confirm mt-2",
-                        footer: 'Invitation message not sent successfully.Please enter valid mobiel or try again later.'
+                        footer: 'Invitation message sending failed.Please enter valid mobiel or try again later.'
                     });
                 }
                 if(result == 'success'){

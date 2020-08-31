@@ -1,6 +1,10 @@
 <?php   
     // session_start();
     include("../include/session.php");
+    include("../model/user_model.php");
+?>
+<?php
+    $inactiv_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -107,38 +111,24 @@
                                                 <th>Mobile</th>
                                                 <th>Joined Date</th>
                                                 <th>Last Active on</th>
-                                                <th>Wallet</th>
+                                                <!-- <th>Wallet</th> -->
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td>Karun Prasad</td>
-                                                <td>1234567890</td>
-                                                <td>2019/01/14</td>
-                                                <td>2019/05/14</td>
-                                                <td><span class="badge label-table badge-success">5000</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Sai Mahesh</td>
-                                                <td>1452369807</td>
-                                                <td>2019/05/14</td>
-                                                <td>2020/01/10</td>
-                                                <td><span class="badge label-table badge-danger">3500</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Rama Krishna</td>
-                                                <td>96325874110</td>
-                                                <td>2019/03/14</td>
-                                                <td>2020/01/01</td>
-                                                <td><span class="badge label-table badge-danger">100</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Ashok Kumar</td>
-                                                <td>1596234870</td>
-                                                <td>2019/08/14</td>
-                                                <td>2020/02/14</td>
-                                                <td><span class="badge label-table badge-success">2000</span></td>
-                                            </tr>
+                                            <?php
+                                                    while($r = mysqli_fetch_assoc($inactiv_childs)){
+                                            ?>
+                                                <tr>
+                                                    <!--<td><input type="checkbox" id="<?php echo $r['id'];?>" name="<?php echo $r['id'];?>" /></td>-->
+                                                    <td><?php echo $r['full_name'];?></td>
+                                                    <td><?php echo $r['mobile'];?></td>
+                                                    <td><?php echo $r['date_created'];?></td>
+                                                    <!--<td><a href="activate_process.php?id=<?php echo $r['id'];?>"><span class="badge label-table badge-danger">Activate</span></a></td>-->
+                                                     <td></td>   
+                                                </tr>
+                                            <?php
+                                               }
+                                            ?>
                                             </tbody>
                                         </table>
                                     </div>
