@@ -409,7 +409,7 @@ body {
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
     
-    <script src="https://visjs.github.io/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="../assets/js/vis/vis-network.min.js"></script>
     <script src="../js/tree.js"></script>
     
     <script type="text/javascript">

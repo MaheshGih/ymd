@@ -338,25 +338,36 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $q1="";$q2="";$q3="";
         $ins_1="";$ins_2="";$ins_3="";
         $get_spill_id = "select spill_id, sponsor_id from user_details where id = ".$vusid;
-        $spill_id = mysqli_fetch_assoc(mysqli_query($con,$get_spill_id));
-        $sponsor_lvl_1_qry = "select spill_id,full_name,id from user_details where id = ".$spill_id['spill_id'];
-        //$sponsor_lvl_1_qry = "select sponsor_id,full_name,id from user_details where id = ".$spill_id['spill_id'];
+        $get_spill_id = mysqli_fetch_assoc(mysqli_query($con,$get_spill_id));
+        
+        $sponsor_lvl_1_qry = "select spill_id,full_name,id from user_details where id = ".$get_spill_id['spill_id'];
         $sponsor_lvl_1 = mysqli_fetch_assoc(mysqli_query($con,$sponsor_lvl_1_qry));
-        $sponsor_lvl_2_qry = "select spill_id,full_name,id from user_details where id=".$get_spill_id['sponsor_id'];
-        $sponsor_lvl_2 = mysqli_fetch_assoc(mysqli_query($con,$sponsor_lvl_2_qry));
-        if($sponsor_lvl_1['spill_id'] !=0){
+        
+        //$sponsor_lvl_1_qry = "select sponsor_id,full_name,id from user_details where id = ".$spill_id['spill_id'];
+        /* if($sponsor_lvl_1['spill_id'] == 0){
             $ins_1 ="insert";
-        }
-        if($sponsor_lvl_2['spill_id'] != 0){
-            $sponsor_lvl_3_qry = "select sponsor_id,full_name,id,side from user_details where id=".$sponsor_lvl_2['spill_id'];
-            $sponsor_lvl_3 = mysqli_fetch_assoc(mysqli_query($con,$sponsor_lvl_3_qry));
-            $ins_2="insert";
-            if($sponsor_lvl_3['side'] == "master" && $sponsor_lvl_3['sponsor_id']==0){
+        } */
+        $ins_1 ="insert";
+        if($sponsor_lvl_1['spill_id'] != 0){
+            
+            
+            $sponsor_lvl_2_qry = "select spill_id,sponsor_id,full_name,id,side from user_details where id=".$get_spill_id['sponsor_id'];
+            $sponsor_lvl_2 = mysqli_fetch_assoc(mysqli_query($con,$sponsor_lvl_2_qry));
+            if(($get_spill_id['spill_id'] != $get_spill_id['sponsor_id'])){
+                $ins_2="insert";
+            }
+            if($sponsor_lvl_2['sponsor_id'] != 0){
+                $sponsor_lvl_3_qry = "select sponsor_id,full_name,id,side from user_details where id=".$sponsor_lvl_2['sponsor_id'];
+                $sponsor_lvl_3 = mysqli_fetch_assoc(mysqli_query($con,$sponsor_lvl_3_qry));
                 $ins_3="insert";
+                /* if($sponsor_lvl_3['side'] == "master" && $sponsor_lvl_3['sponsor_id']==0){
+                    $ins_3="insert";
+                }
+                if($sponsor_lvl_3['sponsor_id'] ==""){
+                    $ins_3="";
+                } */
             }
-            if($sponsor_lvl_3['sponsor_id'] ==""){
-                $ins_3="";
-            }
+            
         }
         $dat = self::setDate();
         //$activate_user = true;
