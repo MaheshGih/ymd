@@ -1,4 +1,5 @@
 <?php include('../model/rewards_model.php'); ?>
+<?php include('../model/user_model.php'); ?>
 <?php
     if(isset($_POST['btnAddReward'])){
         $objRewardsModel->SetDayNo($_POST['txtDayNo']);
@@ -18,5 +19,12 @@
         if($res){
             echo "<script> alert('Reward updated Successfully.'); location.href='../view/rewards.php';</script>";
         }
+    }
+    if(isset($_GET['user_rewards'])){
+        /* $left_pairs = $_GET['left_pairs'];
+        $right_pairs = $_GET['right_pairs']; */
+        $sponsorId = $_GET['sponsor_id'];
+        $childs = $objUserModel->GetChildsByCount($sponsorId);
+        echo json_encode($childs);
     }
 ?>

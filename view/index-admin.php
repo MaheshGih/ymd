@@ -66,12 +66,6 @@
                                 </div>
                             </form>
                         </li>
-						
-						<li>
-
-                            <h6>Your Membership is expired on 01 July 2021</h6>
-                        
-                    </li>
 
                 </ul>
             </div>
@@ -90,83 +84,9 @@
                     
                     <!-- Start Content-->
                     <div class="container-fluid">
-
-
-                         <!-- start page update title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box">
-                                    <div class="row pull-right">
-         
-                </div>  
-            <div class="row" style="margin:30px 0 20px 0;">
-            <div class="col-md-2 col-xs-12">
-                <h4 style="font-size: 20px; font-weight: 600; margin: 4px 0 15px;">DASHBOARD</h4>
-            </div>
-            <div class="col-md-2 col-xs-12">
-                <div id="divreward" style="display: none">
-                    <img src="#" id="imgreward" style="width: 200px; padding-bottom: 20px; padding-top: 0x; margin: 0 auto; text-align: center;" class="img-responsive ">
-                </div>
-            </div>
-            <div class="col-md-8 col-xs-12">
-                <div class="row">
-                    <div class="col-md-3 col-xs-5">
-                        <p style="text-align: right; padding: 4px 10px; color: #ffffff; background: #f73104; border-top-left-radius: 60px;">
-                            Referral Link :
-                        </p>
-                    </div>
-                    <div class="col-md-6 col-xs-7">
-                        <div class="input-group input-group-sm" style="margin-bottom: 8px;">
-                            <input class="form-control" type="text"  value="http://ymd1000us.com/dashboard/register.php?ref=4WD17817" id="myInput" style="background-color: rgb(255, 255, 255);font-size: 14px;color: #525252;">
-                            <span class="input-group-btn">
-                                <button class="btn btn-success btn-flat" onclick="myFunction()"  data-copytarget="#website1">Copy</button>
-                            </span>
-                        </div>
-                    </div>
-                   
-                </div>
-            </div>
-        </div>
-        
-        
-        <div class="row" style="margin-bottom:20px;">
-                <div class="col-md-2 col-xs-4">
-                    <h3 class="box-title" style="font-size: 16px; background: #3b146f; padding: 18px 20px; margin: 0; font-weight: bold; color: white; border-top-left-radius: 10px; border-bottom-left-radius: 10px;"><span class="hidden-xs">LATEST</span> NEWS</h3>
-                </div>
-                    <div id="form_1" class="col-md-8 col-xs-8">
-                        <marquee loop="true" behavior="scroll" direction="left" scrolldelay="60" scrollamount="2" style="margin-top: 0px; height: 54px; padding: 6px; border-top-right-radius: 10px; box-shadow: 1px 1px 3px #c0c0c0; background: white; border-bottom-right-radius: 10px;" onmouseover="this.stop();" onmouseout="this.start();">
-                                    <div class="comment-text" style="color: black;">
-                                        <span class="username" style="color: #c3602b;"><i class="fa fa-info-circle"></i>&nbsp;YMD 1000 US.
-                                        </span>
-                                        <br>
-                                        <p>Offer Extended Till 17th September 2020!</p>
-                                    </div>
-                                    <hr>
-                                    <!--<div class="comment-text" style="color: black;">
-                                        <span class="username" style="color: #c3602b;"><i class="fa fa-info-circle"></i>&nbsp;way2startup.org
-                                        </span>
-                                        <br>
-                                        Wel-Come to 4WAYDIAL LTD.
-                                    </div>
-                                    <hr>-->
-
-                </marquee>
-                    </div>
-                     <div class="col-md-2 col-xs-4">
-                    <h3 class="box-title" style="font-size: 16px; background: #3b146f; padding: 18px 20px; margin: 0; font-weight: bold; color: white; border-top-left-radius: 10px; border-bottom-left-radius: 10px;"><span class="hidden-xs" style="color: #45ff17;">Rank:</span> Rising</h3>
-                </div>
-            </div>
-        
-                        <!-- end row -->
-                                </div>
-                            </div>
-                        </div>     
-                        <!-- end page update title --> 
-
-
                         
                         <!-- start page title -->
-                        <!--  <div class="row">
+                        <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right">
@@ -179,7 +99,7 @@
                                     <h4 class="page-title">Dashboard</h4>
                                 </div>
                             </div>
-                        </div>-->     
+                        </div>     
                         <!-- end page title --> 
 
                         <div class="row">
@@ -234,114 +154,7 @@
                             </div>
                             <!-- end col -->
                         </div>
-                        <!-- end row -->  
-
-						<div class="row">
-
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-currency-usd avatar-title font-30 text-white"></i>
-                                        </div>
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Today My Direct Income</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h3>
-                                            <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom ">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-account-multiple avatar-title font-30 text-white"></i>
-                                        </div>
-
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Today My Indirect Income </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
-                                            <p class="m-0">Jan - Feb 2020</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-
-                            
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom ">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-account-multiple avatar-title font-30 text-white"></i>
-                                        </div>
-
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">My Direct Members </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
-                                            <p class="m-0">Jan - Feb 2020</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-                         <div class="row">
-
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-currency-usd avatar-title font-30 text-white"></i>
-                                        </div>
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">My Royality Income</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h3>
-                                            <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom ">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-account-multiple avatar-title font-30 text-white"></i>
-                                        </div>
-
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Pending Withdraw Income </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
-                                            <p class="m-0">Jan - Feb 2020</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom ">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-equalizer avatar-title font-30 text-white"></i>
-                                        </div>
-
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Total Withdraws</p>
-                                            <h3 class="font-weight-medium my-2"><span data-plugin="counterup"><?php echo $tot_det[2]; ?></span></h3>
-                                            <p class="m-0">Jan - Feb 2020</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-                        </div>
-                        <!-- end row -->  
-						
+                        <!-- end row -->    
 
                        
                         <div class="row">
@@ -435,9 +248,7 @@
                             
                         </div>
                         <!--- end row -->
-						
-						
-						                        
+                        
                     </div> <!-- end container-fluid -->
 
                 </div> <!-- end content -->

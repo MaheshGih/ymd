@@ -35,7 +35,13 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <!-- <span class="menu-arrow"></span> -->
                 </a>
             </li>
-
+			<li>
+                <a href="changepassword.php">
+                    <i class=" fas fa-user "></i>
+                    <span> Change Password </span>
+                    <!-- <span class="menu-arrow"></span> -->
+                </a>
+            </li>
             <li>
                 <a href="kyc.php">
                     <i class=" fas fa-file-alt "></i>
@@ -140,6 +146,18 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                 <a href="rewards.php">
                     <i class="fas fa-money-bill "></i>
                     <span> Rewards </span>
+                </a>
+            </li>
+            <li>
+                <a href="reward_users.php">
+                    <i class="fas fa-money-bill "></i>
+                    <span> Reward Users </span>
+                </a>
+            </li>
+            <li>
+                <a href="housefull_users.php">
+                    <i class="fas fa-money-bill "></i>
+                    <span> Housefull Users </span>
                 </a>
             </li>
         </ul>

@@ -106,7 +106,7 @@ var network = undefined;
 			    if(nodeEdges.length<=2){
 			    	if(nodeEdges.length==2){
 			    		var nodeEdge = visEdges.get(nodeEdges[1]);
-			    		var childNode = visNodes.get(nodeEdge.from);
+			    		var childNode = visNodes.get(nodeEdge.to);
 			    		var side = '';
 			    		if(childNode.side=='left'){
 			    			side = 'right';
@@ -114,7 +114,18 @@ var network = undefined;
 			    			side = 'left';
 			    		}
 			    		$('#ddlSide').val(side);
-			    		$('#ddlSide').prop('disabled','true');
+			    		$('#ddlSide option:not(:selected)').each(function(){
+			    			$(this).prop('disabled','true');
+			    		});
+			    		//$('#ddlSide').prop('disabled','true');
+			    	}else{
+			    		
+			    		$('#ddlSide option').each(function(){
+			    			$(this).removeAttr('disabled');;
+			    		});
+			    		
+			    		$('#ddlSide').val(0);
+			    		
 			    	}
 			    	
 				    $('#hdnSpillId').val(clickedNodes[0].master_id);

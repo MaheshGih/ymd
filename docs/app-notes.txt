@@ -1,5 +1,35 @@
-Html Template :  Adminox
++ Html Template :  Adminox
 	https://coderthemes.com/adminox/layouts/vertical/tables-datatable.html
 	
 Git : MaheshGih/Mahesh0577@
 
+datatable -checkboxes :
+	https://www.gyrocode.com/projects/jquery-datatables-checkboxes/
+	
+	
+User-tree :
+
+	https://www.mysqltutorial.org/mysql-adjacency-list-tree/
+	
+	WITH RECURSIVE category_path (id, title, lvl) AS
+	(
+	  SELECT id, title, 0 lvl
+	    FROM category
+	    WHERE parent_id IS NULL
+	  UNION ALL
+	  SELECT c.id, c.title,cp.lvl + 1
+	    FROM category_path AS cp JOIN category AS c
+	      ON cp.id = c.parent_id
+	)
+	SELECT * FROM category_path
+	ORDER BY lvl;
+	
+https://www.slideshare.net/billkarwin/models-for-hierarchical-data
+https://www.mysqltutorial.org/mysql-adjacency-list-tree/
+
+
+Issue : Data too long
+	https://stackoverflow.com/questions/54732559/why-this-recursive-concat-produces-data-too-long
+	You can solve that problem with a CAST to a big enough width to fit all the results
+	select id,CAST(id AS CHAR(5)) AS ids,val from tbl;
+	

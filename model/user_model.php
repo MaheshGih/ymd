@@ -568,14 +568,15 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         }
         return $tree_data;
     }
+    
     public function GetSponsorChilds($sponsorId) {
         $sql_qry = "with recursive cte (id,sponsor_id,spill_id,full_name,side ) as (
               select id,sponsor_id,spill_id,full_name,side from user_details 
-              where      sponsor_id = $sponsorId
+              where spill_id = $sponsorId
               union all
-              select u.id,u.sponsor_id,u.spill_id,u.full_name,u.side from user_details as u
-              inner join cte
-                      on u.sponsor_id = cte.id
+              select u.id,u.sponsor_id,u.spill_id,u.full_name,u.side from cte 
+              inner join user_details as u
+                      on cte.id = u.spill_id  
             )
             select * from cte order by spill_id,side";
         global $con;
@@ -585,6 +586,87 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             array_push($data,$row);
         }
         return json_encode($data);;
+    }
+    
+    public function GetChildLevels($sponsorId, $vside, $lvl_size) {
+        $sql_qry = "with recursive cte (id,sponsor_id,spill_id,full_name,side,is_active,lvl ) as (
+              select id,sponsor_id,spill_id,full_name,side, is_active, 0 as lvl from user_details 
+              where  spill_id = $sponsorId and is_active=1
+              union all
+              select u.id,u.sponsor_id,u.spill_id,u.full_name,u.side, u.is_active, cte.lvl+1  from cte 
+              inner join user_details as u
+                      on cte.id = u.spill_id  where cte.lvl<$lvl_size+1 and u.side=cte.side and u.is_active=cte.is_active
+            )
+            select * from cte order by spill_id,side";
+        global $con;
+        $child_count = mysqli_fetch_assoc(mysqli_query($con,$sql_qry));
+        return $child_count;
+    }
+    
+    public function GetChilds($sponsorId) {
+        $sql_qry = "with recursive cte (id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl,id_path ) as (
+              select id,sponsor_id,spill_id,full_name,mobile,side, is_active, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
+              where  spill_id = $sponsorId and is_active=1
+              union all
+              select u.id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
+              inner join user_details as u
+                      on cte.id = u.spill_id where u.is_active=cte.is_active
+            )
+            select id,sponsor_id,spill_id,full_name,mobile,side,lvl,id_path from cte order by id_path";
+        global $con;
+        $child_count = mysqli_query($con,$sql_qry);
+        return $child_count;
+    }
+    
+    public function GetChildsByCount($sponsorId) {
+        $childs = self::GetChilds($sponsorId);
+        $data = array();
+        $key_data = array();
+        while($row = $childs->fetch_assoc()) {
+            array_push($data,$row);
+            $key_data[$row['id']] = $row;
+        }
+        foreach ($data as $ukey => $user){
+            $parent_path = $user['id_path'].',';
+            $lids = [];
+            $rids = [];
+            $l = $r= 0;
+            foreach ($data as $child){
+                $child_path = $child['id_path'];
+                $ind = strpos($child_path, $parent_path);
+                if ($ind !== false){
+                    $len = $ind+strlen($parent_path);
+                    if(! (strlen($child_path)>$len))
+                        continue;
+                    $sub_path = substr($child_path,$len);
+                    $ids = explode(',',$sub_path);
+                    if(($l == 0 && $ids[0] != $r) || ($r == 0 && $ids[0] != $l)){
+                        $imidiate_child = $key_data[$ids[0]];
+                        if($imidiate_child['spill_id'] == $user['id']){
+                            if($imidiate_child['side'] == 'left'){
+                                $l = $imidiate_child['id'];
+                            }else if($imidiate_child['side'] == 'right'){
+                                $r = $imidiate_child['id'];
+                            }
+                        }        
+                    }
+                    if($l == $ids[0] ){
+                        $lids = array_merge($lids,$ids);
+                        $lids = array_unique($lids);
+                    }
+                    if($r == $ids[0]){
+                        $rids = array_merge($rids,$ids);
+                        $rids = array_unique($rids);
+                    }
+                }
+            }
+            //$user['lsize'] = count($lids);
+            //$user['rsize'] = count($rids);
+            $data[$ukey] = array_merge($user,array('lsize'=>count($lids),'rsize'=>count($rids)));
+            
+        }
+        return $data;
+        
     }
     
     public function sendSms($mobile, $msg) {

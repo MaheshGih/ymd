@@ -1,10 +1,10 @@
 <?php   
     // session_start();
     include("../include/session.php");
+    include("../model/user_model.php");
 ?>
-<?php include("../model/user_model.php");?>
 <?php
-        $res = $objUserModel->GetReferredUsers($_SESSION['userid']);
+    $active_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],1);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +12,7 @@
 
 <head>
         <meta charset="utf-8" />
-        <title>Referred Users | You-Me Donation </title>
+        <title>Active Users | You-Me Donation </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -29,7 +29,7 @@
         <link href="../assets/libs/datatables/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
         <link href="../assets/libs/datatables/buttons.bootstrap4.css" rel="stylesheet" type="text/css" />
         <link href="../assets/libs/datatables/responsive.bootstrap4.css" rel="stylesheet" type="text/css" />
-		<link type="text/css" href="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css" rel="stylesheet" />
+
 
 </head>
 
@@ -37,8 +37,6 @@
 
         <!-- Begin page -->
         <div id="wrapper">
-
-            
             <!-- Topbar Start -->
             <div class="navbar-custom"><?php include('../include/user_menu.php'); ?>
                 <!-- LOGO -->
@@ -93,10 +91,10 @@
                                         <ol class="breadcrumb m-0">
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Referrals</a></li>
-                                            <li class="breadcrumb-item active">Referred Users</li>
+                                            <li class="breadcrumb-item active">Active Users</li>
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Referrals</h4>
+                                    <h4 class="page-title">Housefull Users</h4>
                                 </div>
                             </div>
                         </div>     
@@ -104,47 +102,42 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card-box table-responsive">
-                                        <h4 class="header-title">REFERRED USERS LIST</h4>
-                                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                            <thead>
+                                        <!-- <h4 class="header-title">Rewarded Users</h4> -->
+                                        <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <thead>
                                             <tr>
                                                 <th>Name</th>
                                                 <th>Mobile</th>
-                                                <th>Invitation Date</th>
-                                                <th>Status</th>
+                                                <th>Joined Date</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                                <?php
-                                                $i=1;
-                                                $activ ="In-Active";
-                                                $class = "badge-danger";
-                                                    while($r = mysqli_fetch_assoc($res)){
-                                                        if($r['is_active'] == 1){
-                                                            $activ ="Active";
-                                                            $class = "badge-success";
-                                                        }else{
-                                                            $activ ="In-Active";
-                                                            $class = "badge-danger";
-                                                        }
-                                                ?>
-                                                 <tr>
+                                            <?php
+                                                    while($r = mysqli_fetch_assoc($active_childs)){
+                                            ?>
+                                                <tr>
+                                                    <!--<td><input type="checkbox" id="<?php echo $r['id'];?>" name="<?php echo $r['id'];?>" /></td>-->
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
                                                     <td><?php echo $r['date_created'];?></td>
-                                                    <td><span class="badge label-table <?php echo $class;?>"><?php echo $activ;?></span></td>
+                                                        
                                                 </tr>
-                                                <?php
-                                                   $i++; }
-                                                ?>
+                                            <?php
+                                               }
+                                            ?>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                             <!-- end row -->
+                        
                     </div> <!-- end container-fluid -->
+
                 </div> <!-- end content -->
+
+                
+
                 <!-- Footer Start -->
                 <footer class="footer">
                     <div class="container-fluid">
@@ -187,35 +180,13 @@
         <!-- Responsive examples -->
         <script src="../assets/libs/datatables/dataTables.responsive.min.js"></script>
         <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
-		<script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
-		
-		<script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
 
         <!-- Datatables init -->
         <script src="../assets/js/pages/datatables.init.js"></script>
 
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
-        <script type="text/javascript">
-        	$(document).ready(function (){
-        	   var table = $('#example').DataTable({
-        	      
-        	      'columnDefs': [
-        	         {
-        	            'targets': 0,
-        	            'checkboxes': {
-        	               'selectRow': true
-        	            }
-        	         }
-        	      ],
-        	      'select': {
-        	         'style': 'multi'
-        	      },
-        	      'order': [[1, 'asc']]
-        	   });
-        	});			
-
-        </script>
+        
     </body>
 
 

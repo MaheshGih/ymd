@@ -44,6 +44,10 @@ body {
   margin: 0px;
   padding: 0px;
 }
+.disable{
+pointer-events:none;
+background:grey;
+}
 
 .mycontainer {
   position: relative;

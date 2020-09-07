@@ -133,7 +133,8 @@ class LoginModel{
 
         global $con;
         
-        $ins_user_det_qry = "INSERT INTO `user_details` VALUES(null,'".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".(self::getSpillId()==NULL ? "null" : self::getSpillId()).",'".self::getUserId()."','".self::getPassword()."','','','','','','','','','','".self::getDate()."',0,'".self::getSide()."','','','',null,false,'".self::getStatus()."','ROLE_USER')";
+        $ins_user_det_qry = "INSERT INTO `user_details` (full_name,email,mobile,sponsor_id,spill_id,login_id,password,date_created,is_active,side,reg_verified,status,role) 
+            VALUES('".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".self::getSpillId().",'".self::getUserId()."','".self::getPassword()."','".self::getDate()."',0,'".self::getSide()."',false,'".self::getStatus()."','ROLE_USER')";
         $rand_user_id = self::getUserId();
         $check_user_id  = "select count(*) as cnt from user_details where login_id='".$rand_user_id."'";
         $cnt = mysqli_fetch_assoc( mysqli_query($con,$check_user_id));

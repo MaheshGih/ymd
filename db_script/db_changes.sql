@@ -50,3 +50,7 @@ INSERT INTO `ymd`.`user_details` (`full_name`, `email`, `mobile`, `sponsor_id`, 
 
 /*01-09-2020: Done in local , Not Done in server */
 UPDATE `ymd`.`user_details` SET `side` = 'master' WHERE (`id` = '1');
+create table user_rewards(id int auto_increment primary key,
+login_id varchar(20),full_name varchar(200),mobile varchar(15),
+level_id int references levels(id),amount double,status varchar(20)
+);

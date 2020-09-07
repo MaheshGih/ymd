@@ -1,10 +1,12 @@
 <?php   
     // session_start();
     include("../include/session.php");
+    include("../model/user_model.php");
+    
 ?>
-<?php include("../model/user_model.php");?>
 <?php
-        $res = $objUserModel->GetReferredUsers($_SESSION['userid']);
+    //$active_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],1);
+    $active_childs = $objUserModel->GetChildsByCount(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +14,7 @@
 
 <head>
         <meta charset="utf-8" />
-        <title>Referred Users | You-Me Donation </title>
+        <title>Active Users | You-Me Donation </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -37,8 +39,6 @@
 
         <!-- Begin page -->
         <div id="wrapper">
-
-            
             <!-- Topbar Start -->
             <div class="navbar-custom"><?php include('../include/user_menu.php'); ?>
                 <!-- LOGO -->
@@ -93,10 +93,10 @@
                                         <ol class="breadcrumb m-0">
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Referrals</a></li>
-                                            <li class="breadcrumb-item active">Referred Users</li>
+                                            <li class="breadcrumb-item active">Active Users</li>
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Referrals</h4>
+                                    <h4 class="page-title">Rewarded Users</h4>
                                 </div>
                             </div>
                         </div>     
@@ -104,47 +104,52 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card-box table-responsive">
-                                        <h4 class="header-title">REFERRED USERS LIST</h4>
-                                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                            <thead>
+                                        <!-- <h4 class="header-title">Rewarded Users</h4> -->
+                                        <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <thead>
                                             <tr>
+                                            	<th>Login Id</th>
                                                 <th>Name</th>
                                                 <th>Mobile</th>
-                                                <th>Invitation Date</th>
-                                                <th>Status</th>
+                                                <th>Level</th>
+                                                <th>Left</th>
+                                                <th>Right</th>
+                                                <th>Amount</th>
+                                                <th>Completed</th>
+                                                
                                             </tr>
                                             </thead>
                                             <tbody>
-                                                <?php
-                                                $i=1;
-                                                $activ ="In-Active";
-                                                $class = "badge-danger";
-                                                    while($r = mysqli_fetch_assoc($res)){
-                                                        if($r['is_active'] == 1){
-                                                            $activ ="Active";
-                                                            $class = "badge-success";
-                                                        }else{
-                                                            $activ ="In-Active";
-                                                            $class = "badge-danger";
-                                                        }
-                                                ?>
-                                                 <tr>
+                                            <?php
+                                                    foreach ($active_childs as $r){
+                                            ?>
+                                                <tr>
+                                                   	<td><?php echo $r['login_id'];?></td>
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
-                                                    <td><?php echo $r['date_created'];?></td>
-                                                    <td><span class="badge label-table <?php echo $class;?>"><?php echo $activ;?></span></td>
+                                                    <td></td>
+                                                    <td><?php echo $r['lsize'];?></td>
+                                                    <td><?php echo $r['rsize'];?></td>
+                                                    <td></td>
+                                                    <td><?php echo date('d-m-yy')?></td>
+                                                       
                                                 </tr>
-                                                <?php
-                                                   $i++; }
-                                                ?>
+                                            <?php
+                                               }
+                                            ?>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                             <!-- end row -->
+                        
                     </div> <!-- end container-fluid -->
+
                 </div> <!-- end content -->
+
+                
+
                 <!-- Footer Start -->
                 <footer class="footer">
                     <div class="container-fluid">
@@ -187,10 +192,9 @@
         <!-- Responsive examples -->
         <script src="../assets/libs/datatables/dataTables.responsive.min.js"></script>
         <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
-		<script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
-		
+        <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+        
 		<script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
-
         <!-- Datatables init -->
         <script src="../assets/js/pages/datatables.init.js"></script>
 
@@ -199,7 +203,7 @@
         <script type="text/javascript">
         	$(document).ready(function (){
         	   var table = $('#example').DataTable({
-        	      
+        		   dom: 'Bfrtip',
         	      'columnDefs': [
         	         {
         	            'targets': 0,
@@ -208,9 +212,15 @@
         	            }
         	         }
         	      ],
-        	      'select': {
-        	         'style': 'multi'
-        	      },
+        	      buttons: [
+        	            {
+        	                text: 'Add Rewards',
+        	                action: function () {
+        	                    table.rows().select();
+        	                }
+        	            }
+        	        ],
+        	      'select': {style: 'multi'},
         	      'order': [[1, 'asc']]
         	   });
         	});			
