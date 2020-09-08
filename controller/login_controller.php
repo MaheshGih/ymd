@@ -23,13 +23,44 @@
     }
     if(isset($_POST['btnForgotPwd'])){
         //txtRegMobile txtLogId
-        $res = $objLoginModel->ForgotPassword($_POST['txtLogId'],$_POST['txtRegMobile']);
-        if($res != "invalid"){
-                $msg = "Dear ".$_POST['txtLogId'].", your login password is ".$res." Thank you for joining us.Visit www.ymdonate.us/login/";    //Message Here
-                $url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".$_POST['txtRegMobile']."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
-                $ret = file($url);    //Call Url variable by using file() function
-                print_r($ret);    //$ret stores the msg-id
+        $mobile = $_POST['txtRegMobile'];
+        $login_id = $_POST['txtLogId'];
+        $res = $objLoginModel->IsUserExist($login_id,$_POST['txtRegMobile']);
+        if($res){
+            $otp = $objLoginModel->generateOTP();
+            $msg = "Dear ".$_POST['txtLogId'].", your Otp is ".$otp." for Reset password. Thank you for joining us.Visit www.ymdonate.us/login/";    //Message Here
+            $url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".$mobile."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
+            $ret = file($url);    //Call Url variable by using file() function
+            //print_r($ret);    //$ret stores the msg-id
+            $mobileEnd = substr($mobile, -3);
+            $smsmsg = 'We have send an OTP to your registered mobile number *******'.$mobileEnd.' for Verification';
+            
+            echo "<script> location.href='../view/otp_validate.php?success=OTPValidate&msg=".$smsmsg."&mobile=".$mobile."&login_id=".$login_id."';</script>";
+            
+        }else{
+            echo "<script> location.href='../view/forgot_password.php?=failure=invalid';</script>";
         }
     }
-
+    
+    if(isset($_POST['btnOTPValidate'])){
+        $login_id = $_POST['otpLoginId'];
+        $res = $objUserModel->validateOTP($login_id, $_POST['otp']);
+        if($res){
+            $msg = "OTP verified successfully.";
+            echo "<script> location.href='../view/reset_password.php?success=OTPValidated&msg=".$msg."&login_id=".$login_id."';</script>";
+        }else{
+            $msg = "OTP validation failed.";
+            echo "<script> location.href='../view/otp_validate.php?=failure=OTPValidationFailed=msg=".$msg."';</script>";
+        }
+    }
+    
+    if(isset($_POST['resetPasswordBtn'])){
+        $res = $objUserModel->changePassword($_POST['txtLogId'],$_POST['password']);
+        if($res){
+            echo "<script> location.href='../view/login.php?=success=resetpassword';</script>";
+        }else{
+            echo "<script> location.href='../view/login.php?=failure=resetpassword';</script>";
+        }
+    }
+    
 ?>

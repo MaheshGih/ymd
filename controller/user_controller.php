@@ -96,4 +96,18 @@ if(isset($_POST['reciverId'])){
         $str_pop .= $exp_res[2];
         echo $str_pop;
 }
+
+if(isset($_POST['changePasswordBtn'])){
+    $res = $objUserModel->isPasswordValid($_POST['loginId'],$_POST['oldPassword']);
+    if(!$res || $res['cnt']==0){
+        echo "<script> location.href='../view/changepassword.php?=failure=invalid_oldpassword';</script>";
+        return;
+    }
+    $res = $objUserModel->changePassword($_POST['loginId'],$_POST['password']);
+    if($res){
+        echo "<script> location.href='../view/changepassword.php?=success=changepassword';</script>";
+    }else{
+        echo "<script> location.href='../view/changepassword.php?=failure=changepassword';</script>";
+    }
+}
 ?>

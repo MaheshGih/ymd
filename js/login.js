@@ -28,7 +28,9 @@ function getUserMessages(result, type) {
     if (result == "success" && type == "insert") {
         return successInsertMsg;
     }
-    if (result == "failure" && type == "login") {
-        return successInsertMsg;
+    else if (result == "failure" && type == "login") {
+        return 'Failed';
+    }else if(result == "success" && type == "resetpassword") {
+    	return 'Password reset successfully!. Please login with new password.';
     }
 }

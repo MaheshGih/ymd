@@ -740,6 +740,29 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     
+    public function changePassword($login_id, $password) {
+        global $con;
+        $spl_qry = "update user_details set password = ? where login_id=?";
+        $stmt = $con->prepare($spl_qry);
+        $stmt->bind_param("ss",$password, $login_id);
+        $otp = $con->real_escape_string($password);
+        $login_id = $con->real_escape_string($login_id);
+        $res = $stmt->execute();
+        $stmt->close();
+        return $res;
+    }
+    public function isPasswordValid($login_id, $password) {
+        global $con;
+        $spl_qry = "select count(1)as cnt from user_details where login_id=? and password = ?";
+        $stmt = $con->prepare($spl_qry);
+        $stmt->bind_param("ss", $login_id,$password);
+        $otp = $con->real_escape_string($password);
+        $login_id = $con->real_escape_string($login_id);
+        $res = $stmt->execute();
+        $res = mysqli_fetch_assoc($stmt->get_result());
+        $stmt->close();
+        return $res;
+    }
     #endregion
 }
 $objUserModel =  new UserModel();

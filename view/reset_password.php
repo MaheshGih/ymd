@@ -50,19 +50,25 @@
                                                 <div class="form-group row">
                                                     <div class="col-12">
                                                         <label for="txtRegMobile">Log-In Id</label>
-                                                        <input class="form-control" type="text" id="txtLogId" name="txtLogId" required="" placeholder="YMDXXXXXXX">
+                                                        <input class="form-control" readonly="" type="text" id="txtLogId" name="txtLogId" required="" value="<?php echo $_GET['login_id'];?>"/>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
-                                                    <div class="col-12">
-                                                        <label for="txtRegMobile">Mobile Number</label>
-                                                        <input class="form-control" type="text" id="txtRegMobile" name="txtRegMobile" required="" placeholder="98XXXXXXXX">
-                                                    </div>
+                                                <div class="col-12">
+                                                    <label for="password" >Password</label>
+                                                    <input type="password" required class="form-control" name="password" id="password" />
                                                 </div>
-    
+                                                </div>
+                                                <div class="form-group row">
+                                                <div class="col-12">
+                                                    <label for="confirmPassword" >Conform Password</label>
+                                                    <input type="password" required data-parsley-equalto="#password" class="form-control" name="confirmPassword" id="confirmPassword" />
+                                                </div>
+    											</div>
+    											
                                                 <div class="form-group row text-center mt-2">
                                                     <div class="col-12">
-                                                        <button id="btnForgotPwd" name="btnForgotPwd" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Reset Password</button>
+                                                        <button id="resetPasswordBtn" name="resetPasswordBtn" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Reset Password</button>
                                                     </div>
                                                 </div>
     
@@ -87,41 +93,7 @@
                 <!-- end card -->
         </div>
         <!-- end row -->
-        <div class="modal fade bs-example-modal-center" id="otpModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel2" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title mt-0 text-center" > Validate OTP</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="card-box table-responsive">
-                            <!--<h4 class="header-title">User Details</h4>-->
-                            <form class="form-horizontal" action="../controller/tree_controller.php" method="POST">
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <span class="success" for="msg" id="otpmsg"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <label for="username">OTP</label>
-                                        <input type="hidden" id="otpMobile" name="otpMobile" />
-                                        <input type="hidden" id="otpLoginId" name="otpLoginId"/>
-                                        <input class="form-control" type="text" id="otp" name="otp" placeholder="OTP" required="required"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row text-center mt-2">
-                                    <div class="col-6">
-                                        <button id="btnOTPValidate" name="btnOTPValidate" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Submit OTP</button>
-                                    </div>
-                                </div>
-                             </form>  
-                           </div>
-                     </div>
-                 </div>
-             </div>
-         </div> 
+         
     </div>
     <!-- end container -->
     </div>
@@ -134,6 +106,7 @@
     <script src="../assets/js/app.min.js"></script>
 	<script src="../assets/js/pages/sweet-alerts.init.js"></script>
     <script src="../assets/libs/custombox/custombox.min.js"></script>
+	<script src="../assets/libs/parsleyjs/parsley.min.js"></script>
 	
     <script>
       $(document).ready(function () {
@@ -141,7 +114,7 @@
              var  res = location.search;
              res = decodeURIComponent(res);
              res = res.split("=");
-             displayNotification(res);
+             //displayNotification(res);
 
              $('form').parsley().on('field:validated', function() {
              	  

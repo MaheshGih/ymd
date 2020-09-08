@@ -236,14 +236,14 @@ class LoginModel{
     /*
         forgot password functionality
      */
-    public function ForgotPassword($vlogid,$mob){
+    public function IsUserExist($vlogid,$mob){
         global $con;
-        $get_id = mysqli_fetch_assoc(mysqli_query($con,"select id,password from user_details where mobile='".$mob."' and id=".$vlogid));
+        $get_id = mysqli_fetch_assoc(mysqli_query($con,"select count(1) as cnt from user_details where login_id='".$vlogid."' and mobile='".$mob."'" ));
 
-        if($get_id['password'] != ""){
-            return $pwd;
+        if($get_id && $get_id['cnt'] != 0){
+            return true;
         }else{
-            return "invalid";
+            return false;
         }
     }
 

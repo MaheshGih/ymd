@@ -33,3 +33,4 @@ Issue : Data too long
 	You can solve that problem with a CAST to a big enough width to fit all the results
 	select id,CAST(id AS CHAR(5)) AS ids,val from tbl;
 	
+-- SweetAlert2: Unknown type! Expected "success", "error", "warning", "info" or "question", got "failed"

@@ -44,29 +44,24 @@
                                         </div>
                                         <div class="account-content mt-4">
                                             <div class="text-center">
-                                                <p class="text-muted mb-0 mb-3">Enter your email address and we'll send you an email with instructions to reset your password.  </p>
+                                                <p class="text-muted mb-0 mb-3 success" id="otpmsg"><?php echo $_GET['msg'];?> </p>
                                             </div>
                                             <form class="form-horizontal" action="../controller/login_controller.php" method="POST">
+                                                
                                                 <div class="form-group row">
                                                     <div class="col-12">
-                                                        <label for="txtRegMobile">Log-In Id</label>
-                                                        <input class="form-control" type="text" id="txtLogId" name="txtLogId" required="" placeholder="YMDXXXXXXX">
+                                                        <label for="otp">OTP</label>
+                                                        <input type="hidden" id="otpMobile" name="otpMobile" value="<?php echo $_GET['mobile'];?>"/>
+                                                        <input type="hidden" id="otpLoginId" name="otpLoginId" value="<?php echo $_GET['login_id'];?>"/>
+                                                        <input class="form-control" type="text" id="otp" name="otp" placeholder="OTP" required="required"/>
                                                     </div>
                                                 </div>
-                                                <div class="form-group row">
-                                                    <div class="col-12">
-                                                        <label for="txtRegMobile">Mobile Number</label>
-                                                        <input class="form-control" type="text" id="txtRegMobile" name="txtRegMobile" required="" placeholder="98XXXXXXXX">
-                                                    </div>
-                                                </div>
-    
                                                 <div class="form-group row text-center mt-2">
                                                     <div class="col-12">
-                                                        <button id="btnForgotPwd" name="btnForgotPwd" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Reset Password</button>
+                                                        <button id="btnOTPValidate" name="btnOTPValidate" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Submit OTP</button>
                                                     </div>
                                                 </div>
-    
-                                            </form>
+                                             </form>  
     
                                             <div class="clearfix"></div>
     
@@ -97,26 +92,7 @@
                     <div class="modal-body">
                         <div class="card-box table-responsive">
                             <!--<h4 class="header-title">User Details</h4>-->
-                            <form class="form-horizontal" action="../controller/tree_controller.php" method="POST">
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <span class="success" for="msg" id="otpmsg"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <label for="username">OTP</label>
-                                        <input type="hidden" id="otpMobile" name="otpMobile" />
-                                        <input type="hidden" id="otpLoginId" name="otpLoginId"/>
-                                        <input class="form-control" type="text" id="otp" name="otp" placeholder="OTP" required="required"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row text-center mt-2">
-                                    <div class="col-6">
-                                        <button id="btnOTPValidate" name="btnOTPValidate" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Submit OTP</button>
-                                    </div>
-                                </div>
-                             </form>  
+                           
                            </div>
                      </div>
                  </div>
