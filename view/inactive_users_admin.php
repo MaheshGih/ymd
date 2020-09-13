@@ -4,7 +4,11 @@
     include("../model/user_model.php");
 ?>
 <?php
-    $inactiv_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],0);
+$expiryTime=24;
+if(isset($_GET['expiryTime'])){
+    $expiryTime = $_GET['expiryTime'];
+}
+$inactiv_childs = $objUserModel->GetAllUsersByStatus(0, $expiryTime);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -108,7 +112,7 @@
                                 <div class="col-12">
                                     <div class="card-box table-responsive">
                                       <!-- <h4 class="header-title">IN-ACTIVE USERS LIST</h4> -->  
-                                      <!-- <form class="form-horizontal" id="blockUsersForm" action="../controller/user_controller.php" method="post">
+                                      <form class="form-horizontal" id="blockUsersForm" action="../controller/user_controller.php" method="post">
                                       	<input type="hidden" name="userIds" id="userIds"/>
                                       	<input type="hidden" name="hdnBlockUsers" id="hdnBlockUsers"/>
                                       <div Class="form-group row">
@@ -120,20 +124,20 @@
                                             <div class="form-group row">
                                             	<label for="txtLevelname" class="col-8 form-label">Expiry Time</label>
                                                 <div class="col-2">
-                                                    <select>
-                                                		<option value="24">24</option>
-                                                		<option value="32">32</option>
-                                                		<option value="48">48</option>
+                                                    <select name="expiryTime" id="expiryTime">
+                                                		<option value="24" <?php if($expiryTime==24){echo 'selected';} ?>>24</option>
+                                                		<option value="32" <?php if($expiryTime==32){echo 'selected';}?>>32</option>
+                                                		<option value="48" <?php if($expiryTime==48){echo 'selected';}?>>48</option>
                                             		</select>
                                                 </div>
                                             </div>
                                             
                                     </div>
-                                	</form>  -->
+                                	</form> 
                                     <table id="userstable" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                             <thead>
                                             <tr>
-                                            	
+                                            	<th></th>
                                             	<th>Login Id</th>
                                                 <th>Name</th>
                                                 <th>Mobile</th>
@@ -148,7 +152,7 @@
                                             ?>
                                                 <tr>
                                                     <!--<td><input type="checkbox" id="<?php echo $r['id'];?>" name="<?php echo $r['id'];?>" /></td>-->
-                                                    
+                                                    <td></td>
                                                     <td><?php echo $r['login_id'];?></td>
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
@@ -246,9 +250,9 @@
         	      'columnDefs': [
         	         {
         	            'targets': 0,
-        	            /* 'checkboxes': {
+        	            'checkboxes': {
         	               'selectRow': true
-        	            } */
+        	            }
         	         }
         	      ],
         	      
@@ -257,8 +261,10 @@
         	      },
         	      'order': [[1, 'asc']]
         	   });
-			  $('#btnBlockUsers').on('click', function(){ $('#blockModal').modal('show');});
-        	   $('#btnConformBlock').on('click', function(evt){
+
+ 			  $('#btnBlockUsers').on('click', function(){ $('#blockModal').modal('show');});
+
+        	  $('#btnConformBlock').on('click', function(evt){
         		    //evt.preventDefault();
 					var rows = table.rows({selected:true}).data();
 					var ids = [];
@@ -271,14 +277,30 @@
 						//return true;
 					else return false;
                });
+
+              $('#expiryTime').on('change', function(){
+				var time = $(this).val();
+				var url = window.location.href;
+				url = url.split('?');
+				window.location.href = url[0] + "?expiry_time="+time;
+				
+              });
+              
         	});	
         </script>
         <script>
         
         $(document).ready(function () {
             var res = location.search;
-            res = res.split("=");
-            displayNotification(res[1],res[2]);
+            res = res.split("?");
+            res = res[1];
+            if(res){
+				res = res.split('&');
+				res = res[0];
+				res = res.split('=');
+				displayNotification(res[0],res[1]);	
+             }
+            
             
         });
         function displayNotification(result,type){

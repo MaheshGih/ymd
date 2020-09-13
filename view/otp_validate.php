@@ -81,23 +81,7 @@
                 </div>
                 <!-- end card -->
         </div>
-        <!-- end row -->
-        <div class="modal fade bs-example-modal-center" id="otpModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel2" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title mt-0 text-center" > Validate OTP</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="card-box table-responsive">
-                            <!--<h4 class="header-title">User Details</h4>-->
-                           
-                           </div>
-                     </div>
-                 </div>
-             </div>
-         </div> 
+        
     </div>
     <!-- end container -->
     </div>
@@ -108,62 +92,8 @@
 
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
-	<script src="../assets/js/pages/sweet-alerts.init.js"></script>
-    <script src="../assets/libs/custombox/custombox.min.js"></script>
-	
-    <script>
-      $(document).ready(function () {
-             $(document).ready(function(){
-             var  res = location.search;
-             res = decodeURIComponent(res);
-             res = res.split("=");
-             displayNotification(res);
-
-             $('form').parsley().on('field:validated', function() {
-             	  
-       	  	 });
-         	
-        });
-        function displayNotification(res){
-        	var status = res[1];
-        	var type = res[2];
-        	var msg = res[4];
-        	 
-        	if(status){
-        		var obj = getUserMessages(status, type, msg);
-        		notification(obj);
-            }
-        		
-        }
-        function notification(obj){
-        	Swal.fire({title:obj.title,
-                text : obj.msg,
-               type : obj.type,
-               confirmButtonClass: "btn btn-confirm mt-2"
-           });
-        }
-        function getUserMessages(result,type, msg){
-            var res = {type:undefined, msg:msg};
-            if (result == "failure" && type == "invalid"){
-            	res.type = 'error';
-            	res.title = 'Failed!';
-                res.msg = "Invalid user details!.";
-            }else if (result == "success" && type == "OTPValidate"){
-            	res.type = 'success';
-            	res.title = 'OTP validation';
-                res.msg = msg;
-                showOTPModal(status, type, msg, res[6],res[8]);
-            }
-            return res;
-        }
-        function showOTPModal(status, type, msg, mobile,loginId){
-            $('#otpMobile').val(mobile);
-            $('#otpLoginId').val(loginId);
-            $('#otpmsg').text(msg);
-          	$('#otpModal').modal('show');
-        }
-        });
-      </script>
+    <script src="../assets/libs/parsleyjs/parsley.min.js"></script>	
+    
 </body>
 
 

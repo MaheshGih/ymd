@@ -7,8 +7,8 @@
     include('../model/withdraw_model.php');
 ?>
 <?php
-    $ph_list = $objUserModel->GetProvideHelpersList();
-    $gh_list = $objWithdrawModel->GetRequestHelperList();
+    $ph_list = $objWithdrawModel->GetProvideHelpersList();
+    $gh_list = $objWithdrawModel->GetRequestHelpers();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,12 +28,13 @@
         <link href="../assets/libs/datatables/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
         <link href="../assets/libs/datatables/buttons.bootstrap4.css" rel="stylesheet" type="text/css" />
         <link href="../assets/libs/datatables/responsive.bootstrap4.css" rel="stylesheet" type="text/css" />
-
+		<link type="text/css" href="../assets/libs/datatables/dataTables.checkboxes.css" rel="stylesheet" />
+		
         <!-- App css -->
         <link href="../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
         <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
         <link href="../assets/css/app.min.css" rel="stylesheet" type="text/css"  id="app-stylesheet" />
-
+		
     </head>
 
     <body>
@@ -110,43 +111,44 @@
                                 <div class="card-box table-responsive">
                                     <h4 class="header-title">GET HELP USERLIST</h4>
                                     <input type="hidden" id="hdnGetHelperId" name="'hdnGetHelperId" />
-                                    <table id="gethelpdatatable" class="table table-bordered  dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <table id="gh_table" class="table table-bordered  dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                             <tr>
+                                            	<th></th>
                                                 <th>Name</th>
+                                                <th>Req Amount</th>
+                                                <th>Invitations</th>
+                                                <th>Required Providers</th>
                                                 <th>Mobile</th>
-                                                <th>Requested Amount</th>
                                                 <th>User Id</th>
-                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
-                                            while($rw = mysqli_fetch_assoc($gh_list)){
+                                            foreach($gh_list as $rw){
                                             ?>
                                             <tr>
+                                            	<td></td>
                                                 <td>
-                                                    <span id="spnGName_<?php echo $rw['id']; ?>"> <?php  echo $rw['full_name']; ?> </span>
+                                                     <?php  echo $rw['full_name']; ?>
                                                 </td>
-                                                <td>
-                                                    <span id="spnGMobile_<?php echo $rw['id']; ?>">
-                                                        <?php  echo $rw['mobile']; ?>
-                                                    </span>
-                                                </td>
-
                                                 <td>
                                                     <span class="badge label-table badge-success">
                                                         Rs.<?php echo $rw['amount_req']; ?>
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span id="spnGId_<?php echo $rw['id']; ?>">
-                                                        <?php  echo $rw['login_id']; ?>
-                                                     </span>
+                                                    <?php echo $rw['invitations']; ?>
                                                 </td>
                                                 <td>
-                                                    <button id="<?php echo $rw['id']; ?>" class="btnGetUser btn btn-success" onclick="getUserFunction(<?php echo $rw['id'];?>)"> Click here </button>
+                                                    <?php echo $rw['req_invs']; ?>
                                                 </td>
+                                                <td>
+                                                    <?php  echo $rw['mobile']; ?>
+                                                </td>
+                                                <td>
+                                            		<?php  echo $rw['login_id']; ?>
+                                            	</td>
                                             </tr>
                                             <?php
                                             }
@@ -161,7 +163,7 @@
                                 <div class="card-box table-responsive">
                                     <h4 class="header-title">PROVIDE HELP USERLIST</h4>
                               
-                                    <table id="providehelpdatatable" class="table table-bordered  dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <table id="ph_table" class="table table-bordered  dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                             <tr>
                                             	<th></th>
@@ -169,7 +171,7 @@
                                                 <th>Mobile</th>
                                                 <th>Joined Date</th>
                                                 <th>User Id</th>
-                                                <th></th>
+                                                
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -177,23 +179,18 @@
                                                 while($r=mysqli_fetch_assoc($ph_list)){
                                             ?>
                                             <tr>
-                                            	<td> <input type="checkbox" id="id_<?php echo $r['id']; ?>" name="<?php echo $r['id']; ?>" value="<?php echo $r['id']; ?>"/></td>
+                                            	<td></td>
                                                 <td>
-                                                     <span id="spnPName_<?php echo $r['id']; ?>"> <?php  echo $r['full_name']; ?> </span>
+                                                     <?php  echo $r['full_name']; ?>
                                                 </td>
                                                 <td>
-                                                    <span id="spnPMobile_<?php echo $r['id']; ?>">
-                                                        <?php echo $r['mobile']; ?>
-                                                    </span>
+                                                    <?php echo $r['mobile']; ?>
                                                 </td>
                                                 <td>
                                                     <?php echo $r['date_created']; ?>
                                                 </td>
                                                 <td>
-                                                    <span id="spnPId_<?php echo $r['id']; ?>">  <?php echo $r['login_id']; ?> </span>
-                                                </td>
-                                                <td>
-                                                    <button id="<?php echo $r['id']; ?>" class="btnProvideUsers btn btn-success" onclick="getProviders(<?php echo $r['id']; ?>)"> Click here </button>
+                                                    <?php echo $r['login_id']; ?>
                                                 </td>
                                             </tr>
                                             <?php
@@ -204,7 +201,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                            	<form class="form-horizontal" action="../controller/user_controller.php" method="POST">
+                            		<button type="button" name="btnPreview" id="btnPreview" class="btn btn-info waves-effect waves-light" data-toggle="modal" data-target="#previewmessagemodal">
+                                        <i class=" far fa-eye"></i>
+                                        <span>Preview</span>
+                                    </button>
+                            		<button type="submit" name="btnProvideHelp" id="btnProvideHelp" class="btn btn-success waves-effect waves-light"> <i class="fas fa-sms mr-1"></i> <span>Send SMS</span> </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row" style="display: none;">
                              <div class="col-md-12">
                                 <div class="card-box">
                                     <h4 class="header-title mb-4">SEND INVITATION</h4>
@@ -244,7 +252,7 @@
                                                     <i class=" far fa-eye"></i>
                                                     <span>Preview</span>
                                                 </button>
-                                                <button type="submit" name="btnGetProvideHelp" id="btnGetProvideHelp" class="btn btn-success waves-effect waves-light"> <i class="fas fa-sms mr-1"></i> <span>Send SMS</span> </button>
+                                                <button type="button" name="btnGetProvideHelp" id="btnGetProvideHelp" class="btn btn-success waves-effect waves-light"> <i class="fas fa-sms mr-1"></i> <span>Send SMS</span> </button>
                                             </div>
                                         </div>
                                     </form>
@@ -319,24 +327,101 @@
         <script src="../assets/libs/datatables/buttons.html5.min.js"></script>
         <script src="../assets/libs/datatables/buttons.print.min.js"></script>
         <script src="../assets/libs/datatables/buttons.colvis.js"></script>
-
+		
         <!-- Responsive examples -->
         <script src="../assets/libs/datatables/dataTables.responsive.min.js"></script>
         <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
-  
+  		<script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+		<script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
+        
         <!-- Datatables init -->
-        <script src="../assets/js/pages/datatables.init.js"></script>
+        <!-- <script src="../assets/js/pages/datatables.init.js"></script> -->
        
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
-
+		
+		<script type="text/javascript">
+        	$(document).ready(function (){
+        	   var gh_table = $('#gh_table').DataTable({
+        		   dom: 'Bfrtip',
+        	      'columnDefs': [
+        	         {
+        	            'targets': 0,
+        	            'checkboxes': {
+        	               'selectRow': true
+        	            }
+        	         }
+        	      ],
+        	      'select': {style: 'multi'},
+        	      'order': [[1, 'asc']]
+        	   });
+        	   gh_table
+               .on( 'select', function ( e, dt, type, indexes ) {
+                    var rowData = gh_table.rows( indexes ).data();
+                    req = parseInt(rowData[0][4]);
+					ph_rows = ph_table.rows({selected: false});
+					ph_rows.each(function(row, ind){
+						if(ind<req)
+							ph_rows.row(row).select();
+					});
+	               
+               } )
+               .on( 'deselect', function ( e, dt, type, indexes ) {
+            	   var rowData = gh_table.rows( indexes ).data();
+                   req = parseInt(rowData[0][4]);
+    			   ph_rows = ph_table.rows({selected: true});
+    			   ph_rows.each(function(row, ind){
+    				 	if(ind<req)
+    						ph_rows.row(row).deselect();
+    			   });
+               } );
+               
+        	   var ph_table = $('#ph_table').DataTable({
+        		   dom: 'Bfrtip',
+        	      'select': {style: 'multi'},
+        	      //'order': [[1, 'asc']]
+        	   });
+        	   
+			  $('#btnGetProvideHelp1').on('click', function(evt){
+				   evt.preventDefault();
+				   var gh_rows = gh_table.rows({selected: true}).data();
+				   var gh_data = [];
+				   var ph_data = [];
+	        	   gh_rows.each( function(row, ind){
+	        		    var gh_row = { full_name : row[1],invitations : row[3],req_invs:row[4],mobile:row[5],login_id:row[6] };
+	        		    gh_data.push(gh_row);	
+	               });
+	        	   ph_rows = ph_table.rows({selected: true}).data();
+				   ph_rows.each(function(row, ind){
+					  var ph_row = { full_name : row[1],mobile:row[2],date_created:row[3],login_id:row[4] };
+	        		  ph_data.push(ph_row);
+				   });
+				   var data = { '':'', 'gh_data':gh_data, 'ph_data':ph_data };
+				   sendInvitation();
+			  });        	    
+        	});			
+        	function sendInvitation(data){
+				  $.ajax({
+	                    url: '../controller/user_controller.php',
+	                    method: 'POST',
+	                    data: data,
+	                    success: function (result) {
+	                        console.log(result);
+	                    },
+	                    failure: function (erresult) {
+	                    	console.log(erresult);
+	                    }
+	                });	
+			 }
+        </script>
         <script>
             $(document).ready(function () {
-                $("#providehelpdatatable").DataTable();
-                $("#gethelpdatatable").DataTable();
+                /* $("#providehelpdatatable").DataTable();
+                $("#gethelpdatatable").DataTable(); */
                 var res = location.search;
                 res = res.split("=");
                 displayNotification(res[1],res[2]);
+                
             });
             function displayNotification(result,type){
                 if(result == "failure"){

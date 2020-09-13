@@ -2,6 +2,8 @@
 include('../include/session.php');
 include('../model/payment_model.php');
 include('../model/user_model.php');
+include('../model/wallet_txn_model.php');
+
 ?>
 
 <?php
@@ -74,13 +76,14 @@ include('../model/user_model.php');
             $res = $objUserModel->UpdateInvitationStatus($status,$invitationId);
             echo $res;
         }
-    }else if(isset($_POST['submitPBtnName']) && $_POST['submitPBtnName']=='acceptGBtn'){
+    } 
+    
+    if(isset($_POST['submitPBtnName']) && $_POST['submitPBtnName']=='acceptGBtn'){
         $invitationId = $_POST['invitationId'];
-        $provideHelpId = $_POST['provideHelpId'];
-        $status=$objUserModel->getInvitationStausByKey("ACCEPTED");
-        $res = $objUserModel->UpdateInvitationStatus($status,$invitationId);
-        $helper_details = $objUserModel->GetUserDetails($provideHelpId);
-        $objUserModel->ActivateUserById($helper_details['id']);
+        $txn_type = $objWalletTxnModel->getTxnTypeByKey("CREDIT");
+        $cause_type = $objWalletTxnModel->getCauseByKey("WITHDRAWN");
+        
+        $res = $objUserModel->AcceptInvitationPaymentReceived($invitationId,$txn_type,$cause_type);
         echo $res;
     }
 ?>

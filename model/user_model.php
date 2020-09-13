@@ -1,4 +1,8 @@
-<?php include('../include/config.php');?>
+<?php 
+include('../include/config.php');
+include('plan_model.php');
+
+?>
 <?php
 class UserModel{
 
@@ -27,7 +31,7 @@ class UserModel{
         "HELP_REQ_REJECTED" => "HELP_REQ_REJECTED", "HELP_REQ_EXPIRED" => "HELP_REQ_EXPIRED", "ACTIVE" => "ACTIVE", "INACTIVE" => "INACTIVE",
         "BLOCKED" => "BLOCKED", "EXPIRED" => "EXPIRED"];
     
-    public $invitationStatus = ["REJECTED"=>"REJECTED", "ACCEPTED"=>"ACCEPTED","PAYMENT_DONE"=>"PAYMENT_DONE","SENT"=>"SENT"];
+    public $invitationStatus = ["REJECTED"=>"REJECTED","EXPIRED"=>"EXPIRED","ACCEPTED"=>"ACCEPTED","PAYMENT_DONE"=>"PAYMENT_DONE","SENT"=>"SENT"];
     
     public $roles = [ "ROLE_ADMIN"=>"ROLE_ADMIN", "ROLE_EMP"=>"ROLE_ADMIN", "ROLE_USER"=>"ROLE_USER"];
     
@@ -103,6 +107,12 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $res = mysqli_fetch_assoc(mysqli_query($con," select * from user_basic where id =".$vid));
         return $res;
     }
+    public function GetAdminUserDetails(){
+        global $con;
+        $res = mysqli_fetch_assoc(mysqli_query($con,"select * from user_details where role='ROLE_ADMIN'"));
+        return $res;
+    }
+        
     public function UpdateAdressOld(){
         global $con;
         $upd_add_qry = "Update user_kyc set address_1='".self::getAdress1()."', address_2 ='".self::getAddress2()."'  where user_id=1";
@@ -326,6 +336,28 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         //return $child_list;
     }
     
+    public function GetAllUsersByStatus($isactive,$time){
+        global $con;
+        if(empty($time)){
+           $time = 24; 
+        }
+        date_default_timezone_set("Asia/Calcutta");
+        $DateTime = new DateTime();
+        $str = '-'.$time.' hours';
+        $expDate = $DateTime->modify($str);
+        
+        $d = date("Y-m-d h:i:s",$expDate->getTimestamp());
+        
+        // $child_list = mysqli_query($con,"SELECT * FROM `user_details`  where sponsor_id=".$vuserid." OR spill_id=".$vuserid." and is_active=".$isactiv." order by date_created asc limit 6");
+        $res = mysqli_query($con,"SELECT * FROM `user_details`  where  is_active=".$isactive." and date_created < '".$d."' order by date_created asc");
+        return $res;
+        //else{
+        //    $child_list2 = mysqli_query($con,"SELECT * FROM `user_details`  where (spill_id=".$vuserid." ) and is_active=".$isactiv." order by date_created asc limit 6");
+        //    return  $child_list2;
+        //}
+        //return $child_list;
+    }
+    
     public function GetEmployees(){
         global $con;
         $res = mysqli_query($con,"SELECT * FROM `user_details` where role='ROLE_EMP'");
@@ -334,13 +366,14 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     
     public function ActivateUserById($vusid){
         global $con;
-        $get_spill_id="";$sponsor_lvl_1_qry="";$sponsor_lvl_2_qry="";$sponsor_lvl_3_qry="";
+        global $help_commission;
+        $user_deatils="";$sponsor_lvl_1_qry="";$sponsor_lvl_2_qry="";$sponsor_lvl_3_qry="";
         $q1="";$q2="";$q3="";
         $ins_1="";$ins_2="";$ins_3="";
-        $get_spill_id = "select spill_id, sponsor_id from user_details where id = ".$vusid;
-        $get_spill_id = mysqli_fetch_assoc(mysqli_query($con,$get_spill_id));
+        $user_qry = "select spill_id, sponsor_id, id, full_name from user_details where id = ".$vusid;
+        $user_deatils = mysqli_fetch_assoc(mysqli_query($con,$user_qry));
         
-        $sponsor_lvl_1_qry = "select spill_id,full_name,id from user_details where id = ".$get_spill_id['spill_id'];
+        $sponsor_lvl_1_qry = "select spill_id,full_name,id from user_details where id = ".$user_deatils['spill_id'];
         $sponsor_lvl_1 = mysqli_fetch_assoc(mysqli_query($con,$sponsor_lvl_1_qry));
         
         //$sponsor_lvl_1_qry = "select sponsor_id,full_name,id from user_details where id = ".$spill_id['spill_id'];
@@ -351,9 +384,9 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         if($sponsor_lvl_1['spill_id'] != 0){
             
             
-            $sponsor_lvl_2_qry = "select spill_id,sponsor_id,full_name,id,side from user_details where id=".$get_spill_id['sponsor_id'];
+            $sponsor_lvl_2_qry = "select spill_id,sponsor_id,full_name,id,side from user_details where id=".$user_deatils['sponsor_id'];
             $sponsor_lvl_2 = mysqli_fetch_assoc(mysqli_query($con,$sponsor_lvl_2_qry));
-            if(($get_spill_id['spill_id'] != $get_spill_id['sponsor_id'])){
+            if(($user_deatils['spill_id'] != $user_deatils['sponsor_id'])){
                 $ins_2="insert";
             }
             if($sponsor_lvl_2['sponsor_id'] != 0){
@@ -369,19 +402,37 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             }
             
         }
-        $dat = self::setDate();
+        
+        $con -> autocommit(FALSE);
         //$activate_user = true;
         $user_status = self::getStausByKey("ACTIVE");
--        $activate_user = mysqli_query($con,"update user_details set is_active=1,status='".$user_status."' where id=".$vusid);
+        $activate_user = mysqli_query($con,"update user_details set is_active=1,status='".$user_status."' where id=".$vusid);
+
         $res = false;
+        $txn_is_done = 1;
+        $txn_type = 'CREDIT';
+        $txn_lvl_cause = 'LEVEL';
+        $txn_ref_cause = 'REFERRAL';
+        
+        $user_deatils_full_name = $user_deatils['full_name'];
+        $user_deatils_id = $user_deatils['id'];
+        $wal_ins_qry = "insert into user_wallet_txn(user_id,full_name,amount,txn_type,is_done,cause_type,cause_full_name,cause_user_id) values(?,?,?,?,?,?,?,?)";
+        $wal_ins_stmt = $con->prepare($wal_ins_qry);
         if($activate_user){
             if($ins_1 =="insert"){
-                $q1 = "insert into user_wallet_credit values(null,".$sponsor_lvl_1['id'].",'".$sponsor_lvl_1['full_name']."',100,'".self::getDate()."')";
+                /* $q1 = "insert into user_wallet_txn(user_id,full_name,amount,cr_date,txn_type,is_done,casue_type,cause_full_name,cause_user_id) 
+                    values(null,".$sponsor_lvl_1['id'].",'".$sponsor_lvl_1['full_name']."',100,'".self::getDate()."')";
                 $sponsor_lvl_1_ins_qry =  mysqli_query($con,$q1);
-                if($sponsor_lvl_1_ins_qry){
+                 */
+                $sponsor_lvl_1_id = $sponsor_lvl_1['id'];
+                $sponsor_lvl_1_full_name = $sponsor_lvl_1['full_name'];
+                $wal_ins_stmt->bind_param("isdsissi",$sponsor_lvl_1_id,$sponsor_lvl_1_full_name,$help_commission,$txn_type,$txn_is_done,$txn_lvl_cause,$user_deatils_full_name,$user_deatils_id);
+                $sponsor_lvl_1_ins_res = $wal_ins_stmt->execute();
+                
+                if($sponsor_lvl_1_ins_res){
                     // $res =  true;
                     //update Wallet Code  - Start
-                    $res = self::UpdateWalletById($sponsor_lvl_1['id'],100);
+                    $res = self::UpdateWalletById($sponsor_lvl_1['id'],$help_commission);
                     // End
                 }else {
                     $res = false;
@@ -389,24 +440,37 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             }
             if($ins_2 == "insert"){
                 //$q2 = "insert into user_wallet_credit values(null,".$sponsor_lvl_1['sponsor_id']."'".$sponsor_lvl_1['full_name']."',100,'".self::getDate()."')";
-                $q2 = "insert into user_wallet_credit values(null,".$sponsor_lvl_2['id'].",'".$sponsor_lvl_2['full_name']."',100,'".self::getDate()."')";
-                $sponsor_lvl_2_ins_qry = mysqli_query($con,$q2);
-                if($sponsor_lvl_2_ins_qry){
+                /* $q2 = "insert into user_wallet_txn(user_id,full_name,amount,cr_date,txn_type,is_done,casue_type,cause_full_name,cause_user_id) 
+                    values(".$sponsor_lvl_2['id'].",'".$sponsor_lvl_2['full_name']."',100,'".self::getDate()."')";
+                $sponsor_lvl_2_ins_qry = mysqli_query($con,$q2); */
+                $sponsor_lvl_2_id = $sponsor_lvl_2['id'];
+                $sponsor_lvl_2_full_name = $sponsor_lvl_2['full_name'];
+                $wal_ins_stmt->bind_param("isdsissi",$sponsor_lvl_2_id,$sponsor_lvl_2_full_name,$help_commission,$txn_type,$txn_is_done,$txn_ref_cause,$user_deatils_full_name,$user_deatils_id);
+                $sponsor_lvl_2_ins_res = $wal_ins_stmt->execute();
+                
+                if($sponsor_lvl_2_ins_res){
                     //$res =  true;
                     // Update Wallet Code - Start
-                    $res = self::UpdateWalletById($sponsor_lvl_2['id'],100);
+                    $res = self::UpdateWalletById($sponsor_lvl_2['id'],$help_commission);
                     // End
                 }else {
                     $res = false;
                 }
             }
             if($ins_3 == "insert"){
-                $q3 =  "insert into user_wallet_credit values(null,".$sponsor_lvl_3['id'].",'".$sponsor_lvl_3['full_name']."',100,'".self::getDate()."')";
+                /* $q3 =  "insert into user_wallet_txn(user_id,full_name,amount,cr_date,txn_type,is_done,casue_type,cause_full_name,cause_user_id) 
+                    values(null,".$sponsor_lvl_3['id'].",'".$sponsor_lvl_3['full_name']."',100,'".self::getDate()."')";
                 $sponsor_lvl_3_ins_qry = mysqli_query($con,$q3);
-                if($sponsor_lvl_3_ins_qry){
+                 */
+                $sponsor_lvl_3_id = $sponsor_lvl_3['id'];
+                $sponsor_lvl_3_full_name = $sponsor_lvl_3['full_name'];
+                $wal_ins_stmt->bind_param("isdsissi",$sponsor_lvl_3_id,$sponsor_lvl_3_full_name,$help_commission,$txn_type,$txn_is_done,$txn_lvl_cause,$user_deatils_full_name,$user_deatils_id);
+                $sponsor_lvl_3_ins_res = $wal_ins_stmt->execute();
+                
+                if($sponsor_lvl_3_ins_res){
                     //$res =  true;
                     // Update Wallet Code - Start
-                    $res = self::UpdateWalletById($sponsor_lvl_3['id'],100);
+                    $res = self::UpdateWalletById($sponsor_lvl_3['id'],$help_commission);
                     // End
                 }else {
                     $res = false;
@@ -414,6 +478,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             }
             //return "1 ".$get_spill_id.";2 ".$sponsor_lvl_1_qry.";3 ".$sponsor_lvl_2_qry.";4 ".$sponsor_lvl_3_qry.";5 ". $q1.";6 ".$q2.";7 ".$q3.";";
         }
+        $con->commit();
         return $res;
     }
     public function GetSpillIds($vlogid,$vside,$id){
@@ -479,6 +544,26 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $inv_res;
     }
     
+    public function AddUserInvitations($getHelpUsers){
+        global $con;
+        $con -> autocommit(FALSE);
+        self::setDate();
+        $sentDate = self::getDate();
+        $status = self::getInvitationStausByKey("SENT");
+        $qry = "insert into invitations(to_mobile,provide_help_id,provide_help_name,date_sent,to_user_id,provide_mobile,to_user_name,status,withdraw_req_id)
+            values(?,?,?,?,?,?,?,?,?)";
+        $stmt = $con->prepare($qry);
+        foreach ($getHelpUsers as $key=>$r){
+            foreach($r['ph_list'] as $phr){
+                $stmt->bind_param("ssssssssi",$r['mobile'],$phr['login_id'],$phr['full_name'],$sentDate,$r['login_id'],$phr['mobile'],$r['full_name'],$status,$r['id']);
+                $res = $stmt->execute();
+            }
+        }
+        $con -> commit();
+        $stmt->close();
+        return $res;
+    }
+    
     public function GetTotalInvitations(){
         global $con;
         $tot_inv = mysqli_fetch_assoc(mysqli_query($con,"select count(id) as totinv from invitations"));
@@ -487,8 +572,15 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     
     public function GetInvitationsByUserId($loginId){
         global $con;
-        $sql = "SELECT i.*, r.id as receipt_id, r.img_path,r.paid_date FROM invitations i left outer join user_paid_reciept r on i.id=r.invitation_id where (provide_help_id='".$loginId."' or to_user_id='".$loginId."') and status in('SENT','PAYMENT_DONE')";
+        $sql = "SELECT i.*, r.id as receipt_id, r.img_path,r.paid_date,r.user_id as provide_help_userid FROM invitations i left outer join user_paid_reciept r on i.id=r.invitation_id where (provide_help_id='".$loginId."' or to_user_id='".$loginId."') and status in('SENT','PAYMENT_DONE')";
         $res= mysqli_query($con,$sql);
+        return $res;
+    }
+    
+    public function GetInvitationById($invitationId){
+        global $con;
+        $sql = "SELECT i.*, r.id as receipt_id, r.img_path,r.paid_date,r.user_id as provide_help_userid FROM invitations i left outer join user_paid_reciept r on i.id=r.invitation_id where i.id ='".$invitationId."'";
+        $res= mysqli_fetch_assoc(mysqli_query($con,$sql));
         return $res;
     }
     
@@ -509,17 +601,74 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $in_act_users = mysqli_query($con,"select id,full_name from user_details where sponsor_id=".$vsponsorid." and is_active=0");
         return $in_act_users;
     }
-    public function GetProvideHelpersList(){
-        global $con;
-        $ph_list = mysqli_query($con,"select id,full_name,mobile,date_created,login_id from user_details where is_active=0");
-        return $ph_list;
-    }
+    
     public function GetHelpersList(){
         global $con;
         $gh_list = mysqli_query($con,"select up.id,up.full_name,up.mobile,up.amount_req,up.date_req ,ud.login_id  from user_payments as up join user_details as ud on ud.id = up.user_id");
         return $gh_list;
     }
     public function UpdateWalletById($wid,$amnt){
+        global $con;
+        $res="testing";
+        $in_date = self::setDate();
+        $sel_row = mysqli_fetch_assoc(mysqli_query($con,"select count(id) as cnt from user_wallet_concat where user_id=".$wid));
+        if($sel_row['cnt']>0){
+            $get_amnt = mysqli_fetch_assoc(mysqli_query($con,"select total_amount as tot from user_wallet_concat where user_id=".$wid));
+            $tot_amt = $get_amnt['tot'];
+            $w_amt = $tot_amt;
+            if( ($tot_amt<0 && $amnt>0) || ($tot_amt>0 && $amnt<0)){ //Stmt1: if both are not negative or if both are positive no need to add admin wallet
+                $w_amt = $amnt + $tot_amt;
+                if($amnt>0){
+                    if($w_amt>0){ // After tot_amnt and amnt add, if wallet amount is bigger when update amount(i.e $amnt), 
+                        //so in if 'Stmt1:' first condition is satisfied, so initial $tot_amont is negitive and $amnt is positive, so $admin_amt = $tot_amt   
+                        $admin_amt = -($tot_amt);
+                    }else{
+                        $admin_amt = $amnt;
+                    }
+                }else{
+                    if($w_amt>0){
+                        $admin_amt = -($amnt);
+                    }else{
+                        $admin_amt = $tot_amt;
+                    }
+                }
+                $user_details = mysqli_fetch_assoc(mysqli_query($con,"select id,full_name from user_details where id=".$wid));
+                $user_id = $wid;
+                $user_name = $user_details['full_name'];
+                
+                //master credit
+                $admin = self::GetAdminUserDetails();
+                $admin_id = $admin['id'];
+                $admin_name = $admin['full_name'];
+                
+                $txn_ctype = 'CREDIT';
+                $txn_is_done = 1;
+                $txn_ref_cause='REFERRAL_BLOCKED';
+                
+                $wal_ins_qry = "insert into user_wallet_txn(user_id,full_name,amount,txn_type,is_done,cause_type,cause_full_name,cause_user_id) values(?,?,?,?,?,?,?,?)";
+                $wal_ins_stmt = $con->prepare($wal_ins_qry);
+                $wal_ins_stmt->bind_param("isdsissi",$admin_id,$admin_name,$admin_amt,$txn_ctype,$txn_is_done,$txn_ref_cause,$user_name,$user_id);
+                $admin_ins_res = $wal_ins_stmt->execute();
+                if($admin_ins_res)
+                    self::UpdateWalletById($admin_id, $admin_amt);
+            }else{
+                $w_amt  = $tot_amt + $amnt;
+            }
+
+            $upd= "Update user_wallet_concat set total_amount =".$w_amt.", date_updated='".self::getDate()."' where user_id=".$wid;
+            $res = mysqli_query($con,$upd);
+            
+        }else{
+            //id	user_id	total_amount	date_updated	amount_withdrawn	date_withdrawn
+            $ins = "insert into user_wallet_concat values(null,".$wid.",".$amnt.",'".self::getDate()."',0,null)";
+            $res = mysqli_query($con,$ins);
+            // $res = $ins;
+        }
+        
+        return $res;
+    }
+    
+    public function UpdateWalletWithdrawnAmnt($wid,$amnt){
         global $con;
         $res="testing";
         $in_date = self::setDate();
@@ -538,6 +687,21 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         }
         return $res;
     }
+    public function AcceptInvitationPaymentReceived($invitationId,$txn_type,$cause_type){
+        global $con;
+        global $help_amount;
+        $status=self::getInvitationStausByKey("ACCEPTED");
+        
+        $con -> autocommit(FALSE);
+        $invitation = self::GetInvitationById($invitationId);
+        $res = self::UpdateInvitationStatus($status,$invitationId);
+        $wal_ins_res = self::addWalletTxn($_SESSION['userid'], $_SESSION['fname'], $help_amount, $txn_type, 1, $cause_type, $invitation['provide_help_name'],$invitation['provide_help_userid']);
+        $wal_udp_res = self::UpdateWalletWithdrawnAmnt($_SESSION['userid'], -($help_amount));
+        $actin_res = self::ActivateUserById($invitation['provide_help_userid']);
+        $res = $con -> commit();
+        return $res;
+    }
+    
     public function GetAllSpillIds($sponsorId) {
         global $con;
         $spl_qry = "select id,sponsor_id,spill_id,full_name from user_details";
@@ -568,7 +732,20 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         }
         return $tree_data;
     }
-    
+    public function GetUserTree($sponsorId) {
+        $sql_qry = "with recursive cte (id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl,id_path ) as (
+              select id,sponsor_id,spill_id,full_name,mobile,side, is_active, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
+              where  spill_id = $sponsorId 
+              union all
+              select u.id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
+              inner join user_details as u
+                      on cte.id = u.spill_id
+            )
+            select id,sponsor_id,spill_id,full_name,mobile,side,lvl,id_path from cte order by id_path desc ";
+        global $con;
+        $child_count = mysqli_query($con,$sql_qry);
+        return $child_count;
+    }
     public function GetSponsorChilds($sponsorId) {
         $sql_qry = "with recursive cte (id,sponsor_id,spill_id,full_name,side ) as (
               select id,sponsor_id,spill_id,full_name,side from user_details 
@@ -619,7 +796,17 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     }
     
     public function GetChildsByCount($sponsorId) {
+        global $objPlanModel;
+        
         $childs = self::GetChilds($sponsorId);
+        $levels = $objPlanModel->GetLevels();
+        //$level_list = array();
+        $lvl_key_data = array();
+        while($row = $levels->fetch_assoc()) {
+            //array_push($level_list,$row);
+            $key = $row['left'].'-'.$row['right'];
+            $lvl_key_data[$key] = $row;
+        }
         $data = array();
         $key_data = array();
         while($row = $childs->fetch_assoc()) {
@@ -680,6 +867,27 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $del_url= "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&msgid=".$smsid;
         $del_ret = file($del_url);
         return $del_ret;
+    }
+    
+    public function smsGetHelperMsg($receiver_login_id, $helper_name, $helper_login_id, $helper_mobile){
+        $get_help_message = "Hello '".$receiver_login_id."', You will get Help of Rs 1000/- ($14.2) from '".$helper_name."' ('".$helper_login_id."').Please Contact '".$helper_mobile."' .Thanking you www.ymd1000us.com";
+        return $get_help_message;
+    }
+    
+    public function smsProviderHelpMsg($receiver_login_id, $receiver_name, $receiver_mobile){
+        $provide_help_mesage =  "You have to Provide help Rs.1,000/- ($14.2) to ".$receiver_name." (".$receiver_login_id.").Please Contact ".$receiver_mobile.".Thanking you www.ymd1000us.com";
+        return $provide_help_mesage;
+    }
+    
+    public function smsSendInvitations($gh_send_list){
+        foreach ($gh_send_list as $r){
+            foreach ($r['ph_list'] as $ph){
+               $provideHelpMsg = self::smsProviderHelpMsg($r['login_id'], $r['full_name'], $r['mobile']);
+               $getHelpMsg = self::smsGetHelperMsg($r['login_id'], $ph['full_name'], $ph['login_id'], $ph['mobile']);
+               self::sendSms($ph['mobile'], $provideHelpMsg);
+               self::sendSms($r['mobile'], $getHelpMsg);
+            }
+        }
     }
     
     public function validateOTP($login_id, $otp) {
@@ -751,6 +959,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $stmt->close();
         return $res;
     }
+    
     public function isPasswordValid($login_id, $password) {
         global $con;
         $spl_qry = "select count(1)as cnt from user_details where login_id=? and password = ?";
@@ -762,6 +971,76 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $res = mysqli_fetch_assoc($stmt->get_result());
         $stmt->close();
         return $res;
+    }
+    
+    public function blockUser($loginIds) {
+        global $con;
+        $con -> autocommit(FALSE);
+        self::addPenalty($loginIds);
+        $ids  = "('".implode("','", $loginIds)."')";
+        $user_block_qry = "delete from user_details where login_id in ".$ids;
+        $res = mysqli_query($con,$user_block_qry);
+        $del_invi_qry = "delete from invitations where provide_help_id in ".$ids;
+        $res = mysqli_query($con,$del_invi_qry);
+        $con->commit();
+        return $res;
+    }
+    
+    public function addWalletTxn($user_id,$full_name,$amount,$txn_type,$is_done,$cause_type,$cause_full_name,$cause_user_id){
+        global $con;
+        $wal_ins_qry = "insert into user_wallet_txn(user_id,full_name,amount,txn_type,is_done,cause_type,cause_full_name,cause_user_id) values(?,?,?,?,?,?,?,?)";
+        $wal_ins_stmt = $con->prepare($wal_ins_qry);
+        $wal_ins_stmt->bind_param("isdsissi",$user_id,$full_name,$amount,$txn_type,$is_done,$cause_type,$cause_full_name,$cause_user_id);
+        $wal_ins_res = $wal_ins_stmt->execute();
+        $wal_ins_stmt->close();
+        return $wal_ins_res;
+    }
+    
+    public function addPenalty($loginIds) {
+        $ids  = "('".implode("','", $loginIds)."')";
+        global $con;
+        global $user_block_penalty;
+        
+        $txn_is_done = 0;
+        $txn_dtype = 'DEBIT';
+        $txn_ctype = 'CREDIT';
+        $txn_ref_cause = 'REFERRAL_BLOCKED';
+        
+        $sponsor_qry = "select ch.id,ch.full_name,ch.sponsor_id,m.full_name as sponsor_name from user_details ch join user_details m  on ch.sponsor_id = m.id where ch.login_id in".$ids;
+        $sponsor = mysqli_query($con, $sponsor_qry);
+        $admin = self::GetAdminUserDetails();
+        $admin_id = $admin['id']; 
+        $admin_name = $admin['full_name'];
+
+        $wal_ins_qry = "insert into user_wallet_txn(user_id,full_name,amount,txn_type,is_done,cause_type,cause_full_name,cause_user_id) values(?,?,?,?,?,?,?,?)";
+        $wal_ins_stmt = $con->prepare($wal_ins_qry);
+        
+        while ($r = $sponsor->fetch_assoc()) {
+            
+            //parrent debit
+            $sponsor_id = $r['sponsor_id'];
+            $sponsor_name = $r['sponsor_name'];
+            $user_name = $r['full_name'];
+            $user_id = $r['id'];
+            $wal_ins_stmt->bind_param("isdsissi",$sponsor_id,$sponsor_name,$user_block_penalty,$txn_dtype,$txn_is_done,$txn_ref_cause,$user_name,$user_id);
+            $sponsor_ins_res = $wal_ins_stmt->execute();
+            if($sponsor_ins_res){
+                $wal_update_res = self::UpdateWalletById($sponsor_id,$user_block_penalty);
+                /* if($wal_update_res){
+                    $sponsor_tot_amt = mysqli_fetch_assoc(mysqli_query($con,"select total_amount as tot from user_wallet_concat where user_id=".$sponsor_id));
+                    //master credit
+                    $wal_ins_stmt->bind_param("isdsissi",$admin_id,$admin_name,$user_block_penalty,$txn_ctype,$txn_is_done,$txn_ref_cause,$sponsor_name,$sponsor_id);
+                    $admin_ins_res = $wal_ins_stmt->execute();
+                    if($admin_ins_res)
+                        self::UpdateWalletById($admin_id,$user_block_penalty);
+                } */
+                
+            }
+                
+        }
+        //$wal_ins_qry->close();
+        return true;
+        
     }
     #endregion
 }

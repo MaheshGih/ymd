@@ -69,7 +69,7 @@ var network = undefined;
 			}
 			
 			for( var i=0; i<nodes.length;i++){
-				var node = $.extend(true,{},nodes[i]);	
+				var node = $.extend(true,{},nodes[i]);//cloning	
 				var u_edge = $.extend(true,{},edge);
 				for( var j=0; j<nodes.length;j++){
 					var searchNode = nodes[j];
@@ -77,12 +77,12 @@ var network = undefined;
 						u_edge.from = searchNode['id'];
 						u_edge.to = node.id;
 						edges.push(u_edge);
-						if(node.spill_id == master_id ){
+						/*if(node.spill_id == master_id ){
 							var u_edge = $.extend(true,{},edge);
 							u_edge.from = 0;
 							u_edge.to = node.id;
 							edges.push(u_edge);
-						}		
+						}*/		
 					} 
 				}
 				
@@ -101,6 +101,10 @@ var network = undefined;
 			network.on("selectNode", function(properties){
 				var ids = properties.nodes;
 				var nodeEdges = properties.edges;
+				$.each(nodeEdges,function(ind,e){
+					var nodeEdge = visEdges.get(e);
+					console.log(nodeEdge);
+				});
 			    var clickedNodes = visNodes.get(ids);
 			    console.log('clicked nodes:', clickedNodes);
 			    if(nodeEdges.length<=2){

@@ -31,7 +31,7 @@
         <link href="../assets/libs/datatables/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
         <link href="../assets/libs/datatables/buttons.bootstrap4.css" rel="stylesheet" type="text/css" />
         <link href="../assets/libs/datatables/responsive.bootstrap4.css" rel="stylesheet" type="text/css" />
-		<link type="text/css" href="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css" rel="stylesheet" />
+		<link type="text/css" href="../assets/libs/datatables/dataTables.checkboxes.css" rel="stylesheet" />
 
 </head>
 
@@ -108,6 +108,7 @@
                                         <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                             <tr>
+                                            	<td></td>
                                             	<th>Login Id</th>
                                                 <th>Name</th>
                                                 <th>Mobile</th>
@@ -124,7 +125,8 @@
                                                     foreach ($active_childs as $r){
                                             ?>
                                                 <tr>
-                                                   	<td><?php echo $r['login_id'];?></td>
+                                                	<td></td>
+                                                   	<td></td>
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
                                                     <td></td>
@@ -194,7 +196,7 @@
         <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
         <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
         
-		<script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
+		<script type="text/javascript" src="../assets/libs/datatables/dataTables.checkboxes.min.js"></script>
         <!-- Datatables init -->
         <script src="../assets/js/pages/datatables.init.js"></script>
 

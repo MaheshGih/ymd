@@ -36,11 +36,52 @@ class WithdrawModel{
     public function getDateReceived(){return $this->date_received;}
     public function setIsDone($visdone){$this->is_done = $visdone;}
     public function getIsDone(){return $this->is_done;}
-    
-    public function GetRequestHelperList(){
+   
+    public function GetRequestHelpersAndProvideCount(){
         global $con;
-        $gh_list = mysqli_query($con,"select uw.id,uw.full_name,uw.mobile,uw.amount_req,uw.date_req ,ud.login_id from user_withdrawls as uw join user_details as ud on ud.id = uw.user_id");
+        $sql = "select w.*,ud.login_id from (
+                select * from ( 
+                select uw.id,uw.user_id,uw.full_name,uw.mobile,uw.amount_req,uw.date_req,i.invitations
+                from user_withdrawls as uw
+                left join (select uw.id, count(distinct i.id) as invitations
+                from user_withdrawls as uw
+                join invitations i on uw.id = i.withdraw_req_id 
+                where uw.is_done=0 group by(uw.id)
+                ) as i on uw.id = i.id
+                where uw.is_done=0 
+                ) as wi where wi.invitations is null or wi.invitations*1000<wi.amount_req )as w
+                join user_details as ud on ud.id = w.user_id";
+        $gh_list = mysqli_query($con, $sql); 
         return $gh_list;
+    }
+    
+    public function GetRequestHelpers(){
+        $list = self::GetRequestHelpersAndProvideCount();
+        $gh_list = array();
+        while($r = $list->fetch_assoc()) {
+            $invitations = $r['invitations'];
+            $amount_req = $r['amount_req'];
+            $req_invs = 1; 
+            if($invitations){
+                $req = $amount_req - ($invitations * 1000);
+                if($req)
+                $req_invs = $req/1000;
+            }else{
+                $req_invs = $amount_req/1000;
+            }
+            $r = array_merge($r,array('req_invs'=>$req_invs));
+            array_push($gh_list,$r);
+        }
+        return $gh_list;
+    }
+    
+    public function GetProvideHelpersList(){
+        global $con;
+        $sql = "select u.id,u.full_name,u.mobile,u.date_created,u.login_id from user_details u 
+            left join invitations i on  i.provide_help_id = u.login_id
+            where is_active=0 and role='ROLE_USER' and i.id is null";
+        $ph_list = mysqli_query($con, $sql);
+        return $ph_list;
     }
     
     public function GetWithdrwalsByUserId($user_id){

@@ -8,7 +8,9 @@ class PlanModel{
     public $right_pairs = "";
     public $usd_value = "";
     public $inr_value = "";
-
+    public $auto_pool_inr = "";
+    public $has_auto_pool ="";
+    
     public function GetId(){return $this->id;}
     public function SetId($vid){$this->id = $vid;}
     public function GetLevelName(){return  $this->level_name;}
@@ -21,7 +23,12 @@ class PlanModel{
     public function SetUsdValue($usdvalue){$this->usd_value = $usdvalue;}
     public function GetInrValue(){return $this->inr_value;}
     public function SetInrValue($inrvalue){$this->inr_value = $inrvalue;}
-
+    
+    public function GetAutoPoolInr(){return $this->auto_pool_inr;}
+    public function SetAutoPoolInr($inrvalue){$this->auto_pool_inr = $inrvalue;}
+    public function GetHasAutoPool(){return $this->has_auto_pool;}
+    public function SetHasAutoPool($vhas){$this->inr_value = $vhas;}
+    
     public function AddLevel(){
         global $con;
         $ins_qry = "insert into levels values(null,'".self::GetLevelName()."',".self::GetLeftPair().",".self::GetRightPair().",".self::GetUsdValue().",".self::GetInrValue().")";

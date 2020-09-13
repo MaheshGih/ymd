@@ -82,14 +82,22 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Active Users </span>
                 </a>
             </li>
-
+			<?php if($isUser){ ?>
             <li>
                 <a href="inactive_users.php">
                     <i class="fas fa-user-alt-slash "></i>
                     <span> In-Active Users </span>
                 </a>
             </li>
-
+            <?php }?>
+            <?php if($isAdmin || $isEmp){ ?>
+            <li>
+                <a href="inactive_users_admin.php">
+                    <i class="fas fa-user-alt-slash "></i>
+                    <span> In-Active Users </span>
+                </a>
+            </li>
+            <?php }?>
             <li>
                 <a href="invitation.php">
                     <i class=" fas fa-share-alt"></i>
@@ -142,12 +150,12 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Royalty Points </span>
                 </a>
             </li>
-            <li>
+            <!-- <li>
                 <a href="rewards.php">
                     <i class="fas fa-money-bill "></i>
                     <span> Rewards </span>
                 </a>
-            </li>
+            </li> -->
             <li>
                 <a href="reward_users.php">
                     <i class="fas fa-money-bill "></i>

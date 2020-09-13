@@ -1,6 +1,7 @@
 <?php
 include('../include/session.php');
 include("../model/user_model.php");
+include('../model/withdraw_model.php');
 ?>
 <?php
 $uploadOk = 1;
@@ -71,6 +72,35 @@ if(isset($_POST['btnGetProvideHelp'])){
             }
         }
 }
+if(isset($_POST['btnProvideHelp'])){
+    
+    $phlist = $objWithdrawModel->GetProvideHelpersList();
+    $gh_list = $objWithdrawModel->GetRequestHelpers();
+    $ph_list  = array();
+    while($r=mysqli_fetch_assoc($phlist)){
+        array_push($ph_list,$r);
+    }
+    $gh_send_list = array();
+    foreach ($gh_list as $gh_key=>$gh_row){
+        if(empty($ph_list)){
+            break;
+        }
+        $req_invs = $gh_row['req_invs'];
+        $ph_rows = [];
+        foreach (range(1, $req_invs) as $i) {
+            if(empty($ph_list)){
+                break;
+            }
+            $ph_row =  array_shift($ph_list);
+            array_push($ph_rows,$ph_row);
+        }
+        $r = array_merge($gh_row,array('ph_list'=>$ph_rows));
+        array_push($gh_send_list,$r);
+    }
+    $rest = $objUserModel->AddUserInvitations($gh_send_list);
+    $rest = $objUserModel->smsSendInvitations($gh_send_list);
+    echo "<script> location.href='../view/invitation_master.php?=success=invitation';</script>";
+}
 if(isset($_POST['reciverId'])){
         $res_provide_help_user = $objUserModel->GetUserDetailsById($_POST['helperid']);
         $res_get_help_user = $objUserModel->GetUserDetailsById($_POST['gethelperid']);
@@ -110,4 +140,16 @@ if(isset($_POST['changePasswordBtn'])){
         echo "<script> location.href='../view/changepassword.php?=failure=changepassword';</script>";
     }
 }
+
+if(isset($_POST['hdnBlockUsers'])){
+    $userIds = $_POST['userIds'];
+    $loginIds = explode(",",$userIds);
+    $res = $objUserModel->blockUser($loginIds);
+    if($res){
+        echo "<script> location.href='../view/inactive_users_admin.php?success=block&expiryTime=".$_POST['expiryTime']."';</script>";
+    }else{
+        echo "<script> location.href='../view/inactive_users_admin.php?failure=block&expiryTime=".$_POST['expiryTime']."';</script>";
+    }
+}
+
 ?>

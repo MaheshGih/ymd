@@ -44,7 +44,7 @@
                                         </div>
                                         <div class="account-content mt-4">
                                             <div class="text-center">
-                                                <p class="text-muted mb-0 mb-3">Enter your email address and we'll send you an email with instructions to reset your password.  </p>
+                                                <p class="text-muted mb-0 mb-3">Reset Your Password.  </p>
                                             </div>
                                             <form class="form-horizontal" action="../controller/login_controller.php" method="POST">
                                                 <div class="form-group row">

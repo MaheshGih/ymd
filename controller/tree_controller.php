@@ -46,7 +46,13 @@ if(isset($_POST['txtFirstName'])){
     }
 }
 if(isset($_GET['loadspills'])){
-    $tree_data = $objUserModel->GetSponsorChilds($_GET['sponsor_id']);
+    //$tree_data = $objUserModel->GetSponsorChilds($_GET['sponsor_id']);
+    $tree_data = $objUserModel->GetUserTree($_GET['sponsor_id']);
+    $data = array();
+    while($row = $tree_data->fetch_assoc()) {
+        array_push($data,$row);
+    }
+    $tree_data = json_encode($data);
     // set response code - 200 OK
     http_response_code(200);
     echo $tree_data;
