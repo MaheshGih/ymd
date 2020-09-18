@@ -13,7 +13,7 @@ class LoginModel{
     public $spill_id=NULL;
     public $side ="";
     public $date_created ="";
-
+    public $expired_date ="";
     public $user_id="";
     public $pwd="";
     public $status="";
@@ -33,9 +33,18 @@ class LoginModel{
     public function getDate(){ return $this->date_created;}
     public function setDate(){
          date_default_timezone_set("Asia/Calcutta");
-         $this->date_created = date("Y-m-d h:i:s");
+         $this->date_created = date("Y-m-d H:i:s");
     }
-
+    public function getExpiredDate(){ return $this->expired_date;}
+    public function setExpiredDate($vdate){
+        date_default_timezone_set("Asia/Calcutta");
+        $this->expired_date = date("Y-m-d H:i:s",$vdate);
+    }
+    public function getNextYearDate($vdate){
+        date_default_timezone_set("Asia/Calcutta");
+        $futureDate=date('Y-m-d H:i:s', strtotime('+1 year',$vdate));
+        return $futureDate;
+    }
     public function getUserId(){ return $this->user_id;}
     public function setUserId($vUsrId){
        //$this->user_id = self::UserIdGenerator();
@@ -133,8 +142,8 @@ class LoginModel{
 
         global $con;
         
-        $ins_user_det_qry = "INSERT INTO `user_details` (full_name,email,mobile,sponsor_id,spill_id,login_id,password,date_created,is_active,side,reg_verified,status,role) 
-            VALUES('".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".self::getSpillId().",'".self::getUserId()."','".self::getPassword()."','".self::getDate()."',0,'".self::getSide()."',false,'".self::getStatus()."','ROLE_USER')";
+        $ins_user_det_qry = "INSERT INTO `user_details` (full_name,email,mobile,sponsor_id,spill_id,login_id,password,date_created,is_active,side,reg_verified,status,role,expired_date) 
+            VALUES('".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".self::getSpillId().",'".self::getUserId()."','".self::getPassword()."','".self::getDate()."',0,'".self::getSide()."',false,'".self::getStatus()."','ROLE_USER','".self::getExpiredDate()."')";
         $rand_user_id = self::getUserId();
         $check_user_id  = "select count(*) as cnt from user_details where login_id='".$rand_user_id."'";
         $cnt = mysqli_fetch_assoc( mysqli_query($con,$check_user_id));

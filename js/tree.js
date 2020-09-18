@@ -48,7 +48,10 @@ var network = undefined;
 	  
 	  displayNotification(res);
 	  
-	  getLoginId();
+	  
+	  //$('form').parsley().on('field:validated', function() {});//validations
+	  
+	  //getLoginId();
 
       var master_id = $('#master_id').val();
       var full_name = $('#full_name').val();

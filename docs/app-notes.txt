@@ -1,4 +1,27 @@
-+ Html Template :  Adminox
+Use Php project in Eclipse:
+	https://www.instructables.com/id/Debug-Joomla-PHP-With-Eclipse-and-XAMPP-on-Windows/
+	-- open existing project
+	-- shows required perspective
+	-- install PDT tool 
+	   click help->install new software -> enter https://download.eclipse.org/tools/pdt/updates
+	   select PDT
+	 
+	-- Click in the toolbar Window > Preferences > Servers >
+		Select Default PHP Web Server > click Edit:
+	
+	-- Click Server tab:
+		Server Name: Default PHP Web Server
+		Base URL: http://localhost
+		Document Root: C:\xampp\htdocs
+	-- Click Debugger tab:
+		Debugger: XDebug
+		Port: 9000
+	-- Click PathMapping tab > click Add:
+		Path on Server: http://localhost
+		Path in File System: C:\xampp\htdocs
+		Click OK > Finish > OK.
+	
+ Html Template :  Adminox
 	https://coderthemes.com/adminox/layouts/vertical/tables-datatable.html
 	
 Git : MaheshGih/Mahesh0577@

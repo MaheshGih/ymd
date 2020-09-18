@@ -282,7 +282,7 @@ $inactiv_childs = $objUserModel->GetAllUsersByStatus(0, $expiryTime);
 				var time = $(this).val();
 				var url = window.location.href;
 				url = url.split('?');
-				window.location.href = url[0] + "?expiry_time="+time;
+				window.location.href = url[0] + "?expiryTime="+time;
 				
               });
               

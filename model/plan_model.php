@@ -9,7 +9,8 @@ class PlanModel{
     public $usd_value = "";
     public $inr_value = "";
     public $auto_pool_inr = "";
-    public $has_auto_pool ="";
+    public $req_direct_ids = "";
+    public $l_order = "";
     
     public function GetId(){return $this->id;}
     public function SetId($vid){$this->id = $vid;}
@@ -26,22 +27,28 @@ class PlanModel{
     
     public function GetAutoPoolInr(){return $this->auto_pool_inr;}
     public function SetAutoPoolInr($inrvalue){$this->auto_pool_inr = $inrvalue;}
-    public function GetHasAutoPool(){return $this->has_auto_pool;}
-    public function SetHasAutoPool($vhas){$this->inr_value = $vhas;}
+    public function GetReqDirectIds(){return $this->req_direct_ids;}
+    public function SetReqDirectIds($vids){$this->req_direct_ids = $vids;}
+    
     
     public function AddLevel(){
         global $con;
-        $ins_qry = "insert into levels values(null,'".self::GetLevelName()."',".self::GetLeftPair().",".self::GetRightPair().",".self::GetUsdValue().",".self::GetInrValue().")";
+        $order = 0;
+        $max_lvl = mysqli_fetch_assoc(mysqli_query($con,"select max(l_order)as l_order from levels as l"));
+        if(!empty($max_lvl['l_order'])){
+            $order = $max_lvl['l_order']+1;
+        }
+        $ins_qry = "insert into levels(level_name,left_pairs,right_pairs,inr_value,auto_pool_inr,req_direct_ids,l_order) 
+          values('".self::GetLevelName()."',".self::GetLeftPair().",".self::GetRightPair().",".self::GetInrValue().",".self::GetAutoPoolInr().",".self::GetReqDirectIds().",".$order.")";
         $res = mysqli_query($con,$ins_qry);
         return $res;
         //return $ins_qry;
     }
     public function UpdateLevelById($vlid){
         global $con;
-        $upd_qry = "update levels set level_name='".self::GetLevelName()."',left_pairs=".self::GetLeftPair().", right_pairs=".self::GetRightPair().",usd_value=".self::GetUsdValue().",inr_value= ".self::GetInrValue()." where id=".$vlid;
-        //$res = mysqli_query($con,$upd_qry);
-        //return $res;
-        return $upd_qry;
+        $upd_qry = "update levels set level_name='".self::GetLevelName()."',left_pairs=".self::GetLeftPair().", right_pairs=".self::GetRightPair().",inr_value= ".self::GetInrValue().",auto_pool_inr=".self::GetAutoPoolInr().",req_direct_ids=".self::GetReqDirectIds()." where id=".$vlid;
+        $res = mysqli_query($con,$upd_qry);
+        return $res;
     }
     public function GetLevels(){
         global $con;

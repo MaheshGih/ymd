@@ -16,8 +16,12 @@ if(isset($_POST['txtFirstName'])){
     $objLoginModel->setUserId($login_id);
     $objLoginModel->setPassword($_POST['txtPassword']);
     $objLoginModel->setDate();
+    $vdate = $objLoginModel->getDate();
+    $expr_date = $objLoginModel->getNextYearDate($vdate);
+    $objLoginModel->setExpiredDate($expr_date);
     $status = $objUserModel->getStausByKey("REGISTERED");
     $objLoginModel->setStatus($status);
+    
     $res = $objLoginModel->AddUserBasic();
     if($res){
         $otp = $objLoginModel->generateOTP();

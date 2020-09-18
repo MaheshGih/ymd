@@ -138,8 +138,9 @@ include("../include/session.php");
                                 <form class="form-horizontal" action="../controller/user_controller.php" method="post">
                                     <div class="form-group row account-content mt-4">
                                         <div class="col-12">
-                                            <label for="oldTxnPassword" class="col-3 col-form-label">Old Password</label>
-                                            <input type="password" required class="form-control" name="oldTxnPassword" id="oldTxnPassword" />
+                                            <label for="txnOldPassword" class="col-3 col-form-label">Old Password</label>
+                                            
+                                            <input type="password" required class="form-control" name="txnOldPassword" id="txnOldPassword" />
                                             <a href="forgot_txn_password.php" class="text-muted float-right"><small>Forgot your password?</small></a>
                                         </div>
                                         <div class="col-12">
@@ -147,12 +148,12 @@ include("../include/session.php");
                                             <input type="password" required class="form-control" name="txnPassword" id="txnPassword" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="confirmTxnPassword" class="col-4 col-form-label">Conform Password</label>
-                                            <input type="password" required data-parsley-equalto="#txnPassword" class="form-control" name="confirmTxnPassword" id="confirmTxnPassword" />
+                                            <label for="txnConfirmPassword" class="col-4 col-form-label">Conform Password</label>
+                                            <input type="password" required data-parsley-equalto="#txnPassword" class="form-control" name="txnConfirmPassword" id="txnConfirmPassword" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="changeTxnPasswordBtn" class="col-2 col-form-label"></label>
-                                            <button name="changeTxnPasswordBtn" id="changeTxnPasswordBtn" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Change Password
+                                            <label for="txnChangePasswordBtn" class="col-2 col-form-label"></label>
+                                            <button name="txnChangePasswordBtn" id="txnChangePasswordBtn" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Change Password
                                             </button>
                                             
                                         </div>

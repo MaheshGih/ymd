@@ -1,7 +1,7 @@
 <?php 
 include('../include/config.php');
 include('plan_model.php');
-
+include('util_model.php');
 ?>
 <?php
 class UserModel{
@@ -694,11 +694,41 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         
         $con -> autocommit(FALSE);
         $invitation = self::GetInvitationById($invitationId);
+        $withdrawReqId = $invitation['withdraw_req_id'];
         $res = self::UpdateInvitationStatus($status,$invitationId);
         $wal_ins_res = self::addWalletTxn($_SESSION['userid'], $_SESSION['fname'], $help_amount, $txn_type, 1, $cause_type, $invitation['provide_help_name'],$invitation['provide_help_userid']);
         $wal_udp_res = self::UpdateWalletWithdrawnAmnt($_SESSION['userid'], -($help_amount));
+        $wrd_req = self::GetWithdrawReqById($withdrawReqId);
+        $wrd_req_udp = self::UpdateWithdrawRequest($withdrawReqId,$wrd_req['amount_req']);
         $actin_res = self::ActivateUserById($invitation['provide_help_userid']);
         $res = $con -> commit();
+        return $res;
+    }
+    
+    public function GetWithdrawReqById($withdrawReqId){
+        global $con;
+        $sql = "select * from user_withdrawls where id=".$withdrawReqId;
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    
+    public function UpdateWithdrawRequest($withdrawReqId, $reqAmnt){
+        global $con;
+        global $help_amount;
+        global $objUtilModel;
+        $is_done = FALSE;
+        $recAmnt = 0;
+        $inv_sql = "select count(1)as cnt from invitations where withdraw_req_id=".$withdrawReqId." and status='ACCEPTED' ";
+        $invs_res = mysqli_fetch_assoc(mysqli_query($con,$inv_sql));
+        if($invs_res&&$invs_res['cnt']>0){
+            $cnt = $invs_res['cnt'];
+            $recAmnt = $help_amount * $cnt;
+            if($reqAmnt == $recAmnt)
+                $is_done = true;
+        }
+        $cur_date = $objUtilModel->getCurDate($objUtilModel->datetime_format);
+        $upd_sql = "update user_withdrawls set amount_received=".$recAmnt.",date_received='".$cur_date."',is_done=".intval($is_done)." where id=".$withdrawReqId;
+        $res = mysqli_query($con, $upd_sql);
         return $res;
     }
     
@@ -746,6 +776,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $child_count = mysqli_query($con,$sql_qry);
         return $child_count;
     }
+    
     public function GetSponsorChilds($sponsorId) {
         $sql_qry = "with recursive cte (id,sponsor_id,spill_id,full_name,side ) as (
               select id,sponsor_id,spill_id,full_name,side from user_details 
@@ -780,45 +811,218 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $child_count;
     }
     
-    public function GetChilds($sponsorId) {
-        $sql_qry = "with recursive cte (id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl,id_path ) as (
-              select id,sponsor_id,spill_id,full_name,mobile,side, is_active, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
+    public function GetChildsGivenDays($sponsorId,$from_noof_days) {
+        global $housefull_in_days;
+        global $housefull_size;
+        
+        $sql_qry = "with recursive cte (id,login_id,sponsor_id,spill_id,full_name,mobile,side,is_active,date_created,expired_date,royalty_id,lvl,id_path ) as (
+              select id,login_id,sponsor_id,spill_id,full_name,mobile,side, is_active, date_created,expired_date,royalty_id, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
               where  spill_id = $sponsorId and is_active=1
               union all
-              select u.id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
+              select u.id,u.login_id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, u.date_created, u.expired_date,u.royalty_id, cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
               inner join user_details as u
                       on cte.id = u.spill_id where u.is_active=cte.is_active
             )
-            select id,sponsor_id,spill_id,full_name,mobile,side,lvl,id_path from cte order by id_path";
+            select id,login_id,sponsor_id,spill_id,full_name,mobile,side,date_created,expired_date,royalty_id,lvl,id_path from cte order by id_path";
         global $con;
         $child_count = mysqli_query($con,$sql_qry);
         return $child_count;
     }
     
-    public function GetChildsByCount($sponsorId) {
-        global $objPlanModel;
-        
-        $childs = self::GetChilds($sponsorId);
-        $levels = $objPlanModel->GetLevels();
-        //$level_list = array();
-        $lvl_key_data = array();
-        while($row = $levels->fetch_assoc()) {
-            //array_push($level_list,$row);
-            $key = $row['left'].'-'.$row['right'];
-            $lvl_key_data[$key] = $row;
-        }
-        $data = array();
-        $key_data = array();
+    public function GetHousefullUsers($sponsorId) {
+        global $objUtilModel;
+        global $housefull_size;
+        $childs = self::GetChildsGivenDays($sponsorId, 5);
+        $users = array();
+        $housefull_users= array();
+        $cur_date= $objUtilModel->getCurDate($objUtilModel->date_format);
+        $last_date = date('Y-m-d', strtotime("-4 days $cur_date"));
         while($row = $childs->fetch_assoc()) {
-            array_push($data,$row);
+            array_push($users,$row);
             $key_data[$row['id']] = $row;
         }
-        foreach ($data as $ukey => $user){
+        foreach ($users as $ukey => $user){
+            if(!empty($user['royalty_id']))//already added royalty 
+                continue;
+            
+            $parent_path = $user['id_path'].',';
+            $lids = [];
+            
+            foreach ($users as $child){
+                if( ($child['date_created']<=$last_date) || ($user['id'] != $child['sponsor_id']))
+                    continue;
+                
+                $child_path = $child['id_path'];
+                $ind = strpos($child_path, $parent_path);
+                if ($ind !== false){
+                    $len = $ind+strlen($parent_path);
+                    if(! (strlen($child_path)>$len))
+                        continue;
+                       
+                    $sub_path = substr($child_path,$len);
+                    $ids = explode(',',$sub_path);
+                    $lids = array_merge($lids,$ids);
+                }
+            }
+            $lids = array_unique($lids);
+            $cnt = count($lids);
+            if($housefull_size<=$cnt){
+                $housefulled_user = array_merge($user,array('child_cnt'=>count($lids)));
+                array_push($housefull_users,$housefulled_user);
+            }
+        }
+        return $housefull_users;
+    }
+    
+    public function AddRoyalty($users) {
+        global $con;
+        global $objUtilModel;
+        global $help_amount;
+        global $royalty_amnt;
+        global $user_expired_in_months;
+        $con->autoCommit(FALSE);
+        
+        $wal_ins_qry = "insert into user_wallet_txn(user_id,full_name,amount,txn_type,is_done,cause_type,cause_full_name,cause_user_id) values(?,?,?,?,?,?,?,?)";
+        $wal_ins_stmt = $con->prepare($wal_ins_qry);
+        $roy_ins_sql = "INSERT INTO user_royalty (user_id,login_id,full_name,mobile,amount,expired_date,is_expired) values(?,?,?,?,?,?,?)";
+        $roy_ins_stmt = $con->prepare($roy_ins_sql);
+        $royp_ins_sql ="INSERT INTO user_royalty_points (user_id,login_id,point_no,amount,royalty_date,is_done,royalty_id) values(?,?,?,?,?,?,?)";
+        $royp_ins_stmt = $con->prepare($royp_ins_sql);
+        $user_ud_sql = "update user_details set royalty_id=? where login_id=?";
+        $user_ud_tmt = $con->prepare($user_ud_sql);
+        $cur_date= $objUtilModel->getCurDate($objUtilModel->date_format);
+        $cur_date=strtotime($cur_date);
+        foreach ($users as $user){
+            
+            $user_exp_date = strtotime($user['expired_date']);
+            if($cur_date>$user_exp_date) //check user expired or not
+                continue;
+            
+            $user_id=$user['id'];
+            $name=$user['full_name'];
+            $amnt=$help_amount;
+            $txn_type='CREDIT';
+            $txn_is_done =1 ;
+            $txn_ref_cause='HOUSE_FULL';
+            $cause_user_name=null;
+            $cause_user_id=null;
+            $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_type,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
+            $wal_ins_res = $wal_ins_stmt->execute();
+            $amnt=$royalty_amnt;            
+            $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_type,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
+            $wal_ins_res = $wal_ins_stmt->execute();
+            
+            $royaly_points = 1;
+            $royalty_dates = [];
+            foreach(range(1,$user_expired_in_months-1) as $i){
+                $next_date = $objUtilModel->getExactDateAfterMonths($cur_date, $i);
+                //$next_date = strtotime('Y-m-d',$next_date);
+                if($next_date>$user_exp_date)
+                    break;
+                $royaly_points = $i;
+                $next_date = date('Y-m-d',$next_date);
+                array_push($royalty_dates,$next_date);
+            }
+            $login_id = $user['login_id'];
+            $mobile = $user['mobile'];
+            $royal_exp = end($royalty_dates);
+            $is_exp = 0;
+            $amnt = $help_amount + ($royalty_amnt*($royaly_points+1));
+            $roy_ins_stmt->bind_param("isssdsi",$user_id,$login_id,$name,$mobile,$amnt,$royal_exp,$is_exp);
+            $roy_ins_res = $roy_ins_stmt->execute();
+            $royalty_id = $roy_ins_stmt->insert_id;
+            $royalty_point = 1;
+            $is_exp = 1;
+            $cur_date_str =date('Y-m-d',$cur_date); 
+            $royp_ins_stmt->bind_param("isidsii",$user_id, $login_id, $royalty_point, $royalty_amnt, $cur_date_str, $is_exp, $royalty_id);
+            $royp_ins_res = $royp_ins_stmt->execute();
+            
+            foreach ($royalty_dates as $key=>$exp_date){
+                $royaly_point = $key+2;
+                $royp_ins_stmt->bind_param("isidsii",$user_id, $login_id, $royaly_point, $royalty_amnt, $exp_date,$is_exp, $royalty_id);
+                $royp_ins_res = $royp_ins_stmt->execute();    
+            }
+            $user_ud_tmt->bind_param("is",$royalty_id,$login_id);
+            $user_ud_res = $user_ud_tmt->execute();
+            
+        }
+        $res = $con->commit();
+        return $res;
+    }
+    
+    public function GetRoyaltyUsers(){
+        global $con;
+        global $objUtilModel;
+        $royalty_date = $objUtilModel->getCurDate($objUtilModel->date_format);
+        $sql = "select ur.*,rp.id as point_id, rp.amount as royalty_amount,rp.royalty_date,rp.point_no 
+            from user_royalty ur join user_royalty_points rp on ur.id = rp.royalty_id where royalty_date='".$royalty_date."' and rp.is_done=0";
+        $res = mysqli_query($con, $sql);
+        return $res;
+    }
+    
+    public function AddUserRoyalty($users) {
+        global $con;
+        global $objUtilModel;
+        global $help_amount;
+        global $royalty_amnt;
+        global $user_expired_in_months;
+        $con->autoCommit(FALSE);
+        
+        $wal_ins_qry = "insert into user_wallet_txn(user_id,full_name,amount,txn_type,is_done,cause_type,cause_full_name,cause_user_id) values(?,?,?,?,?,?,?,?)";
+        $wal_ins_stmt = $con->prepare($wal_ins_qry);
+        $royp_ud_sql ="update user_royalty_points set is_done=1 where id=?";
+        $royp_ud_sql_stmt = $con->prepare($royp_ud_sql);
+        foreach ($users as $user){            
+            $user_id=$user['id'];
+            $name=$user['full_name'];
+            $amnt=$user['royalty_amount'];
+            $txn_type='CREDIT';
+            $txn_is_done =1 ;
+            $txn_ref_cause='HOUSE_FULL';
+            $cause_user_name=null;
+            $cause_user_id=null;
+            $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_type,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
+            $wal_ins_res = $wal_ins_stmt->execute();
+            $point_id=$user['point_id'];
+            $royp_ud_sql_stmt->bind_param("i",$point_id);
+            $royp_ins_res = $royp_ud_sql_stmt->execute();       
+        }
+        $res = $con->commit();
+        return $res;
+    }
+    public function GetChilds($sponsorId) {
+        $sql_qry = "with recursive cte (id,login_id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl_id,reward_id,lvl,id_path ) as (
+              select id,login_id,sponsor_id,spill_id,full_name,mobile,side, is_active, lvl_id,reward_id, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
+              where  spill_id = $sponsorId and is_active=1
+              union all
+              select u.id,u.login_id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, u.lvl_id,u.reward_id,cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
+              inner join user_details as u
+            		  on cte.id = u.spill_id where u.is_active=cte.is_active
+            )
+            select cte.id,cte.login_id,cte.sponsor_id,cte.spill_id,cte.full_name,cte.mobile,cte.side,cte.lvl_id,cte.id_path,
+            l.level_name,l.left_pairs,l.right_pairs,l.inr_value,l.auto_pool_inr,l.req_direct_ids,l.l_order,
+            reward_id,ur.level_id as reward_lvl_id 
+            from cte left join levels l on cte.lvl_id = l.id 
+            left join user_rewards ur on cte.reward_id = ur.id order by id_path ";
+        global $con;
+        $child_count = mysqli_query($con,$sql_qry);
+        return $child_count;
+    }
+    
+    public function GetChildsByCount($childs,$sponsorId) {
+        $users = array();
+        $key_data = array();
+        while($row = $childs->fetch_assoc()) {
+            array_push($users,$row);
+            $key_data[$row['id']] = $row;
+        }
+        foreach ($users as $ukey => $user){
             $parent_path = $user['id_path'].',';
             $lids = [];
             $rids = [];
-            $l = $r= 0;
-            foreach ($data as $child){
+            $l = $r= $ref_count= 0;
+            
+            foreach ($users as $child){
                 $child_path = $child['id_path'];
                 $ind = strpos($child_path, $parent_path);
                 if ($ind !== false){
@@ -849,12 +1053,101 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             }
             //$user['lsize'] = count($lids);
             //$user['rsize'] = count($rids);
-            $data[$ukey] = array_merge($user,array('lsize'=>count($lids),'rsize'=>count($rids)));
+            $users[$ukey] = array_merge($user,array('lsize'=>count($lids),'rsize'=>count($rids)));
             
         }
-        return $data;
-        
+        return $users;
     }
+    
+    public function rewardUsers($sponsorId){
+        global $objPlanModel;
+        $childs = self::GetChilds($sponsorId);
+        $levels = $objPlanModel->GetLevels();
+        $level_list = array();
+        $lvl_order_data = array();
+        while($row = $levels->fetch_assoc()) {
+            array_push($level_list,$row);
+            $lvl_order_data[$row['l_order']] = $row;
+        }
+        $reward_users = array();
+        $users = self::GetChildsByCount($childs, $sponsorId);
+        foreach ($users as $user){
+            $lorder = $user['l_order'];
+            $next_lvl = $lvl_order_data[$lorder+1];
+            $lsize = $user['lsize'];
+            $rsize = $user['rsize'];
+            $left = $next_lvl['left_pairs'];
+            $right = $next_lvl['right_pairs'];
+            if(($lsize >= $left) && ($rsize >= $right)){
+                $user = array_merge($user,array('next_lvl'=>$next_lvl));
+                array_push($reward_users,$user);
+            }
+        }
+        return $reward_users;
+    }
+    
+    public function AddRewards($users){
+        global $con;
+        $con->autoCommit(FALSE);
+        
+        $wal_ins_qry = "insert into user_wallet_txn(user_id,full_name,amount,txn_type,is_done,cause_type,cause_full_name,cause_user_id) values(?,?,?,?,?,?,?,?)";
+        $wal_ins_stmt = $con->prepare($wal_ins_qry);
+        $rew_sql = "INSERT INTO user_rewards (login_id,full_name,mobile,level_id,amount,auto_pool,status) values(?,?,?,?,?,?,?)";
+        $rew_ins_stmt = $con->prepare($rew_sql);
+        $rew_sel =" select * from user_rewards where login_id=? and level_id =?";
+        $rew_sel_stmt = $con->prepare($rew_sel);
+        
+        $user_sql = "update user_details set lvl_id=?,reward_id=? where login_id=?";
+        $user_stmt = $con->prepare($user_sql);
+        
+        foreach ($users as $user){
+            $next_lvl = $user['next_lvl'];
+            $user_id=$user['id'];
+            $login_id = $user['login_id'];
+            $name=$user['full_name'];
+            $amnt=$next_lvl['inr_value'];
+            $txn_dtype='CREDIT';
+            $txn_is_done =1 ;
+            $txn_ref_cause='REWARD';
+            $cause_user_name=null;
+            $cause_user_id=null;
+            $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_dtype,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
+            $ins_res = $wal_ins_stmt->execute();
+            if($next_lvl['auto_pool_inr']>0){
+                $user_id=$user['id'];
+                $name=$user['full_name'];
+                $amnt=$next_lvl['auto_pool_inr'];
+                $txn_dtype='CREDIT';
+                $txn_is_done =1 ;
+                $txn_ref_cause='AUTO_POOL';
+                $cause_user_name=null;
+                $cause_user_id=null;
+                $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_dtype,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
+                $ins_res = $wal_ins_stmt->execute();
+            }
+            $amnt = $next_lvl['inr_value'] + $next_lvl['auto_pool_inr'];
+            $wal_udp_res = self::UpdateWalletById($user_id,$amnt);
+            
+            //add reward
+            $amnt = $next_lvl['inr_value'];
+            $auto_pool=$next_lvl['auto_pool_inr'];
+            $level_id = $next_lvl['id'];
+            $mobile = $user['mobile'];
+            $status = 1;
+            $rew_ins_stmt->bind_param('sssidds',$login_id,$name,$mobile,$level_id,$amnt,$auto_pool,$status);
+            $rew_ins_res = $rew_ins_stmt->execute();
+            
+            /* $rew_sel_res = $rew_sel_stmt->bind_param('si',$login_id,$level_id);
+            $rew_sel_stmt->execute();
+            $rew_res = mysqli_fetch_assoc($rew_sel_stmt->get_result());
+            $rew_id = $rew_res['id']; */
+            $rew_id = $rew_ins_stmt->insert_id;
+            $user_res = $user_stmt->bind_param('iis',$level_id,$rew_id,$login_id);
+            $user_stmt->execute();
+        }
+        $con->commit();
+    }
+    
     
     public function sendSms($mobile, $msg) {
         $url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".trim($mobile)."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
@@ -1041,6 +1334,17 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         //$wal_ins_qry->close();
         return true;
         
+    }
+    
+    public function GetWalletTxnsByUserId($userId){
+        global $con;
+        $sql = "select * from user_wallet_txn where user_id=? order by cr_date desc";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$userId);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $wal_stmt->close();
+        return $res;
     }
     #endregion
 }

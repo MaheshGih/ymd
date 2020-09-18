@@ -9,6 +9,7 @@ class UserRewardsModel{
     public $full_name = "";
     public $mobile = "";
     public $amount = "";
+    public $auto_pool= "";
     public $date = "";
     public $level_id = "";
     public $status = "";
@@ -23,6 +24,8 @@ class UserRewardsModel{
     public function getMobile(){return $this->mobile;}
     public function setAmount($vamount){$this->amount = $vamount;}
     public function getAmount(){return $this->amount;}
+    public function setAutoPool($vamount){$this->auto_pool = $vamount;}
+    public function getAutoPool(){return $this->auto_pool;}
     public function setDate(){
         date_default_timezone_set("Asia/Calcutta");
         $this->date = date("Y-m-d h:i:s");

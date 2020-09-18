@@ -244,7 +244,7 @@ background:grey;
                                         <label for="username">OTP</label>
                                         <input type="hidden" id="otpMobile" name="otpMobile" />
                                         <input type="hidden" id="otpLoginId" name="otpLoginId"/>
-                                        <input class="form-control" type="text" id="otp" name="otp" placeholder="OTP" required="required"/>
+                                        <input class="form-control" required type="text" id="otp" name="otp" placeholder="OTP" required="required"/>
                                     </div>
                                 </div>
                                 <div class="form-group row text-center mt-2">
@@ -274,22 +274,22 @@ background:grey;
                                         <label for="username">Sponsor Id</label>
                                         <!-- <input type="hidden" id="hdnSide" name="hdnSide" /> -->
                                         <input type="hidden" id="hdnSpillId" name="hdnSpillId" />
-                                        <input class="form-control" type="text" id="txtSponsorId" name="txtSponsorId" required="" placeholder="YMDXXXXXXX" onchange="getSponsorName(this.value)" readonly value="<?php echo $_SESSION['loginid']; ?>">
+                                        <input class="form-control" required type="text" id="txtSponsorId" name="txtSponsorId" required="" placeholder="YMDXXXXXXX" onchange="getSponsorName(this.value)" readonly value="<?php echo $_SESSION['loginid']; ?>">
                                     </div>
                                     <div class="col-6">
                                         <label for="username">Sponsor Name</label>
-                                        <input class="form-control" type="text" id="txtSponsorName" name="txtSponsorName" required="" placeholder=" " readonly value="<?php echo $_SESSION['fname']; ?>">
+                                        <input class="form-control" type="text" required id="txtSponsorName" name="txtSponsorName" required="" placeholder=" " readonly value="<?php echo $_SESSION['fname']; ?>">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-6">
                                         <label for="username">Full Name</label>
-                                        <input class="form-control" type="text" id="txtFirstName" name="txtFirstName" required="" placeholder="Michael Zenaty">
+                                        <input class="form-control" type="text" required id="txtFirstName" name="txtFirstName" required="" placeholder="Michael Zenaty">
                                     </div>
                                     <div class="col-6">
                                         <label for="inputState" class="col-form-label">Chose your Side</label>
-                                        <select id="ddlSide" name="ddlSide" class="form-control">
-                                            <option value="0">Choose</option>
+                                        <select id="ddlSide" name="ddlSide" required class="form-control">
+                                            <option value="" selected="selected">Choose</option>
                                             <option value="left">Left</option>
                                             <option value="right">Right</option>
                                         </select>
@@ -298,17 +298,17 @@ background:grey;
                                 <div class="form-group row">
                                     <div class="col-7">
                                         <label for="emailaddress">Email address</label>
-                                        <input class="form-control" type="email" id="txtEmail" name="txtEmail" required="" placeholder="john@deo.com">
+                                        <input class="form-control" type="email" required id="txtEmail" name="txtEmail" required="" placeholder="john@deo.com">
                                     </div>
                                     <div class="col-5">
                                         <label for="emailaddress">Mobile</label>
-                                        <input class="form-control" type="text" id="txtMobile" name="txtMobile" required="" placeholder="9XXXX XXXXX">
+                                        <input class="form-control" type="text" required id="txtMobile" name="txtMobile" required="" placeholder="9XXXX XXXXX">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-6">
                                         <label for="username">LogIn Id</label>
-                                        <input class="form-control" type="text" id="txtUserId" name="txtUserId" required="" readonly>
+                                        <input class="form-control" type="text" required id="txtUserId" name="txtUserId" required="" readonly>
                                     </div>
                                     <div class="col-6">
                                         <label for="password">Password</label>
@@ -412,13 +412,9 @@ background:grey;
     <script src="../assets/js/pages/jquery.todo.js"></script>
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
-    
+    <script src="../assets/libs/parsleyjs/parsley.min.js"></script>
     <script src="../assets/js/vis/vis-network.min.js"></script>
     <script src="../js/tree.js"></script>
-    
-    <script type="text/javascript">
-     
-    </script>
 </body>
 
 

@@ -134,6 +134,7 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> View User Tree </span>
                 </a>
             </li>
+            <?php if($isAdmin || $isEmp){ ?>
             <li>
                 <a href="activate_users.php">
                     <i class="fas fa-users-cog"></i>
@@ -141,9 +142,8 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Activate Users </span>
                 </a>
             </li>
-			
             <li class="menu-title">Rewards</li>
-
+			
             <li>
                 <a href="royalty_points.php">
                     <i class="fas fa-hand-holding-usd "></i>
@@ -168,6 +168,13 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Housefull Users </span>
                 </a>
             </li>
+            <li>
+                <a href="royalty_users.php">
+                    <i class="fas fa-money-bill "></i>
+                    <span> Royalty Users </span>
+                </a>
+            </li>
+            <?php }?>
         </ul>
 
     </div>

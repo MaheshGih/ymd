@@ -80,10 +80,40 @@ include('../model/wallet_txn_model.php');
     
     if(isset($_POST['submitPBtnName']) && $_POST['submitPBtnName']=='acceptGBtn'){
         $invitationId = $_POST['invitationId'];
-        $txn_type = $objWalletTxnModel->getTxnTypeByKey("CREDIT");
+        $txn_type = $objWalletTxnModel->getTxnTypeByKey("DEBIT");
         $cause_type = $objWalletTxnModel->getCauseByKey("WITHDRAWN");
         
         $res = $objUserModel->AcceptInvitationPaymentReceived($invitationId,$txn_type,$cause_type);
         echo $res;
+    }
+    
+    if(isset($_POST['btnAddRewards'])){
+        $users = $objUserModel->rewardUsers(0);
+        $res = $objUserModel->AddRewards($users);
+        if($res){
+            echo "<script> location.href='../view/reward_users.php?=success=add_reward';</script>";
+        }else{
+            echo "<script> location.href='../view/reward_users.php?=failure=add_reward';</script>";
+        }
+        
+    }
+    if(isset($_POST['btnAddRoyaltyUser'])){
+        $users = $objUserModel->GetHousefullUsers(0);
+        $res = $objUserModel->AddRoyalty($users);
+        if($res){
+            echo "<script> location.href='../view/housefull_users.php?=success=add_royalty';</script>";
+        }else{
+            echo "<script> location.href='../view/housefull_users.php?=failure=add_royalty';</script>";
+        }
+    }
+    
+    if(isset($_POST['btnAddUserRoyalty'])){
+        $users = $objUserModel->GetRoyaltyUsers();
+        $res = $objUserModel->AddUserRoyalty($users);
+        if($res){
+            echo "<script> location.href='../view/housefull_users.php?=success=add_royalty';</script>";
+        }else{
+            echo "<script> location.href='../view/housefull_users.php?=failure=add_royalty';</script>";
+        }
     }
 ?>

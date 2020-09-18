@@ -2,13 +2,11 @@
     // session_start();
     include("../include/session.php");
     include("../model/user_model.php");
-    //include("../model/util_model.php");
-    global $help_amount;
-    global $royalty_amnt;
     
 ?>
 <?php
-$active_childs = $objUserModel->GetHousefullUsers(0);
+$active_childs = $objUserModel->GetRoyaltyUsers();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,7 +107,7 @@ $active_childs = $objUserModel->GetHousefullUsers(0);
                                     	<form class="form-horizontal" id="blockUsersForm" action="../controller/payment_controller.php" method="post">
                                           <div Class="form-group row">
                                                 <div class=" col-2">
-                                                    <input type="submit" name="btnAddRoyaltyUser" id="btnAddRoyaltyUser" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Royality"></input>
+                                                    <input type="submit" name="btnAddUserRoyalty" id="btnAddUserRoyalty" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Royality"></input>
                                                 </div>    
                                         	</div>
                                     	</form>
@@ -121,15 +119,13 @@ $active_childs = $objUserModel->GetHousefullUsers(0);
                                             	<th>Login Id</th>
                                                 <th>Name</th>
                                                 <th>Mobile</th>
-                                                <th>Joined Date</th>
-                                                <th>Donated Amount</th>
-                                                <th>Royalty Amount</th>
-                                                <th>Rolyaty Expires</th>
+                                                <th>Installment No.</th>
+                                                <th>Amount</th>
+                                                <th>Rolyaty Date</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <?php
-                                                $exp_date = $objUtilModel->getExactDateAfterMonths(time(), 12);
                                                 foreach ($active_childs as $r){
                                             ?>
                                                 <tr>
@@ -137,10 +133,9 @@ $active_childs = $objUserModel->GetHousefullUsers(0);
                                                     <td><?php echo $r['login_id'];?></td>
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
-                                                    <td><?php echo date('Y-m-d',strtotime($r['date_created']));?></td>
-                                                    <td><?php echo $help_amount;?></td>
-                                                    <td><?php echo $royalty_amnt;?></td>
-                                                    <td><?php echo $exp_date;?></td>    
+                                                    <td><?php echo $r['point_no'];?></td>
+                                                    <td><?php echo $r['royalty_amount']?></td>
+                                                    <td><?php echo $r['royalty_date'] ?></td>    
                                                 </tr>
                                             <?php
                                                }

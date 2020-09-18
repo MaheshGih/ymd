@@ -10,7 +10,7 @@ include( "../include/session.php");
 <?php
 $withdraw_reqs = $objWithdrawModel->GetWithdrwalsByUserId($_SESSION['userid']);
 $wallet = $objWalletContactModel->GetWalletByUserId($_SESSION['userid']);
-
+$txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -147,7 +147,7 @@ $wallet = $objWalletContactModel->GetWalletByUserId($_SESSION['userid']);
                             <div class="col-md-6">
                                 <div class="card-box table-responsive">
                                     <h4 class="header-title">Withdraw Request List</h4>
-                                    <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <table id="datatable" class=" responsive-datatable table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                         <tr>
                                             <th>Amount</th>
@@ -191,17 +191,37 @@ $wallet = $objWalletContactModel->GetWalletByUserId($_SESSION['userid']);
                             <div class="col-md-6">
                                 <div class="card-box table-responsive">
                                     <h4 class="header-title">Transactions</h4>
-                                    <table id="datatable" class=" datatable table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <table id="responsive-datatable" class=" datatable table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                         <tr>
-                                        	<th>Name</th>
+                                        	<th>Txn User</th>
                                         	<th>Amount</th>
-                                            <th>Type</th>
+                                            <th>Txn</th>
+                                            <th>Txn Type</th>
                                             <th>Date</th>
-                                            <th>Status</th>
+                                            
                                         </tr>
                                         </thead>
                                         <tbody>
+                                            <?php
+                                             while($r = $txns->fetch_assoc()){
+                                               if($r['txn_type'] == 'CREDIT'){
+                                                    //$txnType="Received";
+                                                    $class = "badge-success";
+                                                }else if($r['txn_type'] == 'DEBIT'){
+                                                    //$txnType ="Not Received";
+                                                    $class = "badge-danger";
+                                                }     
+                                            ?>
+                                             <tr>
+                                                <td><?php echo $r['cause_full_name']?></td>
+                                                <td><?php echo $r['amount'];?></td>
+                                                <td><?php echo ucfirst(strtolower($r['cause_type']))?></td>
+                                                <td><span class="badge label-table <?php echo $class;?>"><?php echo ucfirst(strtolower($r['txn_type']));?></span></td>
+                                                <td><?php echo $r['cr_date'];?></td>
+                                                
+                                            </tr>
+                                            <?php } ?>
                                             
                                         </tbody>
                                     </table>

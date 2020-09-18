@@ -141,6 +141,20 @@ if(isset($_POST['changePasswordBtn'])){
     }
 }
 
+if(isset($_POST['changeTxnPasswordBtn'])){
+    $res = $objUserModel->isPasswordValid($_POST['loginId'],$_POST['oldPassword']);
+    if(!$res || $res['cnt']==0){
+        echo "<script> location.href='../view/changepassword.php?=failure=invalid_oldpassword';</script>";
+        return;
+    }
+    $res = $objUserModel->changePassword($_POST['loginId'],$_POST['password']);
+    if($res){
+        echo "<script> location.href='../view/changepassword.php?=success=changepassword';</script>";
+    }else{
+        echo "<script> location.href='../view/changepassword.php?=failure=changepassword';</script>";
+    }
+}
+
 if(isset($_POST['hdnBlockUsers'])){
     $userIds = $_POST['userIds'];
     $loginIds = explode(",",$userIds);

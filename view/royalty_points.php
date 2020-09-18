@@ -116,43 +116,50 @@ if(isset($_GET['id'])){
                             <div class="card-box">
                                 <form class="form-horizontal" action="../controller/plan_controller.php" method="post">
                                     <DIV Class="form-group row">
-                                        <div class="col-4">
-                                            <label for="txtLevelname" class="col-4 col-form-label">Level name</label>
-                                            <div class="col-9">
+                                        <div class="col-3">
+                                            <label for="txtLevelname" class="col-6 col-form-label">Level name</label>
+                                            <div class="col-6">
                                                 <input type="hidden" id="hdnId" name="hdnId" value="<?php echo $id; ?>" />
-                                                <input type="text" class="form-control" name="txtLevelname" id="txtLevelname" value="<?php  echo isset($level['level_name'])?$level['level_name']:"";  ?>"/>
+                                                <input type="text"  required class="form-control" name="txtLevelname" id="txtLevelname" value="<?php  echo isset($level['level_name'])?$level['level_name']:"";  ?>"/>
                                             </div>
                                         </div>
-                                        <div class="col-4">
-                                            <label for="txtLeftPairs" class="col-4 col-form-label">Left Pairs</label>
-                                            <div class="col-9">
-                                                <input type="text" class="form-control" name="txtLeftPairs" id="txtLeftPairs" value="<?php  echo isset($level['left_pairs'])?$level['left_pairs']:"";  ?>" />
+                                        <div class="col-3">
+                                            <label for="txtLeftPairs" class="col-6 col-form-label">Left Pairs</label>
+                                            <div class="col-6">
+                                                <input type="text" data-parsley-type="number" required class="form-control" name="txtLeftPairs" id="txtLeftPairs" value="<?php  echo isset($level['left_pairs'])?$level['left_pairs']:"";  ?>" />
                                             </div>
                                         </div>
-                                        <div class="col-4">
-                                            <label for="txtRightPairs" class="col-4 col-form-label">Right Pairs</label>
-                                            <div class="col-9">
-                                                <input type="text" class="form-control" name="txtRightPairs" id="txtRightPairs" value="<?php  echo isset($level['right_pairs'])?$level['right_pairs']:"";  ?>" />
+                                        <div class="col-3">
+                                            <label for="txtRightPairs" class="col-6 col-form-label">Right Pairs</label>
+                                            <div class="col-6">
+                                                <input type="text" data-parsley-type="number" required class="form-control" name="txtRightPairs" id="txtRightPairs" value="<?php  echo isset($level['right_pairs'])?$level['right_pairs']:"";  ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <label for="txtInrValue" class="col-6 col-form-label">INR</label>
+                                            <div class="col-6">
+                                                <input type="text"  data-parsley-type="number" required class="form-control" name="txtInrValue" id="txtInrValue" value="<?php  echo isset($level['inr_value'])?$level['inr_value']:"";  ?>" />
                                             </div>
                                         </div>
                                     </DIV>
 
                                     <div class="form-group row">
-                                        <div class="col-4">
-                                            <label for="txtUsdValue" class="col-3 col-form-label">USD</label>
-                                            <div class="col-9">
-                                                <input type="text" class="form-control" name="txtUsdValue" id="txtUsdValue" value="<?php  echo isset($level['usd_value'])?$level['usd_value']:"";  ?>" />
+                                        <div class="col-3">
+                                            <label for="txtUsdValue" class="col-6 col-form-label">Auto Pool Amount</label>
+                                            <div class="col-6">
+                                            <input type="text" data-parsley-type="number" required  class="form-control" name="txtAutoPoolInr" id="txtAutoPoolInr" value="<?php  echo isset($level['auto_pool_inr'])?$level['auto_pool_inr']:"";  ?>" />
                                             </div>
                                         </div>
-                                        <div class="col-4">
-                                            <label for="txtInrValue" class="col-3 col-form-label">INR</label>
-                                            <div class="col-9">
-                                                <input type="text" class="form-control" name="txtInrValue" id="txtInrValue" value="<?php  echo isset($level['inr_value'])?$level['inr_value']:"";  ?>" />
+                                        <div class="col-3">
+                                            <label for="txtUsdValue"  data-parsley-type="number" required class="col-6 col-form-label">Required Referral Ids</label>
+                                            <div class="col-6">
+                                                <input type="text" class="form-control" name="txtReqDirectIds" id="txtReqDirectIds" value="<?php  echo isset($level['req_direct_ids'])?$level['req_direct_ids']:"";  ?>" />
                                             </div>
                                         </div>
-                                        <div class="col-4">
-                                            <label for="inputMobile" class="col-3 col-form-label">    </label>
-                                            <div class="col-9">
+                                        
+                                        <div class="col-6">
+                                            <label for="inputMobile" class="col-6 col-form-label">    </label>
+                                            <div class="col-6">
                                                 <button name="<?php echo $btnName; ?>" id="<?php echo $btnName; ?>" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit"><?php echo $btnText; ?></button>
                                             </div>
                                         </div>
@@ -169,6 +176,7 @@ if(isset($_GET['id'])){
                                     <thead>
                                         <tr align="center">
                                             <td></td>
+                                            <td></td>                                            
                                             <th colspan="2">Pairs</th>
                                             <td></td>
                                             <td></td>
@@ -178,8 +186,9 @@ if(isset($_GET['id'])){
                                             <th>Level</th>
                                             <th>Left</th>
                                             <th>Right</th>
-                                            <th>USD (<i class=" fas fa-dollar-sign fas fa-dollar-sign"></i>)</th>
                                             <th>INR (<i class="fas fa-rupee-sign"></i>)</th>
+                                            <th>Auto Pool</th>
+                                            <th>Required Referral Ids</th>
                                             <td>Actions</td>
                                         </tr>
                                     </thead>
@@ -190,8 +199,9 @@ if(isset($_GET['id'])){
                                             <td><?php echo $r['level_name'];?></td>
                                             <td><?php echo $r['left_pairs'];?></td>
                                             <td><?php echo $r['right_pairs'];?></td>
-                                            <td><i class=" fas fa-dollar-sign fas fa-dollar-sign"></i> <?php echo $r['usd_value'];?></td>
                                             <td><i class="fas fa-rupee-sign"></i> <?php echo $r['inr_value'];?></td>
+                                            <td><i class="fas fa-rupee-sign"></i> <?php echo $r['auto_pool_inr'];?></td>
+                                            <td><?php echo $r['req_direct_ids'];?></td>
                                             <td><a href="royalty_points.php?id=<?php echo $r['id']; ?>"><i class="fas fa-pencil-alt"></i></a></td>
                                         </tr>        
                                     <?php
@@ -249,10 +259,17 @@ if(isset($_GET['id'])){
 
     <!-- Datatables init -->
     <script src="../assets/js/pages/datatables.init.js"></script>
-
+	<script src="../assets/libs/parsleyjs/parsley.min.js"></script>
+	
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
-
+    <script type="text/javascript">
+    $(function () {
+	  $('form').parsley().on('field:validated', function() {
+    	  
+	  });
+    });
+    </script>
 </body>
 
 

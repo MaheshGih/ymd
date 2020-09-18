@@ -179,7 +179,7 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid'],);
                                             <span class="text-muted font-13">Hello '<?php echo $_SESSION['loginid']?>', You will get Help of Rs 1000/- ($14.2) from '<?php echo $r['provide_help_name']?>' ('<?php echo $r['provide_help_id']?>').Please Contact '<?php echo $r['provide_mobile']?>' .Thanking you www.ymd1000us.com"</span>
                                         </div>
                                         <div class="clearfix text-left">
-                                        	<button type="button" id="acceptGBtn" acceptGBtn="" name="acceptGBtn" class="btn btn-success"> <i class="fa fa-thumbs-o-up"></i> Accept</button>
+                                        	<button type="button" <?php if ($r['status']!='PAYMENT_DONE') echo 'disabled'?> id="acceptGBtn" acceptGBtn="" name="acceptGBtn" class="btn btn-success"> <i class="fa fa-thumbs-o-up"></i> Accept</button>
                                         	
                                         	<button type="button" id="rejectGBtn" name="rejectGBtn" class="btn btn-danger"> <i class="fa fa-thumbs-o-down"></i>Reject</button>
                                             
