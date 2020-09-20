@@ -37,12 +37,13 @@ class LoginModel{
     }
     public function getExpiredDate(){ return $this->expired_date;}
     public function setExpiredDate($vdate){
-        date_default_timezone_set("Asia/Calcutta");
-        $this->expired_date = date("Y-m-d H:i:s",$vdate);
+        $this->expired_date = $vdate;
     }
     public function getNextYearDate($vdate){
-        date_default_timezone_set("Asia/Calcutta");
-        $futureDate=date('Y-m-d H:i:s', strtotime('+1 year',$vdate));
+        global  $objUtilModel;
+        $vdate = strtotime($vdate);
+        $vexp = $objUtilModel->getExactDateAfterMonths($vdate, 12);
+        $futureDate = $objUtilModel->formatTimeDate($vexp, $objUtilModel->date_format);
         return $futureDate;
     }
     public function getUserId(){ return $this->user_id;}
@@ -231,7 +232,7 @@ class LoginModel{
     public function GetLogUserDetails($vlogid){
         global $con;
         $get_user_id = mysqli_fetch_assoc(mysqli_query($con,"select id as userid from user_details where login_id='".$vlogid."'"));
-        $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid,mobile,role from user_details where id=".$get_user_id['userid'])) ;
+        $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid,mobile,role,expired_date from user_details where id=".$get_user_id['userid'])) ;
         return $get_det;
     }
     /*

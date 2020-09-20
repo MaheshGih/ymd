@@ -1,18 +1,12 @@
 $(document).ready(function(){
-	
     var  res = location.search;
     res = res.split("=");
     displayNotification(res[1],res[2]);
-    
     $('form').parsley().on('field:validated', function() {});
-    
     getLoginId();
-    var txtSponsorId = $('#txtSponsorId').val();
-    if(txtSponsorId)
-    	getSponsorName(txtSponsorId);
 });
 function displayNotification(result,type){
-    if(result == "failure"){
+    if(result == "failure" && type=="insert"){
         Swal.fire({
             type: "error",
             title: "Oops...",
@@ -20,8 +14,15 @@ function displayNotification(result,type){
             confirmButtonClass: "btn btn-confirm mt-2",
             footer: 'Registration failed. Try again later.'
         });
-    }
-    if(result == 'success'){
+    }else if(result == "failure" && type=="loadtree"){
+        Swal.fire({
+            type: "error",
+            title: "Oops...",
+            text: "Failed to load user tree",
+            confirmButtonClass: "btn btn-confirm mt-2",
+            footer: 'Invalid Reference Id'
+        });
+    }else if(result == 'success'){
         Swal.fire({
             title: "Good job!",
             text: getUserMessages(result, type),
@@ -44,21 +45,6 @@ function getLoginId(){
         data:{'getlogid':'1'},
         success:function(res){ 
             $("#txtUserId").val(res);
-        },
-        error:function(err_res){ alert(err_res);}
-    });
-}
-function getSponsorName(sponsorid){
-    $.ajax({
-        url:'../controller/register_controller.php',
-        method:'POST',
-        data:{'sponsorid':sponsorid},
-        success:function(res){ 
-        	var user = JSON.parse(res);
-        	master_id = user['id']
-            full_name = user['full_name'];
-            $("#txtSponsorName").val(full_name);
-            getTreeData(sponsorid,master_id,full_name);
         },
         error:function(err_res){ alert(err_res);}
     });

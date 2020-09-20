@@ -10,6 +10,18 @@ class UtilModel{
         return $date_req;
     }
     
+    function formatStrDate($vdate, $format) {
+        date_default_timezone_set("Asia/Calcutta");
+        $date_req = date($format,strtotime($vdate));
+        return $date_req;
+    }
+    
+    function formatTimeDate($vtime, $format) {
+        date_default_timezone_set("Asia/Calcutta");
+        $date_req = date($format,$vtime);
+        return $date_req;
+    }
+    
     function getExactDateAfterMonths($timestamp, $months){
         $day_current_date            = date('d', $timestamp);
         $first_date_of_current_month = date('01-m-Y', $timestamp);
@@ -24,6 +36,10 @@ class UtilModel{
             $exact_date_after_months = strtotime("-".$days_to_substract." days", $php_date_after_months);
             
             return $exact_date_after_months;
+    }
+    
+    public function generateOTP(){
+        return rand(10,10000);
     }
     
 }

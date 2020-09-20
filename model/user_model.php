@@ -201,6 +201,16 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     
+    public function UpdateMobile($logid,$mobile){
+        global $con;
+        $sql = "update user_details set mobile=? where login_id=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('ss',$mobile,$logid);
+        $res = $wal_stmt->execute();
+        $wal_stmt->close();
+        return $res;
+    }
+    
     public function GetUserDetailsById($vid){
         global $con;
         //$qry = " select * from user_details where id =".$vid;
@@ -212,6 +222,30 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         }else{
             return false;
         }
+    }
+    
+    public function GetUserBasicDetailsById($userId){
+        global $con;
+        $sql = "select id,login_id,full_name,side,sponsor_id,spill_id from user_details where id=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$userId);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $res = $res->fetch_assoc();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetUserBasicDetailsByLoginId($loginId){
+        global $con;
+        $sql = "select id,login_id,full_name,side,sponsor_id,spill_id from user_details where login_id=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('s',$loginId);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $res = $res->fetch_assoc();
+        $wal_stmt->close();
+        return $res;
     }
     
     public function GetUserDetailsByUserId($vid){
@@ -386,7 +420,10 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             
             $sponsor_lvl_2_qry = "select spill_id,sponsor_id,full_name,id,side from user_details where id=".$user_deatils['sponsor_id'];
             $sponsor_lvl_2 = mysqli_fetch_assoc(mysqli_query($con,$sponsor_lvl_2_qry));
-            if(($user_deatils['spill_id'] != $user_deatils['sponsor_id'])){
+            if(($user_deatils['spill_id'] == $user_deatils['sponsor_id'])){
+                $ins_2="insert";
+                $ins_1="";
+            }else{
                 $ins_2="insert";
             }
             if($sponsor_lvl_2['sponsor_id'] != 0){
@@ -1253,9 +1290,45 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     
+    public function resetTxnPassword($login_id, $password) {
+        global $con;
+        $spl_qry = "update user_details set txn_password = ? where login_id=?";
+        $stmt = $con->prepare($spl_qry);
+        $stmt->bind_param("ss",$password, $login_id);
+        $otp = $con->real_escape_string($password);
+        $login_id = $con->real_escape_string($login_id);
+        $res = $stmt->execute();
+        $stmt->close();
+        return $res;
+    }
+    
+    public function ChangeTxnPassword($userId, $oldTxnPassword, $txnPassword){
+        global $con;
+        $sql = "update user_details set txn_password=? where id=? and txn_password=?" ;
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("sis",$txnPassword,$userId,$oldTxnPassword);
+        $res = $stmt->execute();
+        $res = $stmt->affected_rows;
+        $stmt->close();
+        return $res;
+    }
+    
     public function isPasswordValid($login_id, $password) {
         global $con;
         $spl_qry = "select count(1)as cnt from user_details where login_id=? and password = ?";
+        $stmt = $con->prepare($spl_qry);
+        $stmt->bind_param("ss", $login_id,$password);
+        $otp = $con->real_escape_string($password);
+        $login_id = $con->real_escape_string($login_id);
+        $res = $stmt->execute();
+        $res = mysqli_fetch_assoc($stmt->get_result());
+        $stmt->close();
+        return $res;
+    }
+    
+    public function isTxnPasswordValid($login_id, $password) {
+        global $con;
+        $spl_qry = "select count(1)as cnt from user_details where login_id=? and txn_password = ?";
         $stmt = $con->prepare($spl_qry);
         $stmt->bind_param("ss", $login_id,$password);
         $otp = $con->real_escape_string($password);
@@ -1347,6 +1420,162 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     #endregion
+    
+    public function GetTotWalletTxnsByUserIdAndCause($userId,$txn_cause){
+        global $con;
+        $sql = "SELECT sum(amount) as tot FROM user_wallet_txn where user_id=? and cause_type=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('is',$userId,$txn_cause);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $res = $res->fetch_assoc();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetTotWalletTxnsByUserIdAndDate($userId,$txn_cause,$cur_date){
+        global $con;
+        $sql = "SELECT sum(amount) as tot FROM user_wallet_txn where user_id=? and cause_type=? and cr_date=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('iss',$userId,$txn_cause,$cur_date);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $res = $res->fetch_assoc();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetRefCountByUserId($userId){
+        global $con;
+        $sql = "select count(id) as tot from user_details where sponsor_id=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$userId);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $res = $res->fetch_assoc();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetTotPendingWithdrawAmntByUserId($userId){
+        global $con;
+        $sql = "select sum(amount_req-amount_received)as tot from user_withdrawls where  user_id = ? and is_done=0";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$userId);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $res = $res->fetch_assoc();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetTotWithdrawnAmntByUserId($userId){
+        global $con;
+        $sql = "select sum(amount_received) as tot from user_withdrawls where user_id = ?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$userId);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $res = $res->fetch_assoc();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetUsersCountByMasterId($masterId,$isActive){
+        global $con;
+        $sql = "with recursive cte (id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl,id_path ) as (
+              select id,sponsor_id,spill_id,full_name,mobile,side, is_active, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
+              where  spill_id = ? and is_active=?
+              union all
+              select u.id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
+              inner join user_details as u
+                      on cte.id = u.spill_id
+            )
+            select id,sponsor_id,spill_id,full_name,mobile,side,lvl,id_path from cte order by id_path desc";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('ii',$masterId,$isActive);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetLeftAndRightChildCount($childs,$sponsorId) {
+        $users = array();
+        $key_data = array();
+        while($row = $childs->fetch_assoc()) {
+            array_push($users,$row);
+            $key_data[$row['id']] = $row;
+        }
+        $parent_path = $sponsorId.',';
+        $lids = [];
+        $rids = [];
+        $l = $r= $ref_count= 0;
+        foreach ($users as $child){
+            $child_path = $child['id_path'];
+            $ids = explode(',',$child_path);
+            if(($l == 0 && $ids[0] != $r) || ($r == 0 && $ids[0] != $l)){
+                $imidiate_child = $key_data[$ids[0]];
+                if($imidiate_child['spill_id'] == $sponsorId){
+                    if($imidiate_child['side'] == 'left'){
+                        $l = $imidiate_child['id'];
+                    }else if($imidiate_child['side'] == 'right'){
+                        $r = $imidiate_child['id'];
+                    }
+                }
+            }
+            if($l == $ids[0] ){
+                $lids = array_merge($lids,$ids);
+                $lids = array_unique($lids);
+            }
+            if($r == $ids[0]){
+                $rids = array_merge($rids,$ids);
+                $rids = array_unique($rids);
+            }
+        }
+        $counts = array('cnt'=>$childs->num_rows,'lsize'=>count($lids),'rsize'=>count($rids));
+        return $counts;
+    }
+    
+    public function GetUserDashboardMetrics($userId){
+        global $con;
+        global $objUtilModel;
+        
+        $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
+        $user = self::GetUserDetailsByUserId($userId);
+        $tot_amount = mysqli_fetch_assoc(mysqli_query($con,"SELECT total_amount FROM `user_wallet_concat` where user_id=".$userId));
+        // get total sponsored users
+        
+        // get total  users based on spilling
+        // get total transactions
+        $tot_trans = mysqli_fetch_assoc(mysqli_query($con,"SELECT count(trans_id) as tottrans FROM `user_paid_reciept` where user_id=".$userId));
+   
+        $todayMyRefIncome = self::GetTotWalletTxnsByUserIdAndDate($userId, "REFERRAL",$cur_date);
+        $todayMyLVLIncome = self::GetTotWalletTxnsByUserIdAndDate($userId, "LEVEL",$cur_date);
+        $myReferralTot = self::GetRefCountByUserId($userId);
+        $myRoyalIncome = self::GetTotWalletTxnsByUserIdAndCause($userId, "HOUSE_FULL");
+        $totPendingWithdrawAmnt = self::GetTotPendingWithdrawAmntByUserId($userId);
+        $totWithdrawnAmnt = self::GetTotWithdrawnAmntByUserId($userId);
+        $totRewardAmnt = self::GetTotWalletTxnsByUserIdAndCause($userId, "REWARD");
+        $totRewardAmnt = self::GetTotWalletTxnsByUserIdAndCause($userId, "REWARD");
+        $totAutopoolIncome= self::GetTotWalletTxnsByUserIdAndCause($userId, "AUTO_POOL");
+        $childs = self::GetUsersCountByMasterId($userId,1);
+        $childCount = self::GetLeftAndRightChildCount($childs, $userId);
+        $res = array (
+            "tot_amount" => $tot_amount['total_amount'], 
+            "tot_trans"=>$tot_trans['tottrans'],
+            "todayMyRefIncome"=>$todayMyRefIncome['tot'], 
+            "todayMyLVLIncome"=>$todayMyLVLIncome['tot'],
+            "myReferralTot"=>$myReferralTot['tot'],
+            "myRoyalIncome"=>$myRoyalIncome['tot'],
+            "totPendingWithdrawAmnt"=>$totPendingWithdrawAmnt['tot'],
+            "totWithdrawnAmnt"=>$totWithdrawnAmnt['tot'],
+            "totRewardAmnt"=>$totRewardAmnt['tot'],
+            "totAutopoolIncome"=>$totAutopoolIncome['tot'],
+            "childCount"=>$childCount
+        );
+        return $res;
+    }
 }
 $objUserModel =  new UserModel();
 ?>

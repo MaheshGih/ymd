@@ -51,7 +51,7 @@ var network = undefined;
 	  
 	  //$('form').parsley().on('field:validated', function() {});//validations
 	  
-	  //getLoginId();
+	  getLoginId();
 
       var master_id = $('#master_id').val();
       var full_name = $('#full_name').val();
@@ -59,7 +59,9 @@ var network = undefined;
 	  $.ajax({
     	url: "../controller/tree_controller.php?loadspills=loadspills&sponsor_id="+master_id, 
     	success: function(result){
-    		var users = JSON.parse(result);
+    		var res = JSON.parse(result);
+    		var master = res.master;
+    		var users = res.tree;
 			var nodes = [{id:0, master_id:master_id, label:full_name}];
 			var edges = []; 
 			var edge = { from : undefined, to : undefined};

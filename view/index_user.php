@@ -4,12 +4,8 @@
     include("../model/user_model.php");
     include("../model/wallet_model.php");
     
-    $wallet = $objWalletContactModel->GetWalletByUserId($_SESSION['userid']);
-    $tot_con =  $objUserModel->GetTotalDetails($_SESSION['userid']);
-    $tot_det = explode('-',$tot_con);
     $user_list = $objUserModel->GetRecentUsers();
-    $tot_invitation = $objUserModel->GetTotalInvitations();
-    $tot_activ_users = $objUserModel->GetActiveUsersCount();
+    $metrics = $objUserModel->GetUserDashboardMetrics($_SESSION['userid']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,7 +65,7 @@
 						
 						<li>
 
-                            <h6 style="color:#FFFFFF;">Your Membership is expired on 01 July 2021</h6>
+                            <h6 style="color:#FFFFFF;">Your Membership is expires in <?php echo $_SESSION['expiredin'];?></h6>
                         
                     </li>
 
@@ -105,7 +101,7 @@
             </div>
             <div class="col-md-2 col-xs-12">
                 <div id="divreward" style="display: none">
-                    <img src="#" id="imgreward" style="width: 200px; padding-bottom: 20px; padding-top: 0x; margin: 0 auto; text-align: center;" class="img-responsive ">
+                    <img id="imgreward" style="width: 200px; padding-bottom: 20px; padding-top: 0x; margin: 0 auto; text-align: center;" class="img-responsive ">
                 </div>
             </div>
             <div class="col-md-8 col-xs-12">
@@ -201,7 +197,7 @@
                                         </div>
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Wallet Balance</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $metrics['tot_amount']; ?></span></h3>
                                             <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
                                         </div>
                                     </div>
@@ -218,7 +214,7 @@
 
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Total Users </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $metrics['childCount']['cnt']; ?></span></h3>
                                             <p class="m-0">Jan - Feb 2020</p>
                                         </div>
                                     </div>
@@ -235,7 +231,7 @@
 
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Total Transactions</p>
-                                            <h3 class="font-weight-medium my-2"><span data-plugin="counterup"><?php echo $tot_det[2]; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2"><span data-plugin="counterup"><?php echo $metrics['tot_trans']; ?></span></h3>
                                             <p class="m-0">Jan - Feb 2020</p>
                                         </div>
                                     </div>
@@ -255,7 +251,7 @@
                                         </div>
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Today My Direct Income</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $metrics['todayMyRefIncome']; ?></span></h3>
                                             <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
                                         </div>
                                     </div>
@@ -272,7 +268,7 @@
 
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Today My Indirect Income </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $metrics['todayMyLVLIncome']; ?></span></h3>
                                             <p class="m-0">Jan - Feb 2020</p>
                                         </div>
                                     </div>
@@ -290,7 +286,7 @@
 
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">My Direct Members </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $metrics['myReferralTot']; ?></span></h3>
                                             <p class="m-0">Jan - Feb 2020</p>
                                         </div>
                                     </div>
@@ -309,7 +305,7 @@
                                         </div>
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">My Royality Income</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $metrics['myRoyalIncome']; ?></span></h3>
                                             <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
                                         </div>
                                     </div>
@@ -326,7 +322,7 @@
 
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Pending Withdraw Income </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $metrics['totPendingWithdrawAmnt']; ?></span></h3>
                                             <p class="m-0">Jan - Feb 2020</p>
                                         </div>
                                     </div>
@@ -343,7 +339,7 @@
 
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Total Withdraws</p>
-                                            <h3 class="font-weight-medium my-2"><span data-plugin="counterup"><?php echo $tot_det[2]; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2"><span data-plugin="counterup"><?php echo $metrics['totWithdrawnAmnt']; ?></span></h3>
                                             <p class="m-0">Jan - Feb 2020</p>
                                         </div>
                                     </div>
@@ -368,7 +364,7 @@
                                         </div>
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Matching Rewards Income</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $metrics['totRewardAmnt']; ?></span></h3>
                                             <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
                                         </div>
                                     </div>
@@ -385,7 +381,7 @@
 
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Right Team </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $metrics['childCount']['rsize']; ?></span></h3>
                                             <p class="m-0">Jan - Feb 2020</p>
                                         </div>
                                     </div>
@@ -402,7 +398,7 @@
 
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Left Team</p>
-                                            <h3 class="font-weight-medium my-2"><span data-plugin="counterup"><?php echo $tot_det[2]; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2"><span data-plugin="counterup"><?php echo $metrics['childCount']['lsize']; ?></span></h3>
                                             <p class="m-0">Jan - Feb 2020</p>
                                         </div>
                                     </div>
@@ -412,23 +408,9 @@
                         </div>
                        
 
-                        <div class="row">
 
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-currency-ils avatar-title font-30 text-white"></i>
-                                        </div>
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Fund Withdraws</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h3>
-                                            <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
+
+                        <div class="row">
 
                             <div class="col-xl-4 col-sm-4">
                                 <div class="card-box widget-box-two widget-two-custom ">
@@ -439,7 +421,7 @@
 
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">YMD AutoPool Income </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
+                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $metrics['totAutopoolIncome']; ?></span></h3>
                                             <p class="m-0">Jan - Feb 2020</p>
                                         </div>
                                     </div>
@@ -465,117 +447,6 @@
                             <!-- end col -->
                         </div>
                         <!-- end row --> 
-</div>
-
-
-                        <div class="row">
-
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-currency-inr avatar-title font-30 text-white"></i>
-                                        </div>
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Matching Rewards Income</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h3>
-                                            <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom ">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-hand-right avatar-title font-30 text-white"></i>
-                                        </div>
-
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Right Team </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
-                                            <p class="m-0">Jan - Feb 2020</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom ">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-hand-left avatar-title font-30 text-white"></i>
-                                        </div>
-
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Left Team</p>
-                                            <h3 class="font-weight-medium my-2"><span data-plugin="counterup"><?php echo $tot_det[2]; ?></span></h3>
-                                            <p class="m-0">Jan - Feb 2020</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-                        </div>
-
-
-
-
-
-
-
-                        <div class="row">
-
-                            <div class="col-xl-8 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-currency-ils avatar-title font-30 text-white"></i>
-                                        </div>
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">Fund Withdraws</p>
-                                            <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h3>
-                                            <p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-
-                            <div class="col-xl-4 col-sm-4">
-                                <div class="card-box widget-box-two widget-two-custom ">
-                                    <div class="media">
-                                        <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                            <i class="mdi mdi-currency-cny avatar-title font-30 text-white"></i>
-                                        </div>
-
-                                        <div class="wigdet-two-content media-body">
-                                            <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics">YMD AutoPool Income </p>
-                                            <h3 class="font-weight-medium my-2"> <span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h3>
-                                            <p class="m-0">Jan - Feb 2020</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-
-                            
-                        </div>
-                        <!-- end row --> 
-</div>
-
-
-
-
-
-
-
-
-
-
                        
                         <div class="row">
                             <div class="col-xl-6 col-lg-12">
@@ -624,26 +495,7 @@
                             </div>
                             <!-- end col -->
                             <div class="col-xl-6 col-lg-6">
-                                <div class="row">
-                                    <div class="col-xl-12 col-lg-12">
-                                        <div class="card-box widget-box-two widget-two-custom ">
-                                            <div class="media">
-                                                <div class="avatar-lg rounded-circle bg-info widget-two-icon align-self-center">
-                                                    <i class="mdi mdi-human-handsup avatar-title font-30 text-white"></i>
-                                                </div>
-
-                                                <div class="wigdet-two-content media-body">
-                                                    <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics"> Total Active Visitors</p>
-                                                    <h3 class="font-weight-medium my-2">
-                                                        <span data-plugin="counterup"><?php echo $tot_activ_users; ?></span>
-                                                    </h3>
-                                                    <p class="m-0"><?php  echo "Till ".date('M-Y');  ?></p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
+                                
                                 <div class="row">
                                     <div class="col-xl-12 col-lg-12">
                                         <div class="card-box widget-box-two widget-two-custom ">
@@ -652,9 +504,9 @@
                                                     <i class="mdi mdi-email avatar-title font-30 text-white"></i>
                                                 </div>
                                                 <div class="wigdet-two-content media-body">
-                                                    <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics"> Total Invitations</p>
+                                                    <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics"> </p>
                                                     <h3 class="font-weight-medium my-2">
-                                                        <span data-plugin="counterup"><?php echo $tot_invitation; ?></span>
+                                                        <span data-plugin="counterup"><?php  ?></span>
                                                     </h3>
                                                     <p class="m-0"><?php echo "Till ".date('M-Y'); ?></p>
                                                 </div>
@@ -715,7 +567,6 @@
         <script src="../assets/js/pages/dashboard.init.js"></script>
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
-        <script src="../assets/js/util.js"></script>
        	<script>   	
             $(document).ready(function(){
                  var  res = location.search;

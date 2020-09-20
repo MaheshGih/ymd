@@ -1,7 +1,9 @@
 <?php
 include('../include/session.php');
-include("../model/user_model.php");
+include("../model/login_model.php");
 include('../model/withdraw_model.php');
+include('../include/sms.php');
+
 ?>
 <?php
 $uploadOk = 1;
@@ -9,6 +11,48 @@ if(isset($_POST['getuserdata'])){
         $res = $objUserModel->GetUserDetails($_SESSION['loginid']);
         echo json_encode($res);
 }
+
+if(isset($_POST['btnSearchUserData'])){
+    $res = $objUserModel->GetUserDetails($_POST['loginId']);
+    echo json_encode($res);
+}
+
+if(isset($_POST['btnMobileUpdateOtpValidate'])){
+    $otp = $_POST['otp'];
+    $loginId = $_POST['txtLoginId'];
+    $mobile = $_POST['txtMobile'];
+    $res = $objUserModel->validateOTP($loginId, $otp);
+    if($res){
+        $res = $objUserModel->UpdateMobile($loginId,$mobile);
+        $objSMS->sendMobileUpdated($mobile, $loginId);
+        if($res){
+            echo "<script> location.href='../view/users.php?=success=updatemobile';</script>";
+        }else{
+            echo "<script> location.href='../view/users.php?=failure=updatemobile';</script>";
+        }
+    }else{
+        echo "<script> location.href='../view/mobileupdate_otp.php?=failure=mobileOtpValidate';</script>";
+    }
+    
+}
+
+if(isset($_POST['btnEditMobile'])){
+    //$res = $objUserModel->UpdateMobile($_POST['txtLoginId'],$_POST['txtMobile']);
+    $loginId = $_POST['txtLoginId'];
+    $mobile = $_POST['txtMobile'];
+    $otp = $objUtilModel->generateOTP();
+    $objSMS->sendUpdateMobileOTP($mobile, $otp, $loginId);
+    $res = $objUserModel->updateUserOTP($loginId,$otp);
+    $mobileEnd = substr($mobile, -3);
+    $smsmsg = 'We have send an OTP to your registered mobile number *******'.$mobileEnd.' for Verification';
+    
+    if($res){
+        echo "<script> location.href='../view/mobileupdate_otp.php?msg=".$smsmsg."&mobile=".$mobile."&login_id=".$loginId."';</script>";
+    }else{
+        echo "<script> location.href='../view/users.php?=failure=updatemobile';</script>";
+    }
+}
+
 if(isset($_POST['btnSendInvitation'])){
     $provide_help = $_POST['txtProvideHelp'];
     $msg = $_POST['txtMessage'];    //Message Here
@@ -142,16 +186,49 @@ if(isset($_POST['changePasswordBtn'])){
 }
 
 if(isset($_POST['changeTxnPasswordBtn'])){
-    $res = $objUserModel->isPasswordValid($_POST['loginId'],$_POST['oldPassword']);
-    if(!$res || $res['cnt']==0){
-        echo "<script> location.href='../view/changepassword.php?=failure=invalid_oldpassword';</script>";
-        return;
-    }
-    $res = $objUserModel->changePassword($_POST['loginId'],$_POST['password']);
+    $res = $objUserModel->changeTxnPassword($_SESSION['userid'],$_POST['oldTxnPassword'], $_POST['txnPassword'],);
     if($res){
-        echo "<script> location.href='../view/changepassword.php?=success=changepassword';</script>";
+        echo "<script> location.href='../view/changepassword.php?=success=txn-changepassword';</script>";
     }else{
-        echo "<script> location.href='../view/changepassword.php?=failure=changepassword';</script>";
+        echo "<script> location.href='../view/changepassword.php?=failure=txn-changepassword';</script>";
+    }
+}
+
+if(isset($_POST['forgotTxnPassOTPSendBtn'])){    
+    $mobile = $_POST['mobile'];
+    $loginId = $_SESSION['loginid'];
+    $res = $objLoginModel->IsUserExist($loginId,$mobile);
+    if($res){
+        $otp = $objUtilModel->generateOTP();
+        $objSMS->sendForgotTxnPasswordOTP($mobile, $otp, $loginId);
+        $res = $objUserModel->updateUserOTP($login_id,$otp);
+        $mobileEnd = substr($mobile, -3);
+        $smsmsg = 'We have send an OTP to your registered mobile number *******'.$mobileEnd.' for Verification';
+        echo "<script> location.href='../view/forgot_txn_password_otp.php?success=OTPValidate&msg=".$smsmsg."';</script>";
+    }else{
+        echo "<script> location.href='../view/forgot_txn_password.php?=failure=invalid';</script>";
+    }
+}
+
+if(isset($_POST['forgotTxnPassOTPValidateBtn'])){
+    $otp = $_POST['otp'];
+    $loginId = $_SESSION['loginid'];
+    $res = $objUserModel->validateOTP($loginId, $otp);
+    if($res){
+        $msg = "OTP verified successfully.";
+        echo "<script> location.href='../view/reset_forgot_txn_password.php?success=OTPValidated&msg=".$msg."&login_id=".$login_id."';</script>";
+    }else{
+        $msg = "Invalid otp.";
+        echo "<script> location.href='../view/forgot_txn_password_otp.php?=failure=OTPValidationFailed=msg=".$msg."';</script>";
+    }
+}
+
+if(isset($_POST['resetTxnPasswordBtn'])){
+    $res = $objUserModel->resetTxnPassword($_SESSION['loginid'],$_POST['txnPassword']);
+    if($res){
+        echo "<script> location.href='../view/reset_forgot_txn_password.php?=success=resettxnpassword';</script>";
+    }else{
+        echo "<script> location.href='../view/reset_forgot_txn_password.php?=failure=resettxnpassword';</script>";
     }
 }
 
@@ -165,5 +242,6 @@ if(isset($_POST['hdnBlockUsers'])){
         echo "<script> location.href='../view/inactive_users_admin.php?failure=block&expiryTime=".$_POST['expiryTime']."';</script>";
     }
 }
+
 
 ?>

@@ -32,5 +32,7 @@ function getUserMessages(result, type) {
         return 'Failed';
     }else if(result == "success" && type == "resetpassword") {
     	return 'Password reset successfully!. Please login with new password.';
+    }else if(result == "success" && type == "OTPValidated") {
+    	return 'OTP verified successfully. Please login your username and password';
     }
 }

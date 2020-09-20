@@ -49,15 +49,7 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <!-- <span class="menu-arrow"></span> -->
                 </a>
             </li>
-            <?php if($isAdmin){ ?>
-			<li>
-                <a href="employees.php">
-                    <i class=" fas fa-file-alt "></i>
-                    <span> Employees </span>
-                    <!-- <span class="menu-arrow"></span> -->
-                </a>
-            </li>
-            <?php } ?>
+            
             <!-- <li>
                 <a href="upload_reciept.php">
                     <i class=" fas fa-cloud-upload-alt "></i>
@@ -82,37 +74,20 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Active Users </span>
                 </a>
             </li>
-			<?php if($isUser){ ?>
             <li>
                 <a href="inactive_users.php">
                     <i class="fas fa-user-alt-slash "></i>
                     <span> In-Active Users </span>
                 </a>
             </li>
-            <?php }?>
-            <?php if($isAdmin || $isEmp){ ?>
-            <li>
-                <a href="inactive_users_admin.php">
-                    <i class="fas fa-user-alt-slash "></i>
-                    <span> In-Active Users </span>
-                </a>
-            </li>
-            <?php }?>
             <li>
                 <a href="invitation.php">
                     <i class=" fas fa-share-alt"></i>
                     <span> Send Invitations </span>
                 </a>
             </li>
-			<?php if($isAdmin || $isEmp){ ?>
-            <li>
-                <a href="invitation_master.php">
-                    <i class=" fas fa-hands-helping "></i>
-                    <span> Get/Provide Help </span>
-                </a>
-            </li>
-			<?php }?>
-            <li class="menu-title">Finance</li>
+			
+			<li class="menu-title">Finance</li>
 
             <li>
                 <a href="wallet.php">
@@ -123,18 +98,42 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
             <li>
                 <a href="transactions.php">
                     <i class=" fas fa-chart-line "></i>
-                    <span>  Transactions </span>
+                    <span>  Invitations </span>
                 </a>
             </li>
+            
             <li class="menu-title">Tree</li>
-
             <li>
                 <a href="tree.php">
                     <i class=" fab fa-mendeley "></i>
                     <span> View User Tree </span>
                 </a>
             </li>
+            
             <?php if($isAdmin || $isEmp){ ?>
+            <li class="menu-title">Administartion</li>
+			<?php if($isAdmin){ ?>
+			<li>
+                <a href="employees.php">
+                    <i class=" fas fa-users"></i>
+                    <span> Admin Team </span>
+                    <!-- <span class="menu-arrow"></span> -->
+                </a>
+            </li>
+            <?php }?>
+            <li>
+                <a href="royalty_points.php">
+                    <i class="fas fa-hand-holding-usd "></i>
+                    <span> Royalty Points </span>
+                </a>
+            </li>
+            <li>
+                <a href="users.php">
+                    <i class="fas fa-users-cog"></i>
+                    <!-- <span class="badge badge-warning badge-pill float-right">12</span> -->
+                    <span> Users </span>
+                </a>
+            </li>
             <li>
                 <a href="activate_users.php">
                     <i class="fas fa-users-cog"></i>
@@ -142,20 +141,19 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Activate Users </span>
                 </a>
             </li>
-            <li class="menu-title">Rewards</li>
-			
             <li>
-                <a href="royalty_points.php">
-                    <i class="fas fa-hand-holding-usd "></i>
-                    <span> Royalty Points </span>
+                <a href="inactive_users_admin.php">
+                    <i class="fas fa-user-alt-slash "></i>
+                    <span> Block Users </span>
                 </a>
             </li>
-            <!-- <li>
-                <a href="rewards.php">
-                    <i class="fas fa-money-bill "></i>
-                    <span> Rewards </span>
+            <li>
+                <a href="invitation_master.php">
+                    <i class=" fas fa-hands-helping "></i>
+                    <span> Get/Provide Help </span>
                 </a>
-            </li> -->
+            </li>
+			
             <li>
                 <a href="reward_users.php">
                     <i class="fas fa-money-bill "></i>

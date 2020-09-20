@@ -96,7 +96,7 @@ $employees = $objUserModel->GetEmployees();
                                             <li class="breadcrumb-item active">Active Users</li>
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Referrals</h4>
+                                    <h4 class="page-title">Users</h4>
                                 </div>
                             </div>
                         </div>     
@@ -105,13 +105,13 @@ $employees = $objUserModel->GetEmployees();
                                 <div class="col-12">
                                     <div class="card-box table-responsive">
                                     	<div class="col-xl-8 col-sm-8">
-                                        <h4 class="header-title">ACTIVE USERS LIST</h4>
+                                        <!-- <h4 class="header-title">USERS</h4> -->
                                         </div>
                                         <div class="">
                                         	<a class="pull-right btn btn-success" href="add_emp.php">Add Emp</a>
                                         </div>
                                         
-                                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                             <tr>
                                             	<th>Login Id</th>

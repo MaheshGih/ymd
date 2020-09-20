@@ -91,7 +91,8 @@ include("../include/session.php");
                                         <li class="breadcrumb-item">
                                             <a href="javascript: void(0);">Change Password</a>
                                         </li>
-                                        <li class="breadcrumb-item active"></li>
+                                        <li class="breadcrumb-item active"><a href="forgot_txn_password.php">Forgot Txn Password</a></li>
+                                        
                                     </ol>
                                 </div>
                                 <h4 class="page-title">Change Password</h4>
@@ -103,59 +104,24 @@ include("../include/session.php");
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card-box">
-                            	<h4 class="header-title mb-4">Change Password</h4>
+                            	<h4 class="header-title mb-4">Validate mobile otp</h4>
                                 <form class="form-horizontal" action="../controller/user_controller.php" method="post">
                                     <div class="form-group row account-content mt-4">
-                                        <div class="col-12">
-                                            <label for="loginId" class="col-4 col-form-label">Login Id</label>
-                                            <input type="text" readonly required class="form-control" name="loginId" id="loginId" value="<?php  echo $_SESSION['loginid']?>" />
+                                    	<div class="text-center">
+                                            <p class="text-muted mb-0 mb-3 success" id="otpmsg"><?php echo $_GET['msg'];?> </p>
                                         </div>
                                         <div class="col-12">
-                                            <label for="oldPassword" class="col-3 col-form-label">Old Password</label>
-                                            <input type="password" required class="form-control" name="oldPassword" id="oldPassword" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="password" class="col-4 col-form-label">Password</label>
-                                            <input type="password" required class="form-control" name="password" id="password" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="confirmPassword" class="col-4 col-form-label">Conform Password</label>
-                                            <input type="password" required data-parsley-equalto="#password" class="form-control" name="confirmPassword" id="confirmPassword" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="changePasswordBtn" class="col-2 col-form-label"></label>
-                                            <button name="changePasswordBtn" id="changePasswordBtn" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Change Password
-                                            </button>
-                                            
+                                        	<input type="hidden" name="txtLoginId" value="<?php echo $_GET['login_id']?>" />
+                                        	<input type="hidden" name="txtMobile" value="<?php echo $_GET['mobile']?>" />
+                                            <input type="text" name="otp" placeholder="Enter Otp" required class="form-control"/>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card-box">
-                            	<h4 class="header-title mb-4">Change Transaction Password</h4>
-                                <form class="form-horizontal" action="../controller/user_controller.php" method="post">
-                                    <div class="form-group row account-content mt-4">
-                                        <div class="col-12">
-                                            <label for="oldTxnPassword" class="col-3 col-form-label">Old Password</label>
-                                            <input type="password" required class="form-control" name="oldTxnPassword" id="oldTxnPassword" />
-                                            <a href="forgot_txn_password.php" class="text-muted float-right"><small>Forgot your password?</small></a>
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="txnPassword" class="col-4 col-form-label">Password</label>
-                                            <input type="password" required class="form-control" name="txnPassword" id="txnPassword" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="confirmTxnPassword" class="col-4 col-form-label">Conform Password</label>
-                                            <input type="password" required data-parsley-equalto="#txnPassword" class="form-control" name="confirmTxnPassword" id="confirmTxnPassword" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="changeTxnPasswordBtn" class="col-2 col-form-label"></label>
-                                            <button name="changeTxnPasswordBtn" id="changeTxnPasswordBtn" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Change Password
-                                            </button>
-                                            
-                                        </div>
+                                    <div class="col-12">
+                                        <label for="btnMobileUpdateOtpValidate" class="col-2 col-form-label"></label>
+                                        <button name="btnMobileUpdateOtpValidate" id="btnMobileUpdateOtpValidate" 
+                                        	class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit"> Validate OTP
+                                        </button>
+                                        
                                     </div>
                                 </form>
                             </div>
@@ -211,17 +177,18 @@ include("../include/session.php");
 	
     <!-- Datatables init -->
     <script src="../assets/js/pages/datatables.init.js"></script>
-    <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+        <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+
     <script src="../assets/js/pages/sweet-alerts.init.js"></script>
     <script src="../assets/libs/custombox/custombox.min.js"></script>
 	
     <script>
-      
-        $(document).ready(function(){
+      $(document).ready(function () {
+             $(document).ready(function(){
              var  res = location.search;
              res = res.split("=");
-             displayNotification(res[1],res[2]);
-    
+             //displayNotification(res[1],res[2]);
+
              $('form').parsley().on('field:validated', function() {
              	  
        	  	 });
@@ -230,6 +197,7 @@ include("../include/session.php");
         function displayNotification(result,type){
         	if(result){
         		var obj = getUserMessages(result, type)
+        		if(obj.type)
         		notification(obj);
             }
         		
@@ -243,7 +211,7 @@ include("../include/session.php");
         }
         function getUserMessages(result,type){
             var res = {type:undefined, msg:''};
-            if (result == "success" && type == "changepassword"){
+            if (result == "success" && type == "mobileupdate"){
                 res.type = 'success';
                 res.title = 'Congrats!';
                 res.msg = "Password changed successfully!.";
@@ -251,23 +219,15 @@ include("../include/session.php");
             	res.type = 'error';
             	res.title = 'Failed!';
                 res.msg = "Password changing failed!. Please try again.";
-            }else if (result == "failure" && type == "invalid_oldpassword"){
+            }else if (result == "failure" && type == "invalid"){
             	res.type = 'error';
             	res.title = 'Failed!';
-                res.msg = "Incorrect old password!.";
-            }else if (result == "success" && type == "txn-changepassword"){
-                res.type = 'success';
-                res.title = 'Congrats!';
-                res.msg = "Transaction Password changed successfully!.";
-            }else if (result == "failed" && type == "txn-changepassword"){
-            	res.type = 'error';
-            	res.title = 'Failed!';
-                res.msg = "Transaction Password changing failed!. Please try again.";
+                res.msg = "Mobile no not exist!";
             }
             return res;
         }
           
-     
+     });
     </script>
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>

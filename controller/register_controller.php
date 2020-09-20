@@ -7,8 +7,9 @@
         echo $logid;
     }
     if(isset($_POST['sponsorid'])){
-        $sponsor_name = $objLoginModel->GetUserById($_POST['sponsorid']);
-        echo $sponsor_name['full_name'];
+        $res = $objLoginModel->GetUserById($_POST['sponsorid']);
+        $res = json_encode($res);
+        echo $res;
     }
     if(isset($_POST['mobile'])){
         $cnt = $objLoginModel->GetUserCount($_POST['mobile']);
@@ -16,7 +17,65 @@
             echo "Mobile is already registered.Please login or enter new Mobile number.";
         }
     }
-    if(isset($_POST['txtFirstName'])){
+    
+    if(isset($_POST['hdnSignupBtn'])){
+        $objLoginModel->setName($_POST['txtFirstName']);
+        $objLoginModel->setEmail($_POST['txtEmail']);
+        $mobile = $_POST['txtMobile'];
+        $objLoginModel->setMobile($mobile);
+        $spons_res = $objLoginModel->GetUserById($_POST['txtSponsorId']);
+        $objLoginModel->setSponsorId(($spons_res['id']=="")?0:$spons_res['id']);
+        $objLoginModel->setSide($_POST['ddlSide']);
+        //$objLoginModel->setSide($_POST['hdnSide']);
+        $objLoginModel->setSpillId($_POST['hdnSpillId']);
+        $login_id = $_POST['txtUserId'];
+        $objLoginModel->setUserId($login_id);
+        $objLoginModel->setPassword($_POST['txtPassword']);
+        $objLoginModel->setDate();
+        $vdate = $objLoginModel->getDate();
+        $expr_date = $objLoginModel->getNextYearDate($vdate);
+        $objLoginModel->setExpiredDate($expr_date);
+        $status = $objUserModel->getStausByKey("REGISTERED");
+        $objLoginModel->setStatus($status);
+        
+        $res = $objLoginModel->AddUserBasic();
+        if($res){
+            $otp = $objLoginModel->generateOTP();
+            $smsMsg = "Congratulations ! ".$_POST['txtFirstName'].". Thank you for joining us.Your OTP is ".$otp." Login Id is ".$_POST['txtUserId'].". and Password is ".$_POST['txtPassword']." Visit www.ymdonate.us";    //Message Here
+            //$url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".$_POST['txtMobile']."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
+            //$ret = file($url);    //Call Url variable by using file() function
+            // print_r($ret);    //$ret stores the msg-id
+            $smsids = $objUserModel->sendSms($mobile, $smsMsg);
+            $deliveryStatus = $objUserModel->smsDeliveryStatus($smsids[0]);
+            $rep = explode('-',$deliveryStatus[0]);
+            $smsmsg = '';
+            
+            if( strpos($rep[1] , "Delivered")!== false || strpos($rep[1] , "Submitted")!== false){
+                
+                $objUserModel->updateUserOTP($login_id,$otp);
+                $mobileEnd = substr($mobile, -3);
+                $smsmsg = 'We have send an OTP to your registered mobile number *******'.$mobileEnd.' for Verification';
+            }else{
+                $smsmsg = 'Sms delivering failed , Please click on resend button';
+            }
+            echo "<script> location.href='../view/reg_otp_validate.php?success=OTPValidate&msg=".$smsmsg."&mobile=".$mobile."&login_id=".$login_id."';</script>";    
+        
+        }else{
+            echo "<script> location.href='../view/registration.php?=failure=insert';</script>";
+        }
+    }
+    if(isset($_POST['btnOTPValidate'])){
+        $login_id = $_POST['otpLoginId'];
+        $res = $objUserModel->validateOTP($login_id, $_POST['otp']);
+        if($res){
+            $msg = "OTP verified successfully. Please login your username and password";
+            echo "<script> location.href='../view/login.php?=success=insert';</script>";
+        }else{
+            $msg = "OTP validation failed.";
+            echo "<script> location.href='../view/reg_otp_validate.php?=failure=OTPValidationFailed=msg=".$msg."';</script>";
+        }
+    }
+    if(isset($_POST['txtFirstNameOld'])){
         $objLoginModel->setName($_POST['txtFirstName']);
         $objLoginModel->setEmail($_POST['txtEmail']);
         $objLoginModel->setMobile($_POST['txtMobile']);
@@ -38,6 +97,7 @@
             echo "<script> location.href='../view/registration.php?=failure=insert';</script>";
         }
     }
+    
     if(isset($_POST['txtLoginId'])){
         $res = $objLoginModel->CheckLogin($_POST['txtLoginId'],$_POST['txtLogPassword']);
         if($res>0){

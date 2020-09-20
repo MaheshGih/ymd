@@ -51,15 +51,31 @@ if(isset($_POST['txtFirstName'])){
 }
 if(isset($_GET['loadspills'])){
     //$tree_data = $objUserModel->GetSponsorChilds($_GET['sponsor_id']);
-    $tree_data = $objUserModel->GetUserTree($_GET['sponsor_id']);
-    $data = array();
-    while($row = $tree_data->fetch_assoc()) {
-        array_push($data,$row);
+    $sponsor_id = '';
+    $user='';
+    if(isset($_GET['login_id'])){
+        $user = $objUserModel->GetUserBasicDetailsByLoginId($_GET['login_id']);
+        $sponsor_id = $user['id'];
+    }else if(isset($_GET['sponsor_id'])){
+        $sponsor_id = $_GET['sponsor_id'];
+        $user = $objUserModel->GetUserBasicDetailsById($sponsor_id);
     }
-    $tree_data = json_encode($data);
-    // set response code - 200 OK
-    http_response_code(200);
-    echo $tree_data;
+    if(!empty($sponsor_id)){
+        $tree_data = $objUserModel->GetUserTree($sponsor_id);
+        $data = array();
+        while($row = $tree_data->fetch_assoc()) {
+            array_push($data,$row);
+        }
+        $res = array("master"=>$user,"tree"=>$data);
+        
+        // set response code - 200 OK
+        http_response_code(200);
+        $res = json_encode($res);
+    }else {
+        $res='';
+    }
+    
+    echo $res;
 }
 
 if(isset($_POST['btnOTPValidate'])){

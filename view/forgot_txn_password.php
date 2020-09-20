@@ -91,7 +91,7 @@ include("../include/session.php");
                                         <li class="breadcrumb-item">
                                             <a href="javascript: void(0);">Change Password</a>
                                         </li>
-                                        <li class="breadcrumb-item active"></li>
+                                        <li class="breadcrumb-item active"><a href="forgot_txn_password.php">Forgot Txn Password</a></li>
                                     </ol>
                                 </div>
                                 <h4 class="page-title">Change Password</h4>
@@ -103,60 +103,20 @@ include("../include/session.php");
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card-box">
-                            	<h4 class="header-title mb-4">Change Password</h4>
+                            	<h4 class="header-title mb-4">Forpot Transaction Password</h4>
                                 <form class="form-horizontal" action="../controller/user_controller.php" method="post">
                                     <div class="form-group row account-content mt-4">
                                         <div class="col-12">
-                                            <label for="loginId" class="col-4 col-form-label">Login Id</label>
-                                            <input type="text" readonly required class="form-control" name="loginId" id="loginId" value="<?php  echo $_SESSION['loginid']?>" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="oldPassword" class="col-3 col-form-label">Old Password</label>
-                                            <input type="password" required class="form-control" name="oldPassword" id="oldPassword" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="password" class="col-4 col-form-label">Password</label>
-                                            <input type="password" required class="form-control" name="password" id="password" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="confirmPassword" class="col-4 col-form-label">Conform Password</label>
-                                            <input type="password" required data-parsley-equalto="#password" class="form-control" name="confirmPassword" id="confirmPassword" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="changePasswordBtn" class="col-2 col-form-label"></label>
-                                            <button name="changePasswordBtn" id="changePasswordBtn" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Change Password
-                                            </button>
-                                            
+                                            <label for="mobile" class="col-4 col-form-label">Mobile No</label>
+                                            <input type="text" required class="form-control" name="mobile" id="mobile"/>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card-box">
-                            	<h4 class="header-title mb-4">Change Transaction Password</h4>
-                                <form class="form-horizontal" action="../controller/user_controller.php" method="post">
-                                    <div class="form-group row account-content mt-4">
-                                        <div class="col-12">
-                                            <label for="txnOldPassword" class="col-3 col-form-label">Old Password</label>
-                                            
-                                            <input type="password" required class="form-control" name="txnOldPassword" id="txnOldPassword" />
-                                            <a href="forgot_txn_password.php" class="text-muted float-right"><small>Forgot your password?</small></a>
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="txnPassword" class="col-4 col-form-label">Password</label>
-                                            <input type="password" required class="form-control" name="txnPassword" id="txnPassword" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="txnConfirmPassword" class="col-4 col-form-label">Conform Password</label>
-                                            <input type="password" required data-parsley-equalto="#txnPassword" class="form-control" name="txnConfirmPassword" id="txnConfirmPassword" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="txnChangePasswordBtn" class="col-2 col-form-label"></label>
-                                            <button name="txnChangePasswordBtn" id="txnChangePasswordBtn" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Change Password
-                                            </button>
-                                            
-                                        </div>
+                                    <div class="col-12">
+                                        <label for="forgotTxnPassOTPSendBtn" class="col-2 col-form-label"></label>
+                                        <button name="forgotTxnPassOTPSendBtn" id="forgotTxnPassOTPSendBtn" 
+                                        	class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit"> Send OTP
+                                        </button>
+                                        
                                     </div>
                                 </form>
                             </div>
@@ -232,6 +192,7 @@ include("../include/session.php");
         function displayNotification(result,type){
         	if(result){
         		var obj = getUserMessages(result, type)
+        		if(obj)
         		notification(obj);
             }
         		
@@ -245,18 +206,10 @@ include("../include/session.php");
         }
         function getUserMessages(result,type){
             var res = {type:'sucess', msg:''};
-            if (result == "success" && type == "changepassword"){
-                res.type = 'success';
-                res.title = 'Congrats!';
-                res.msg = "Password changed successfully!.";
-            }else if (result == "failed" && type == "changepassword"){
+            if (result == "failure" && type == "invalid"){
             	res.type = 'error';
             	res.title = 'Failed!';
-                res.msg = "Password changing failed!. Please try again.";
-            }else if (result == "failure" && type == "invalid_oldpassword"){
-            	res.type = 'error';
-            	res.title = 'Failed!';
-                res.msg = "Incorrect password!.";
+                res.msg = "Mobile no not exist!";
             }
             return res;
         }

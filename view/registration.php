@@ -19,7 +19,8 @@
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
     <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
     <link href="../assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-stylesheet" />
-
+	<link href="https://visjs.github.io/vis-network/dist/vis-network.min.css"></link>
+	
 </head>
 
 <body class="authentication-bg bg-primary authentication-bg-pattern d-flex align-items-center pb-0 vh-100">
@@ -49,11 +50,11 @@
                                         <div class="form-group row">
                                             <div class="col-6">
                                                 <label for="username">Sponsor Id</label>
-                                                <input class="form-control" type="text" id="txtSponsorId" name="txtSponsorId" required="" placeholder="YMDXXXXXXX" onchange="getSponsorName(this.value)">
+                                                <input class="form-control" type="text" id="txtSponsorId" name="txtSponsorId" value="<?php if(isset($_GET['ref'])) echo $_GET['ref']?>" required="" placeholder="YMDXXXXXXX" onchange="getSponsorName(this.value)">
                                             </div>
                                             <div class="col-6">
                                                 <label for="username">Sponsor Name</label>
-                                                <input class="form-control" type="text" id="txtSponsorName" name="txtSponsorName" required="" placeholder=" " readonly>
+                                                <input class="form-control" type="text" id="txtSponsorName" name="txtSponsorName" placeholder=" " readonly>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -91,6 +92,7 @@
                                                     <option value="left">Left</option>
                                                     <option value="right">Right</option>
                                                 </select>
+                                                <input type="hidden" id="hdnSpillId" name="hdnSpillId" />
                                             </div>
                                         </div>
 
@@ -110,6 +112,7 @@
 
                                         <div class="form-group row text-center mt-2">
                                             <div class="col-12">
+                                            	<input id="hdnSignupBtn" name="hdnSignupBtn" value="hdnSignupBtn" type="hidden"/>
                                                 <button class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Sign Up Free</button>
                                             </div>
                                         </div>
@@ -128,6 +131,16 @@
 
                     </div>
                     <!-- end card-body -->
+                </div>
+                <div class="col-md-12 col-lg-8 col-xl-5">
+                	<div class="card-box" id="dvTree">
+                        <h4 class="header-title mb-4">User Network</h4>
+                        <div class="row text-center" style="height: 500px">
+                            <div id="mynetwork" >
+                                
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- end card -->
             </div>
@@ -160,7 +173,10 @@
     <script src="../assets/libs/custombox/custombox.min.js"></script>
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
+	<script src="../assets/libs/parsleyjs/parsley.min.js"></script>
+    <script src="../assets/js/vis/vis-network.min.js"></script>
+    <script src="../js/reg_tree.js"></script>
     <script src="../js/register.js"></script>
-
+    
 </body>
 </html>

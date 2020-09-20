@@ -16,7 +16,26 @@
             $_SESSION['role'] = $details['role'];
             $_SESSION['start'] = time();
             $_SESSION['expire'] = $_SESSION['start'] + (1440* 60);
-            echo "<script> location.href='../view/index.php?=success=login';</script>";
+            
+            //$_SESSION['expired_date'] = $details['expired_date'];
+            $exp = $objUtilModel->formatStrDate($details['expired_date'], $objUtilModel->date_format);
+            $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
+            
+            $cur_date = date_create($cur_date);
+            $exp = date_create($exp);
+            
+            $diff = date_diff($exp,$cur_date );
+            $_SESSION['expiredin'] = $diff->format("%r%a days");
+            $page = "index.php";
+            
+            if($_SESSION['role']=='ROLE_USER'){
+                $page="index_user.php";
+            }else if($_SESSION['role']=='ROLE_ADMIN'){
+                $page="index_user.php";
+            }else if($_SESSION['role']=='ROLE_EMP'){
+                $page="index.php";
+            }
+            echo "<script> location.href='../view/".$page."?=success=login';</script>";
         }else{
             echo "<script> location.href='../view/login.php?=failure=login';</script>";
         }
@@ -32,6 +51,7 @@
             $url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".$mobile."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
             $ret = file($url);    //Call Url variable by using file() function
             //print_r($ret);    //$ret stores the msg-id
+            $objUserModel->updateUserOTP($login_id,$otp);
             $mobileEnd = substr($mobile, -3);
             $smsmsg = 'We have send an OTP to your registered mobile number *******'.$mobileEnd.' for Verification';
             

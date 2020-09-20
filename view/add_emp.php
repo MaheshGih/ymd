@@ -89,7 +89,7 @@ $loginId = $objLoginModel->UserIdGenerator();
                                             <li class="breadcrumb-item active">Profile </li>
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Add Employee</h4>
+                                    <h4 class="page-title">Add User</h4>
                                 </div>
                             </div>
                         </div>     

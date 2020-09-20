@@ -129,9 +129,13 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                                     <div class="col-12">
                                         <form name="todo-form" id="todo-form" class="mt-4" action="../controller/wallet_controller.php" method="post" onsubmit="return withdrawReq();">
                                             <div class="row" >
-                                                <div class="col-sm-5 todo-inputbar">
-                                                    <input type="text" id="withdrawAmount" name="withdrawAmount" class="form-control" 
+                                                <div class="col-sm-4 todo-inputbar">
+                                                    <input type="text" id="withdrawAmount" autocomplete="off" required name="withdrawAmount" class="form-control" 
                                                     	placeholder="Withdraw Amount" style="margin-bottom:2px;" required>
+                                                </div>
+                                                <div class="col-sm-4 todo-inputbar">
+                                                    <input type="password" id="txnPassword" autocomplete="off" required name="txnPassword" class="form-control" 
+                                                    	placeholder="Transaction Password" style="margin-bottom:2px;" required>
                                                 </div>
                                                 <div class="col-sm-3 todo-send">
                                                     <button class="btn-info btn-md btn waves-effect waves-light" type="submit" id="withdrawReqBtn" name="withdrawReqBtn" 
@@ -305,21 +309,42 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
 			}
           }
           function displayNotification(result,type){
-               if(result == 'success'){
-                    Swal.fire({title:"Congrats!",
-                        text: getUserMessages(result, type),
-                       type: result=='success' ? 'success' : 'error',
-                       confirmButtonClass: "btn btn-confirm mt-2"
-                   });
-               }
-           }
+          	if(result){
+          		var obj = getUserMessages(result, type)
+          		if(obj.type)
+          		notification(obj);
+              }
+          }
+          function notification(obj){
+          	Swal.fire({title:obj.title,
+                  text : obj.msg,
+                 type : obj.type,
+                 confirmButtonClass: "btn btn-confirm mt-2"
+             });
+          }
           function getUserMessages(result,type){
+              var res = {};
+              if (result == "failure" && type == "invalid"){
+              	res.type = 'error';
+              	res.title = 'Failed!';
+                  res.msg = "Mobile no not exist!";
+              }
               var msg = "";
               if (result == "success" && type == "addrequest"){
-                  return msg="Successfully added Withdraw amount Request!";
-              }else if(result == "failed" && type == "addrequest"){
-            	  return msg="Failed to added Withdraw amount Request. Try again later";
-               }
+            	   res.type = 'success';
+                	res.title = 'Failed!';
+                    res.msg = "Successfully added Withdraw amount Request!";
+                  
+              }else if(result == "failure" && type == "addrequest"){
+            	  res.type = 'error';
+                	res.title = 'Failed!';
+                    res.msg = "Failed to added Withdraw amount Request. Try again later";
+              }else if(result == "failure" && type == "invalidtxnpassword"){
+            	res.type = 'error';
+            	res.title = 'Failed!';
+                res.msg = "Invalid Transaction Password";
+              }
+              return res;
           }
         </script>
     </body>

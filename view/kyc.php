@@ -15,7 +15,7 @@
         <link rel="shortcut icon" href="../assets/images/favico.png">
 		<!-- Jquery Toast css -->
         <link href="../assets/libs/jquery-toast/jquery.toast.min.css" rel="stylesheet" type="text/css" />
-        
+        <link href="../assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
         <!-- App css -->
         <link href="../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
         <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
@@ -242,6 +242,10 @@
         <script src="../assets/libs/jquery-toast/jquery.toast.min.js"></script>
         <script src="../assets/js/pages/toastr.init.js"></script>
         <script src="../assets/libs/parsleyjs/parsley.min.js"></script>
+        <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+
+    	<script src="../assets/js/pages/sweet-alerts.init.js"></script>
+        
         <script src="../js/profile.js"></script>
         
         <script>

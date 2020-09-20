@@ -129,7 +129,7 @@ background:grey;
                         </div>
                     </div>
                     <!-- end page title -->
-                    <div class="row">
+                    <!--  <div class="row">
                         <div class="col-12">
                             <div class="card-box">
                                 <h4 class="header-title mb-4">Search</h4> 
@@ -147,13 +147,13 @@ background:grey;
                                             </div>
                                         </div>
                                         <div class="row">
-                                               <!-- <b><span id="spnWarning" class="text-danger"><?php  echo $warning ?></span></b>-->
+                                               
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="row">
                         <div class="col-12">
                             <div class="card-box" id="dvTree">
