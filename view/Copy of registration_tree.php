@@ -52,8 +52,7 @@ background:grey;
 	
 </head>
 
-<!--<body class="authentication-bg bg-primary authentication-bg-pattern d-flex align-items-center pb-0 vh-100">-->
-<body>
+<body class="authentication-bg bg-primary authentication-bg-pattern d-flex align-items-center pb-0 vh-100">
 
     <div class="account-pages w-100 mt-5 mb-5">
         <div class="content">				
@@ -63,18 +62,27 @@ background:grey;
                     <!-- start page title -->
                     <div class="row">
                         <div class="col-12">
+                            <div class="page-title-box">
+                                <!-- <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Tree</a></li>
+                                        <li class="breadcrumb-item active">View Network  </li>
+                                    </ol>
+                                </div>-->
+                                <h4 class="page-title">Tree</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+                    <div class="row">
+                        <div class="col-12">
                             <div class="card-box">
-                                <h4 align="center"> REGISTRATION</h4>
-                              
+                                <h4 class="header-title mb-4">Search</h4> 
                                 <div class="col-12">
                                     
                                         <div class="row" >
-                                             <div class="col-sm-4 todo-inputbar">
-                                                <img src="../assets/images/frontendlogo - Copy.png" alt="Nature" class="responsive">
-                                               
-                                            </div>
-
-                                            <div class="col-sm-4 todo-inputbar">
+                                            <div class="col-sm-5 todo-inputbar">
                                                 <input type="text" id="refId" name="refId" class="form-control" placeholder="Enter Referral Userid" 
                                                 <?php if(isset($_GET['ref'])) echo 'disabled'?>
                                                 value="<?php if(isset($_GET['ref'])) echo $_GET['ref']?>"
@@ -84,9 +92,6 @@ background:grey;
                                                 <button class="btn-info btn-md btn waves-effect waves-light" type="button" id="todo-btn-submit"
                                                 onclick="getTreeData();return;" 
                                                 name="todo-btn-submit" style="margin-bottom:2px;"><i class="fas fa-search"></i><span> Search </span></button>
-                                            </div>
-					    <div class="col-sm-2">
-                                                 <a href="tree.php" class="btn btn-purple"><i class="fas fa-long-arrow-alt-left"> </i> Back to Tree </a> 
                                             </div>
                                         </div>
                                         <div class="row">

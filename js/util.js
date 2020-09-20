@@ -7,5 +7,5 @@ menu.bind('keydown', function (evt) {
     }
 });
 
-var scrollToVal = $(menu).scrollTop() + $('#el').position().top;
+var scrollToVal = $(menu).scrollTop() + $('#side-menu').position().top;
 $(scrolledArea).slimScroll({ scrollTo : scrollToVal + 'px' });

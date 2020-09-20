@@ -2,7 +2,7 @@ $(document).ready(function(){
     var  res = location.search;
     res = res.split("=");
     displayNotification(res[1],res[2]);
-    $('form').parsley().on('field:validated', function() {});
+    $('form').each(function(){ $(this).parsley().on('field:validated', function() {})});
     getLoginId();
 });
 function displayNotification(result,type){

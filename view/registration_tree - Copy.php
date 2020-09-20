@@ -64,7 +64,7 @@ background:grey;
                     <div class="row">
                         <div class="col-12">
                             <div class="card-box">
-                                <h4 align="center"> REGISTRATION</h4>
+                                <h3 align="center"> REGISTRATION</h3>
                               
                                 <div class="col-12">
                                     

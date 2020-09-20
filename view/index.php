@@ -51,28 +51,9 @@
                             <i class="fe-menu"></i>
                         </button>
                     </li>
-
-                    <!-- <li class="d-none d-sm-block">
-                            <form class="app-search">
-                                <div class="app-search-box">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Search...">
-                                        <div class="input-group-append">
-                                            <button class="btn" type="submit">
-                                                <i class="fe-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </li> -->
-						
 						<li>
-
                             <h6 style="color:#FFFFFF;">Your Membership is expired on 01 July 2021</h6>
-                        
                     </li>
-
                 </ul>
             </div>
             <!-- end Topbar -->
@@ -715,7 +696,7 @@
         <script src="../assets/js/pages/dashboard.init.js"></script>
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
-        <script src="../assets/js/util.js"></script>
+        
        	<script>   	
             $(document).ready(function(){
                  var  res = location.search;

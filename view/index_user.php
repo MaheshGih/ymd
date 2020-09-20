@@ -35,46 +35,11 @@
         <!-- Begin page -->
         <div id="wrapper">
             <!-- Topbar Start -->
-            <div class="navbar-custom">
-                <?php include('../include/user_menu.php'); ?>
-
-                <!-- LOGO -->
-               <?php include('../include/logo_box.php'); ?>
-
-                <ul class="list-unstyled topnav-menu topnav-menu-left m-0">
-                    <li>
-                        <button class="button-menu-mobile waves-effect waves-light">
-                            <i class="fe-menu"></i>
-                        </button>
-                    </li>
-
-                    <!-- <li class="d-none d-sm-block">
-                            <form class="app-search">
-                                <div class="app-search-box">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Search...">
-                                        <div class="input-group-append">
-                                            <button class="btn" type="submit">
-                                                <i class="fe-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </li> -->
-						
-						<li>
-
-                            <h6 style="color:#FFFFFF;">Your Membership is expires in <?php echo $_SESSION['expiredin'];?></h6>
-                        
-                    </li>
-
-                </ul>
-            </div>
+           	<?php include("../include/navbar-top.php");?>
             <!-- end Topbar -->
             
             <!-- ========== Left Sidebar Start ========== -->
-                    <?php include("../include/menu.php");?>
+            <?php include("../include/menu.php");?>
             <!-- Left Sidebar End -->
 
             <!-- ============================================================== -->
@@ -528,15 +493,7 @@
                 </div> <!-- end content -->
 
                 <!-- Footer Start -->
-                <footer class="footer">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-12">
-                               2020 &copy; All Rights reserved.
-                            </div>
-                        </div>
-                    </div>
-                </footer>
+                <?php include('../include/footer.php');?>
                 <!-- end Footer -->
 
             </div>
