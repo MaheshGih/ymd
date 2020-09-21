@@ -2,6 +2,7 @@
 include('../include/config.php');
 include('plan_model.php');
 include('util_model.php');
+include('../include/sms.php');
 ?>
 <?php
 class UserModel{
@@ -193,11 +194,24 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $in_act_users;
     }
     #endregion
+    
+    
+    
+    
     #region New Methods
     public function GetUserDetails($logid){
         global $con;
         $select_qry = "select * from user_details where login_id='".$logid."'";
         $res = mysqli_fetch_assoc(mysqli_query($con,$select_qry));
+        return $res;
+    }
+    
+    public function sendRegOtpAndUpdate($mobile,$full_name,$login_id){
+        global $objUtilModel;
+        global $objSMS;
+        $otp = $objUtilModel->generateOTP();
+        $res = $objSMS->sendRegVerificationOtp($mobile, $otp, $full_name);
+        $res = self::updateUserOTP($login_id,$otp);
         return $res;
     }
     
@@ -238,7 +252,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     
     public function GetUserBasicDetailsByLoginId($loginId){
         global $con;
-        $sql = "select id,login_id,full_name,side,sponsor_id,spill_id from user_details where login_id=?";
+        $sql = "select id,login_id,full_name,mobile,side,sponsor_id,spill_id from user_details where login_id=?";
         $wal_stmt = $con->prepare($sql);
         $wal_stmt->bind_param('s',$loginId);
         $res = $wal_stmt->execute();

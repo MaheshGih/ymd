@@ -35,7 +35,7 @@ include('../model/user_model.php');
     <link href="../assets/libs/datatables/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
     <link href="../assets/libs/datatables/buttons.bootstrap4.css" rel="stylesheet" type="text/css" />
     <link href="../assets/libs/datatables/responsive.bootstrap4.css" rel="stylesheet" type="text/css" />
-    <link href="https://visjs.github.io/vis-network/dist/vis-network.min.css"></link>
+    <!-- <link href="https://visjs.github.io/vis-network/dist/vis-network.min.css"></link> -->
 <style>
 html,
 body {
@@ -244,7 +244,9 @@ background:grey;
                                         <label for="username">OTP</label>
                                         <input type="hidden" id="otpMobile" name="otpMobile" />
                                         <input type="hidden" id="otpLoginId" name="otpLoginId"/>
+                                        <input type="hidden" id="otpFullName" name="otpFullName"/>
                                         <input class="form-control" required type="text" id="otp" name="otp" placeholder="OTP" required="required"/>
+                                        <a href="#" id="resendRegOtp">Resend Otp</a>
                                     </div>
                                 </div>
                                 <div class="form-group row text-center mt-2">
@@ -328,7 +330,7 @@ background:grey;
                                 </div>
                                 <div class="form-group row text-center mt-2">
                                     <div class="col-12">
-                                        <button class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Sign Up Free</button>
+                                        <button name="hdnSignupBtn" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Sign Up Free</button>
                                     </div>
                                 </div>
 

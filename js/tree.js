@@ -33,11 +33,21 @@ var network = undefined;
       arrows: "to",
     },
     interaction : {
+    	navigationButtons: true,
+      	keyboard: true,
     	selectable: true,
     	zoomView: true
     }
   };
   
+function drawNetwork(container, data, options){
+	  network = new vis.Network(container, data, options);
+	  return network;
+  }
+
+function showSignupPoup(){
+	  $('#activateusersmodal').show();
+  }
   
   $(document).ready(function () {
 	  //Validate url requests
@@ -48,7 +58,9 @@ var network = undefined;
 	  
 	  displayNotification(res);
 	  
-	  
+	  $('#resendRegOtp').on('click', function(){
+	  	resendRegOtp();
+	  });
 	  //$('form').parsley().on('field:validated', function() {});//validations
 	  
 	  getLoginId();
@@ -62,7 +74,8 @@ var network = undefined;
     		var res = JSON.parse(result);
     		var master = res.master;
     		var users = res.tree;
-			var nodes = [{id:0, master_id:master_id, label:full_name}];
+    		var manImgUrl = '../assets/images/man.png';
+			var nodes = [{id:0, master_id:master_id, label:full_name, shape: "circularImage", image:manImgUrl}];
 			var edges = []; 
 			var edge = { from : undefined, to : undefined};
 			for( var i=0; i<users.length;i++){
@@ -70,6 +83,8 @@ var network = undefined;
 				user['master_id'] = user['id'];
 				user['id'] = i+1;
 				user['label'] = user.full_name;
+				user['image'] = manImgUrl;
+				user['shape'] = "circularImage";
 				nodes.push(user);
 			}
 			
@@ -150,22 +165,33 @@ var network = undefined;
 	   //Search url and validate requests
 	   				   
   });	
-
   
-  function drawNetwork(container, data, options){
-	  network = new vis.Network(container, data, options);
-	  return network;
+  function resendRegOtp() {
+  	var mobile = $('#otpMobile').val();
+    var loginId = $('#otpLoginId').val();
+    var otpResendUrl = '../controller/tree_controller.php';
+    
+    $.ajax({
+        url: otpResendUrl,
+        method: "POST",
+        data: { resendRegOtp:'resendRegOtp', mobile:mobile, login_id:loginId},
+        success: function (res) {
+            $('#otpmsg').text(res);
+        },
+        error: function (erres) {
+            $("#spnLeft").text('0');
+            $("#spnRight").text('0');
+            $("#spnWallet").text('0');
+        }
+    });
+    
   }
-
-  function showSignupPoup(){
-	  $('#activateusersmodal').show();
-  }
-
+  
   function showOTPModal(status, type, msg, mobile,loginId){
     $('#otpMobile').val(mobile);
     $('#otpLoginId').val(loginId);
     $('#otpmsg').text(msg);
-  	$('#otpModal').modal('show');
+    $('#otpModal').modal('show');
   }
   
   function displayNotification(res) {

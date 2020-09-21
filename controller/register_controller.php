@@ -19,7 +19,8 @@
     }
     
     if(isset($_POST['hdnSignupBtn'])){
-        $objLoginModel->setName($_POST['txtFirstName']);
+        $full_name = $_POST['txtFirstName'];
+        $objLoginModel->setName($full_name);
         $objLoginModel->setEmail($_POST['txtEmail']);
         $mobile = $_POST['txtMobile'];
         $objLoginModel->setMobile($mobile);
@@ -40,24 +41,8 @@
         
         $res = $objLoginModel->AddUserBasic();
         if($res){
-            $otp = $objLoginModel->generateOTP();
-            $smsMsg = "Congratulations ! ".$_POST['txtFirstName'].". Thank you for joining us.Your OTP is ".$otp." Login Id is ".$_POST['txtUserId'].". and Password is ".$_POST['txtPassword']." Visit www.ymdonate.us";    //Message Here
-            //$url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".$_POST['txtMobile']."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
-            //$ret = file($url);    //Call Url variable by using file() function
-            // print_r($ret);    //$ret stores the msg-id
-            $smsids = $objUserModel->sendSms($mobile, $smsMsg);
-            $deliveryStatus = $objUserModel->smsDeliveryStatus($smsids[0]);
-            $rep = explode('-',$deliveryStatus[0]);
-            $smsmsg = '';
-            
-            if( strpos($rep[1] , "Delivered")!== false || strpos($rep[1] , "Submitted")!== false){
-                
-                $objUserModel->updateUserOTP($login_id,$otp);
-                $mobileEnd = substr($mobile, -3);
-                $smsmsg = 'We have send an OTP to your registered mobile number *******'.$mobileEnd.' for Verification';
-            }else{
-                $smsmsg = 'Sms delivering failed , Please click on resend button';
-            }
+            $objUserModel->sendRegOtpAndUpdate($mobile, $full_name, $login_id);
+            $msg = $objSMS->getMobileEndDigitMsg($mobile);
             echo "<script> location.href='../view/reg_otp_validate.php?success=OTPValidate&msg=".$smsmsg."&mobile=".$mobile."&login_id=".$login_id."';</script>";    
         
         }else{
@@ -68,7 +53,9 @@
         $login_id = $_POST['otpLoginId'];
         $res = $objUserModel->validateOTP($login_id, $_POST['otp']);
         if($res){
-            $msg = "OTP verified successfully. Please login your username and password";
+            $user = $objUserModel->GetUserBasicDetailsByLoginId($login_id);
+            $objSMS->sendWelcomeMsg($user['mobile'], $login_id, $user['full_name'], $user['password']);
+            $msg = "OTP verified successfully. Please login with your username and password";
             echo "<script> location.href='../view/login.php?=success=insert';</script>";
         }else{
             $msg = "OTP validation failed.";
