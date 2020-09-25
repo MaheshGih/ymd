@@ -8,9 +8,10 @@
                 <i class="fe-menu"></i>
             </button>
         </li>
-			<li>
-                <h6 style="color:#FFFFFF;">Your Membership is expires in <?php echo $_SESSION['expiredin'];?></h6>
+        <?php if($_SESSION['role']=='ROLE_USER'){?>
+		<li>
+             <h6 class="text-danger float-right">Your Membership is expires in <?php echo $_SESSION['expiredin'];?></h6>
         </li>
-
+		<?php }?>
     </ul>
 </div>

@@ -38,25 +38,6 @@
 
         <!-- Begin page -->
         <div id="wrapper">
-            <!-- Topbar Start -->
-            <div class="navbar-custom">
-                <?php include('../include/user_menu.php'); ?>
-
-                <!-- LOGO -->
-               <?php include('../include/logo_box.php'); ?>
-
-                <ul class="list-unstyled topnav-menu topnav-menu-left m-0">
-                    <li>
-                        <button class="button-menu-mobile waves-effect waves-light">
-                            <i class="fe-menu"></i>
-                        </button>
-                    </li>
-						<li>
-                            <h6 style="color:#FFFFFF;">Your Membership is expired on 01 July 2021</h6>
-                    </li>
-                </ul>
-            </div>
-            <!-- end Topbar -->
             
             <!-- ========== Left Sidebar Start ========== -->
                     <?php include("../include/menu.php");?>

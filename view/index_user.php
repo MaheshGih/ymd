@@ -34,9 +34,6 @@
 
         <!-- Begin page -->
         <div id="wrapper">
-            <!-- Topbar Start -->
-           	<?php include("../include/navbar-top.php");?>
-            <!-- end Topbar -->
             
             <!-- ========== Left Sidebar Start ========== -->
             <?php include("../include/menu.php");?>
@@ -372,14 +369,11 @@
                         </div>
                         <!-- end row --> 
                        
-                       <div class="row">
+                       <!--  <div class="row">
 
                             <div class="col-xl-4 col-sm-4">
                                 <div class="card-box widget-box-two widget-two-custom"  style="background-color:#4d1f8c;">
                                     <div class="media">
-                                        <!-- <div class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-                                           <i class="mdi mdi-currency-inr avatar-title font-30 text-white"></i>
-                                        </div>-->
                                         <div class="wigdet-two-content media-body">
                                             <p class="m-0 text-uppercase font-weight-medium text-truncate" title="Statistics" style="color:#f1e906">Present Level:3</p>
                                             <h5 style="color:#FFFFFF" class="font-weight-medium my-2">Earned Amount: &#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span></h5>
@@ -388,17 +382,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- end col -->
-
                             <div class="col-xl-8 col-sm-8">
                                 <div class="card-box widget-box-two widget-two-custom " style="background-color:#4d1f8c;">
                                      
                                     <div class="media">
                                         <div class="responsive">
-                                           <!-- <i class="mdi mdi-hand-right avatar-title font-30 text-white"></i>-->
                                            <p style="color:#f1e906">NEXT LEVEL: 5</p>
-                                         <!-- <h5 style="color:#FFFFFF" class="font-weight-medium my-2"> Benifit Amount: &#8377<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span></h5>-->
-
+                                   
                                      </div>
 
                                         <div class="wigdet-two-content media-body">
@@ -409,10 +399,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- end col -->
-
-                           
-                        </div>
+                        </div>-->
                         
                         <div class="row">
                             <div class="col-xl-6 col-lg-12">

@@ -85,7 +85,7 @@
 
                                     <div class="row mt-4 pt-2">
                                         <div class="col-sm-12 text-center">
-                                            <p class="text-muted mb-0">Don't have an account? <a href="registration.php" class="text-dark ml-1"><b>Sign Up</b></a></p>
+                                            <p class="text-muted mb-0">Don't have an account? <a href="registration_tree.php" class="text-dark ml-1"><b>Sign Up</b></a></p>
                                         </div>
                                     </div>
 

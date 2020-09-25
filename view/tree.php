@@ -37,13 +37,13 @@ include('../model/user_model.php');
     <link href="../assets/libs/datatables/responsive.bootstrap4.css" rel="stylesheet" type="text/css" />
     <!-- <link href="https://visjs.github.io/vis-network/dist/vis-network.min.css"></link> -->
 <style>
-html,
+/* html,
 body {
   height: 100%;
   width: 100%;
   margin: 0px;
   padding: 0px;
-}
+} */
 .disable{
 pointer-events:none;
 background:grey;
@@ -60,7 +60,7 @@ background:grey;
   right: 0px;
   bottom: 0px;
   left: 0px;
-  border : 0px 0px 0px 0px !important;
+  /*border : 0px 0px 0px 0px !important;*/
 }
 </style>
     
@@ -158,7 +158,7 @@ background:grey;
                         <div class="col-12">
                             <div class="card-box" id="dvTree">
                                 <h4 class="header-title mb-4">User Network</h4>
-                                <div class="row text-center" style="height: 500px">
+                                <div class="row text-center mycontainer" style="height: 500px;">
                                     <div id="mynetwork" >
                                         
                                     </div>
@@ -416,6 +416,7 @@ background:grey;
     <script src="../assets/js/app.min.js"></script>
     <script src="../assets/libs/parsleyjs/parsley.min.js"></script>
     <script src="../assets/js/vis/vis-network.min.js"></script>
+    <script src="../assets/libs/parsleyjs/parsley.min.js"></script>
     <script src="../js/tree.js"></script>
 </body>
 

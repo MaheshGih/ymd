@@ -4,6 +4,11 @@ $isAdmin = $_SESSION['role']=='ROLE_ADMIN'?true:false;
 $isEmp = $_SESSION['role']=='ROLE_EMP'?true:false;
 $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
 ?>
+
+<!-- Topbar Start -->
+<?php include("../include/navbar-top.php");?>
+<!-- end Topbar -->
+
 <style>
     .slimScrollBar{
         background: #fff !important; opacity: 0.9 !important;width:10px !important;

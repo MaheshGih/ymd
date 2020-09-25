@@ -61,20 +61,22 @@ function showSignupPoup(){
 	  $('#resendRegOtp').on('click', function(){
 	  	resendRegOtp();
 	  });
-	  //$('form').parsley().on('field:validated', function() {});//validations
+	  
+	  $('form').each(function(){ $(this).parsley().on('field:validated', function() {})});//validations
 	  
 	  getLoginId();
 
       var master_id = $('#master_id').val();
       var full_name = $('#full_name').val();
-
+	  var manImgUrl = '../assets/images/man.png';
+	  var manInactiveImgUrl = '../assets/images/maninactive.png';	
 	  $.ajax({
     	url: "../controller/tree_controller.php?loadspills=loadspills&sponsor_id="+master_id, 
     	success: function(result){
     		var res = JSON.parse(result);
     		var master = res.master;
     		var users = res.tree;
-    		var manImgUrl = '../assets/images/man.png';
+    		
 			var nodes = [{id:0, master_id:master_id, label:full_name, shape: "circularImage", image:manImgUrl}];
 			var edges = []; 
 			var edge = { from : undefined, to : undefined};
@@ -83,7 +85,12 @@ function showSignupPoup(){
 				user['master_id'] = user['id'];
 				user['id'] = i+1;
 				user['label'] = user.full_name;
-				user['image'] = manImgUrl;
+				user['is_active'] = parseInt(user['is_active']); 
+				if(user['is_active']){
+					user['image'] = manImgUrl;
+				}else{
+					user['image'] = manInactiveImgUrl;
+				}		
 				user['shape'] = "circularImage";
 				nodes.push(user);
 			}
@@ -121,12 +128,15 @@ function showSignupPoup(){
 			network.on("selectNode", function(properties){
 				var ids = properties.nodes;
 				var nodeEdges = properties.edges;
-				$.each(nodeEdges,function(ind,e){
+				/*$.each(nodeEdges,function(ind,e){
 					var nodeEdge = visEdges.get(e);
 					console.log(nodeEdge);
-				});
+				});*/
 			    var clickedNodes = visNodes.get(ids);
-			    console.log('clicked nodes:', clickedNodes);
+			    if(!(clickedNodes[0]['is_active']))
+	    			return;
+	    
+			    //console.log('clicked nodes:', clickedNodes);
 			    if(nodeEdges.length<=2){
 			    	if(nodeEdges.length==2){
 			    		var nodeEdge = visEdges.get(nodeEdges[1]);
@@ -156,7 +166,7 @@ function showSignupPoup(){
 					$('#activateusersmodal').modal('show');	
 				}else{
 					$('#ddlSide').removeAttr('disabled');
-					$('#activateusersmodal2').modal('show');
+					//$('#activateusersmodal2').modal('show');
 				}
 			});
 		}

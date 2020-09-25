@@ -47,36 +47,7 @@ $inactiv_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],0);
 
     <!-- Begin page -->
     <div id="wrapper">
-        <!-- Topbar Start -->
-        <div class="navbar-custom"><?php include('../include/user_menu.php'); ?>
-            <!-- LOGO -->
-            <?php include('../include/logo_box.php'); ?>
-
-            <ul class="list-unstyled topnav-menu topnav-menu-left m-0">
-                <li>
-                    <button class="button-menu-mobile waves-effect waves-light">
-                        <i class="fe-menu"></i>
-                    </button>
-                </li>
-
-                <li class="d-none d-sm-block">
-                    <form class="app-search">
-                        <div class="app-search-box">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search..." />
-                                <div class="input-group-append">
-                                    <button class="btn" type="submit">
-                                        <i class="fe-search"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </li>
-
-            </ul>
-        </div>
-        <!-- end Topbar -->
+        
         <!-- ========== Left Sidebar Start ========== -->
         <?php   include('../include/menu.php'); ?>
         <!-- Left Sidebar End -->

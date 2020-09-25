@@ -34,7 +34,10 @@ var network = undefined;
     },
     interaction : {
     	selectable: true,
-    	zoomView: true
+    	zoomView: true,
+    	navigationButtons: true,
+      	keyboard: true
+    	
     }
   };
   
@@ -61,18 +64,27 @@ var network = undefined;
   		displayNotification('failure','loadtree');
   		return;
   	}
-  		
+  	var edge = { from : undefined, to : undefined};	
   	var res = JSON.parse(result);
 	var master = res.master;
 	var users = res.tree;
-	var nodes = [{id:0, master_id:master['id'], label:master['full_name']}];
+	var manImgUrl = '../assets/images/man.png';
+	var manInactiveImgUrl = '../assets/images/maninactive.png';
+	var nodes = [{id:0, master_id:master['id'], label:master['full_name'], image : manImgUrl, shape : "circularImage"}];
 	var edges = []; 
-	var edge = { from : undefined, to : undefined};
 	for( var i=0; i<users.length;i++){
 		var user = $.extend(true,{},users[i]);
 		user['master_id'] = user['id'];
 		user['id'] = i+1;
 		user['label'] = user.full_name;
+		user['image'] = manImgUrl;
+		user['is_active'] = parseInt(user['is_active']); 
+		if(user['is_active']){
+			user['image'] = manImgUrl;
+		}else{
+			user['image'] = manInactiveImgUrl;
+		}
+		user['shape'] = "circularImage";
 		nodes.push(user);
 	}
 	
@@ -106,15 +118,19 @@ var network = undefined;
     };
 	network = drawNetwork(container, data, options);
 	
+	setTimeout(function(){ $('.vis-zoomExtends')[0].click(); });
+	
 	network.on("selectNode", function(properties){
 		var ids = properties.nodes;
 		var nodeEdges = properties.edges;
-		$.each(nodeEdges,function(ind,e){
+		/*$.each(nodeEdges,function(ind,e){
 			var nodeEdge = visEdges.get(e);
 			console.log(nodeEdge);
-		});
+		});*/
 	    var clickedNodes = visNodes.get(ids);
-	    console.log('clicked nodes:', clickedNodes);
+	    if(!(clickedNodes[0]['is_active']))
+	    	return;
+	    //console.log('clicked nodes:', clickedNodes);
 	    if(nodeEdges.length<=2){
 	    	if(nodeEdges.length==2){
 	    		var nodeEdge = visEdges.get(nodeEdges[1]);
@@ -147,7 +163,7 @@ var network = undefined;
 			$('#activateusersmodal').modal('show');	
 		}else{
 			$('#ddlSide').removeAttr('disabled');
-			$('#activateusersmodal2').modal('show');
+			//$('#activateusersmodal2').modal('show');
 		}
 	});
   } 

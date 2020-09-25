@@ -43,7 +43,7 @@
         if($res){
             $objUserModel->sendRegOtpAndUpdate($mobile, $full_name, $login_id);
             $msg = $objSMS->getMobileEndDigitMsg($mobile);
-            echo "<script> location.href='../view/reg_otp_validate.php?success=OTPValidate&msg=".$smsmsg."&mobile=".$mobile."&login_id=".$login_id."';</script>";    
+            echo "<script> location.href='../view/reg_otp_validate.php?status=success&type=OTPValidate&msg=".$msg."&mobile=".$mobile."&login_id=".$login_id."';</script>";    
         
         }else{
             echo "<script> location.href='../view/registration.php?=failure=insert';</script>";
@@ -51,6 +51,7 @@
     }
     if(isset($_POST['btnOTPValidate'])){
         $login_id = $_POST['otpLoginId'];
+        $mobile = $_POST['otpMobile'];
         $res = $objUserModel->validateOTP($login_id, $_POST['otp']);
         if($res){
             $user = $objUserModel->GetUserBasicDetailsByLoginId($login_id);
@@ -58,8 +59,8 @@
             $msg = "OTP verified successfully. Please login with your username and password";
             echo "<script> location.href='../view/login.php?=success=insert';</script>";
         }else{
-            $msg = "OTP validation failed.";
-            echo "<script> location.href='../view/reg_otp_validate.php?=failure=OTPValidationFailed=msg=".$msg."';</script>";
+            $msg = "Please enter a valid OTP.";
+            echo "<script> location.href='../view/reg_otp_validate.php?status=failure&type=OTPValidate&msg=".$msg."&mobile=".$mobile."&login_id=".$login_id."';</script>";
         }
     }
     if(isset($_POST['txtFirstNameOld'])){

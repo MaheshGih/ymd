@@ -50,6 +50,24 @@ if(isset($_GET['loadspills'])){
         while($row = $tree_data->fetch_assoc()) {
             array_push($data,$row);
         }
+        
+        //To-do
+        /* foreach($data as $r){
+            $id = $r['id'];
+            $l = '';
+            $r = '';
+            foreach($data as $cr){
+                if($id==$cr['spill_id']&& $cr['side'] == 'left'){
+                   $l = 'left';
+                }else if($id==$cr['spill_id']&& $cr['side'] == 'right'){
+                   $r = 'right'; 
+                }
+                if(!empty($l) && !empty($r)){
+                    break;
+                }
+            }
+        } */
+        
         $res = array("master"=>$user,"tree"=>$data);
         
         // set response code - 200 OK

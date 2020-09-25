@@ -822,7 +822,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
               inner join user_details as u
                       on cte.id = u.spill_id
             )
-            select id,sponsor_id,spill_id,full_name,mobile,side,lvl,id_path from cte order by id_path desc ";
+            select id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl,id_path from cte order by lvl,spill_id,side";
         global $con;
         $child_count = mysqli_query($con,$sql_qry);
         return $child_count;
@@ -863,9 +863,6 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     }
     
     public function GetChildsGivenDays($sponsorId,$from_noof_days) {
-        global $housefull_in_days;
-        global $housefull_size;
-        
         $sql_qry = "with recursive cte (id,login_id,sponsor_id,spill_id,full_name,mobile,side,is_active,date_created,expired_date,royalty_id,lvl,id_path ) as (
               select id,login_id,sponsor_id,spill_id,full_name,mobile,side, is_active, date_created,expired_date,royalty_id, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
               where  spill_id = $sponsorId and is_active=1
@@ -1245,7 +1242,8 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $login_id = $con->real_escape_string($login_id);
         $res = $stmt->execute();
         $stmt->close();
-        return $res;
+        $affected_rows = $stmt->affected_rows;
+        return $affected_rows;
     }
     
     public function updateUserStatusById($login_id,$status) {

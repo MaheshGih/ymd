@@ -44,7 +44,21 @@
                                         </div>
                                         <div class="account-content mt-4">
                                             <div class="text-center">
-                                                <p class="text-muted mb-0 mb-3 success" id="otpmsg"><?php echo $_GET['msg'];?> </p>
+                                            	<?php 
+                                            	   if(isset($_GET['status'])){
+                                            	       if($_GET['status']=='success'){
+                                            	 ?>
+                                            	 <div class="alert alert-info bg-transparent text-info alert-dismissible fade show" role="alert">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button>
+                                                    <?php echo $_GET['msg'];?>
+                                                </div>
+                                                <?php }else if($_GET['status']=='failure'){
+                                            	 ?>
+                                                <div class="alert alert-danger bg-transparent text-danger alert-dismissible fade show" role="alert">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button>
+                                                    <?php echo $_GET['msg'];?>
+                                                </div>
+                                                <?php } }?>
                                             </div>
                                             <form class="form-horizontal" action="../controller/register_controller.php" method="POST">
                                                 

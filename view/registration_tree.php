@@ -23,13 +23,13 @@
     <link href="../assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-stylesheet" />
 	<link href="https://visjs.github.io/vis-network/dist/vis-network.min.css"></link>
 	<style>
-html,
+/* html,
 body {
   height: 100%;
   width: 100%;
   margin: 0px;
   padding: 0px;
-}
+} */
 .disable{
 pointer-events:none;
 background:grey;
@@ -55,7 +55,7 @@ background:grey;
 <!--<body class="authentication-bg bg-primary authentication-bg-pattern d-flex align-items-center pb-0 vh-100">-->
 <body>
 
-    <div class="account-pages w-100 mt-5 mb-5">
+    <div class="account-pages w-100 mt-1 mb-1">
         <div class="content">				
                 <!-- Start Content-->
                 <div class="container-fluid">

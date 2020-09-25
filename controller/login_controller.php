@@ -17,23 +17,23 @@
             $_SESSION['start'] = time();
             $_SESSION['expire'] = $_SESSION['start'] + (1440* 60);
             
-            //$_SESSION['expired_date'] = $details['expired_date'];
-            $exp = $objUtilModel->formatStrDate($details['expired_date'], $objUtilModel->date_format);
-            $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
-            
-            $cur_date = date_create($cur_date);
-            $exp = date_create($exp);
-            
-            $diff = date_diff($exp,$cur_date );
-            $_SESSION['expiredin'] = $diff->format("%r%a days");
             $page = "index.php";
-            
             if($_SESSION['role']=='ROLE_USER'){
                 $page="index_user.php";
+                //$_SESSION['expired_date'] = $details['expired_date'];
+                $exp = $objUtilModel->formatStrDate($details['expired_date'], $objUtilModel->date_format);
+                $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
+                
+                $cur_date = date_create($cur_date);
+                $exp = date_create($exp);
+                
+                $diff = date_diff($exp,$cur_date );
+                $_SESSION['expiredin'] = $diff->format("%r%a days");
+                
             }else if($_SESSION['role']=='ROLE_ADMIN'){
                 $page="index_user.php";
             }else if($_SESSION['role']=='ROLE_EMP'){
-                $page="index.php";
+                $page="index_user.php";
             }
             echo "<script> location.href='../view/".$page."?=success=login';</script>";
         }else{
