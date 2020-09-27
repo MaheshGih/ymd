@@ -92,7 +92,7 @@ $loginId = $objLoginModel->UserIdGenerator();
                                                     <div class="form-group row">
                                                         <label for="txtMobile" class="col-3 col-form-label">Mobile</label>
                                                         <div class="col-9">
-                                                            <input type="text" class="form-control" name="txtMobile" id="txtMobile" required="required">
+                                                            <input type="text" class="form-control" name="txtMobile" minlength="10"  maxlength="10" id="txtMobile" required="required">
                                                         </div>
                                                     </div>
                                             </div>

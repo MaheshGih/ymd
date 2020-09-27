@@ -78,10 +78,10 @@ include("../include/session.php");
                                 <form class="form-horizontal" action="../controller/user_controller.php" method="post">
                                     <div class="form-group row account-content mt-4">
                                     	<div class="text-center">
-                                            <p class="text-muted mb-0 mb-3 success" id="otpmsg"><?php echo $_GET['msg'];?> </p>
+                                            <p class="mb-0 mb-3 <?php echo isset($_GET['failure'])?'text-danger':'';echo isset($_GET['success'])?'text-success':'';?>" id="otpmsg"><?php echo $_GET['msg'];?> </p>
                                         </div>
                                         <div class="col-12">
-                                            <input type="text" placeholder="Enter Otp" required class="form-control" name="mobile" id="mobile"/>
+                                            <input type="text" placeholder="Enter Otp" required class="form-control" name="otp" id="otp"/>
                                         </div>
                                     </div>
                                     <div class="col-12">

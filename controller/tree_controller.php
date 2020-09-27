@@ -81,7 +81,7 @@ if(isset($_GET['loadspills'])){
 }
 
 if(isset($_POST['btnOTPValidate'])){
-    $res = $objUserModel->validateOTP($_POST['otpLoginId'], $_POST['otp']);
+    $res = $objUserModel->validateRegOTP($_POST['otpLoginId'], $_POST['otp']);
     if($res){
         $msg = "Registion done successfully.";
         echo "<script> location.href='../view/tree.php?=success=OTPValidated=msg=".$msg."';</script>";

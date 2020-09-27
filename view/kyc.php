@@ -149,19 +149,19 @@
                                                     <div class="form-group row">
                                                          <label class="col-md-3 col-form-label" for="txtGpay">GPay</label>
                                                             <div class="col-md-9">
-                                                                <input type="text" name="txtGpay" id="txtGpay" class="form-control"  required="required">
+                                                                <input type="text" name="txtGpay" id="txtGpay" class="form-control"  minlength="10"  maxlength="10" required="required">
                                                             </div>
                                                     </div>
                                                     <div class="form-group row">
                                                             <label class="col-md-3 col-form-label" for="txtPhonePe">PhonePe</label>
                                                             <div class="col-md-9">
-                                                                <input type="text" name="txtPhonePe" id="txtPhonePe" class="form-control"  required="required">
+                                                                <input type="text" name="txtPhonePe" id="txtPhonePe" class="form-control"  minlength="10"  maxlength="10" required="required">
                                                             </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label class="col-md-3 col-form-label" for="txtPaytm">Paytm </label>
                                                             <div class="col-md-9">
-                                                                <input type="text" name="txtPaytm" id="txtPaytm" class="form-control" required="required" >
+                                                                <input type="text" name="txtPaytm" id="txtPaytm" class="form-control" minlength="10"  maxlength="10" required="required" >
                                                             </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -220,28 +220,22 @@
                 res = decodeURIComponent(res);
                 res = res.split("=");
                 displayNotification(res[1],res[2],res[3]);
-
-                $('form').parsley().on('field:validated', function() {
-              	  
-          	  	});
-            	  
+          	  	$('form').each(function(){ $(this).parsley().on('field:validated', function() {})});//validations
            });
            function displayNotification(result,type, message){
     			var toastObj = {
-                       text: message,
-                       position: "top-right",
-                       loaderBg: "red",
-                       icon: "success",
-                       hideAfter: 4e3,
-                       stack: 1
+                   text: message,
+                   position: "top-right",
+                   loaderBg: "red",
+                   icon: "success",
+                   hideAfter: 4e3,
+                   stack: 1
+                }   
+               	if(result !== 'success'){
+               		toastObj.loaderBg = 'red';
+               		toastObj.icon = 'failed'
                 }
-               
-           	if(result !== 'success'){
-           		toastObj.loaderBg = 'red';
-           		toastObj.icon = 'failed'
-               }
-    			$.toast(toastObj);
-    			
+        		$.toast(toastObj);	
            }
         
         </script>

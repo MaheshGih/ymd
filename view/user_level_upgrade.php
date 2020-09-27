@@ -62,7 +62,7 @@ $active_childs = $objUserModel->rewardUsers(0);
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Rewarded Users</h4>
+                                    <h4 class="page-title">User Level Upgrade</h4>
                                 </div>
                             </div>
                         </div>     

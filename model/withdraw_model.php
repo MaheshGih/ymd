@@ -86,7 +86,7 @@ class WithdrawModel{
     
     public function GetWithdrwalsByUserId($user_id){
         global $con;
-        $qry = "select * from user_withdrawls where user_id=".$user_id;
+        $qry = "select * from user_withdrawls where user_id=".$user_id." order by date_req desc" ;
         $res = mysqli_query($con,$qry);
         return $res;        
     }

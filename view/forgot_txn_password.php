@@ -78,7 +78,7 @@ include("../include/session.php");
                                     <div class="form-group row account-content mt-4">
                                         <div class="col-12">
                                             <label for="mobile" class="col-4 col-form-label">Mobile No</label>
-                                            <input type="text" required class="form-control" name="mobile" id="mobile"/>
+                                            <input type="text" required class="form-control" name="mobile" minlength="10"  maxlength="10"  id="mobile"/>
                                         </div>
                                     </div>
                                     <div class="col-12">

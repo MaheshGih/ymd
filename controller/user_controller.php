@@ -2,7 +2,6 @@
 include('../include/session.php');
 include("../model/login_model.php");
 include('../model/withdraw_model.php');
-include('../include/sms.php');
 
 ?>
 <?php
@@ -186,7 +185,7 @@ if(isset($_POST['changePasswordBtn'])){
 }
 
 if(isset($_POST['changeTxnPasswordBtn'])){
-    $res = $objUserModel->changeTxnPassword($_SESSION['userid'],$_POST['oldTxnPassword'], $_POST['txnPassword'],);
+    $res = $objUserModel->changeTxnPassword($_SESSION['userid'],$_POST['oldTxnPassword'], $_POST['txnPassword']);
     if($res){
         echo "<script> location.href='../view/changepassword.php?=success=txn-changepassword';</script>";
     }else{
@@ -201,7 +200,7 @@ if(isset($_POST['forgotTxnPassOTPSendBtn'])){
     if($res){
         $otp = $objUtilModel->generateOTP();
         $objSMS->sendForgotTxnPasswordOTP($mobile, $otp, $loginId);
-        $res = $objUserModel->updateUserOTP($login_id,$otp);
+        $res = $objUserModel->updateUserOTP($loginId,$otp);
         $mobileEnd = substr($mobile, -3);
         $smsmsg = 'We have send an OTP to your registered mobile number *******'.$mobileEnd.' for Verification';
         echo "<script> location.href='../view/forgot_txn_password_otp.php?success=OTPValidate&msg=".$smsmsg."';</script>";
@@ -216,10 +215,10 @@ if(isset($_POST['forgotTxnPassOTPValidateBtn'])){
     $res = $objUserModel->validateOTP($loginId, $otp);
     if($res){
         $msg = "OTP verified successfully.";
-        echo "<script> location.href='../view/reset_forgot_txn_password.php?success=OTPValidated&msg=".$msg."&login_id=".$login_id."';</script>";
+        echo "<script> location.href='../view/reset_forgot_txn_password.php?success=OTPValidated&msg=".$msg."&login_id=".$loginId."';</script>";
     }else{
         $msg = "Invalid otp.";
-        echo "<script> location.href='../view/forgot_txn_password_otp.php?=failure=OTPValidationFailed=msg=".$msg."';</script>";
+        echo "<script> location.href='../view/forgot_txn_password_otp.php?failure=OTPValidationFailed&msg=".$msg."';</script>";
     }
 }
 

@@ -26,11 +26,12 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
             <li class="menu-title">Home</li>
 
             <li>
-                <a href="index.php">
+            	<a href="index.php">
                     <i class="fe-airplay"></i>
                     <!-- <span class="badge badge-success badge-pill float-right">2</span> -->
                     <span> Dashboard </span>
                 </a>
+                
             </li>
             <li class="menu-title">Basic Details</li>
             <li>
@@ -158,7 +159,12 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Get/Provide Help </span>
                 </a>
             </li>
-			
+			<li>
+                <a href="user_level_upgrade.php">
+                    <i class="fas fa-share-alt"></i>
+                    <span> Level Upgrade </span>
+                </a>
+            </li>
             <li>
                 <a href="reward_users.php">
                     <i class="fas fa-money-bill "></i>

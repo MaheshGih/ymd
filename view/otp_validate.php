@@ -44,7 +44,7 @@
                                         </div>
                                         <div class="account-content mt-4">
                                             <div class="text-center">
-                                                <p class="text-muted mb-0 mb-3 success" id="otpmsg"><?php echo $_GET['msg'];?> </p>
+                                                <p class=" mb-0 mb-3 <?php echo isset($_GET['failure'])?'text-danger':'';echo isset($_GET['success'])?'text-success':'';?>" id="otpmsg"><?php echo $_GET['msg'];?> </p>
                                             </div>
                                             <form class="form-horizontal" action="../controller/login_controller.php" method="POST">
                                                 

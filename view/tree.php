@@ -60,6 +60,7 @@ background:grey;
   right: 0px;
   bottom: 0px;
   left: 0px;
+  border: 1px solid lightgray;
   /*border : 0px 0px 0px 0px !important;*/
 }
 </style>
@@ -157,7 +158,7 @@ background:grey;
                     <div class="row">
                         <div class="col-12">
                             <div class="card-box" id="dvTree">
-                                <h4 class="header-title mb-4">User Network</h4>
+                                <!-- <h4 class="header-title mb-4">User Network</h4> -->
                                 <div class="row text-center mycontainer" style="height: 500px;">
                                     <div id="mynetwork" >
                                         
@@ -304,7 +305,7 @@ background:grey;
                                     </div>
                                     <div class="col-5">
                                         <label for="emailaddress">Mobile</label>
-                                        <input class="form-control" type="text" required id="txtMobile" name="txtMobile" required="" placeholder="9XXXX XXXXX">
+                                        <input class="form-control" type="text" required id="txtMobile" name="txtMobile" required="" minlength="10"  maxlength="10" placeholder="9XXXX XXXXX">
                                     </div>
                                 </div>
                                 <div class="form-group row">

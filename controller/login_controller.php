@@ -16,26 +16,30 @@
             $_SESSION['role'] = $details['role'];
             $_SESSION['start'] = time();
             $_SESSION['expire'] = $_SESSION['start'] + (1440* 60);
+            $user_lvl = $objUserModel->GetLevelById($details['lvl_id']);
+            $_SESSION['lvl_name'] = $user_lvl['level_name'];
             
-            $page = "index.php";
             if($_SESSION['role']=='ROLE_USER'){
-                $page="index_user.php";
-                //$_SESSION['expired_date'] = $details['expired_date'];
-                $exp = $objUtilModel->formatStrDate($details['expired_date'], $objUtilModel->date_format);
-                $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
+                if($details['is_active']){
+                    //$_SESSION['expired_date'] = $details['expired_date'];
+                    $exp = $objUtilModel->formatStrDate($details['expired_date'], $objUtilModel->date_format);
+                    $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
+                    
+                    $cur_date = date_create($cur_date);
+                    $exp = date_create($exp);
+                    
+                    $diff = date_diff($exp,$cur_date );
+                    $_SESSION['expiredin'] = $diff->format("%r%a days");
+                }else{
+                    $date_created = $details['date_created'];
+                    $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
+                    $hourdiff = round((strtotime($cur_date) - strtotime($date_created))/3600, 1);
+                    $expTime = $inactive_user_exp_time - $hourdiff;
+                    $_SESSION['expiredin'] = $expTime.' Hours';
+                }
                 
-                $cur_date = date_create($cur_date);
-                $exp = date_create($exp);
-                
-                $diff = date_diff($exp,$cur_date );
-                $_SESSION['expiredin'] = $diff->format("%r%a days");
-                
-            }else if($_SESSION['role']=='ROLE_ADMIN'){
-                $page="index_user.php";
-            }else if($_SESSION['role']=='ROLE_EMP'){
-                $page="index_user.php";
             }
-            echo "<script> location.href='../view/".$page."?=success=login';</script>";
+            echo "<script> location.href='../view/index.php?=success=login';</script>";
         }else{
             echo "<script> location.href='../view/login.php?=failure=login';</script>";
         }
@@ -64,13 +68,14 @@
     
     if(isset($_POST['btnOTPValidate'])){
         $login_id = $_POST['otpLoginId'];
+        $mobile = $_POST['otpMobile'];
         $res = $objUserModel->validateOTP($login_id, $_POST['otp']);
         if($res){
             $msg = "OTP verified successfully.";
             echo "<script> location.href='../view/reset_password.php?success=OTPValidated&msg=".$msg."&login_id=".$login_id."';</script>";
         }else{
             $msg = "OTP validation failed.";
-            echo "<script> location.href='../view/otp_validate.php?=failure=OTPValidationFailed=msg=".$msg."';</script>";
+            echo "<script> location.href='../view/otp_validate.php?failure=OTPValidationFailed&msg=".$msg."&mobile=".$mobile."&login_id=".$login_id."';</script>";
         }
     }
     

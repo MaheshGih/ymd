@@ -56,7 +56,7 @@
                                                 <div class="form-group row">
                                                     <div class="col-12">
                                                         <label for="txtRegMobile">Mobile Number</label>
-                                                        <input class="form-control" type="text" id="txtRegMobile" name="txtRegMobile" required="" placeholder="98XXXXXXXX">
+                                                        <input class="form-control" type="text" id="txtRegMobile" name="txtRegMobile" required="" minlength="10"  maxlength="10" placeholder="98XXXXXXXX">
                                                     </div>
                                                 </div>
     

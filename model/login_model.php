@@ -232,7 +232,7 @@ class LoginModel{
     public function GetLogUserDetails($vlogid){
         global $con;
         $get_user_id = mysqli_fetch_assoc(mysqli_query($con,"select id as userid from user_details where login_id='".$vlogid."'"));
-        $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid,mobile,role,expired_date from user_details where id=".$get_user_id['userid'])) ;
+        $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid,mobile,role,date_created,expired_date,lvl_id,is_active from user_details where id=".$get_user_id['userid'])) ;
         return $get_det;
     }
     /*

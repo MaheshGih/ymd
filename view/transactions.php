@@ -228,10 +228,15 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid'],);
         
         function paymentDone(event){
         	var recieptFiles = $(event.target).closest("form").find("input[recieptPFile]");
-			if(recieptFiles.val() == '' ){ 
+        	if(recieptFiles.val() == '' ){ 
 				fileReuiredToast("Receipt file Required.");
 				return;
-            }
+            } 
+        	var ext = recieptFiles.val().split('.').pop().toLowerCase();
+        	if($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
+        	    fileReuiredToast("Invalid extension!. Required images types png,jpg,jpeg.");
+				return; 
+        	}
 			var receiverUserId = $(event.target).closest("form").find("input[receiverUserId]").val();
 			var withdrawReqId = $(event.target).closest("form").find("input[withdrawReqId]").val();
 			var invitationId = $(event.target).closest("form").find("input[invitationId]").val();

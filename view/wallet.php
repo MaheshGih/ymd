@@ -94,11 +94,15 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                                 <div class="card-box">
                                     <h4 class="header-title mb-4">Withdraw Amount</h4> 
                                     <div class="col-12">
+                                    	<input type="hidden" id="help_amount" value=<?php echo $help_amount;?>/>
                                         <form name="todo-form" id="todo-form" class="mt-4" action="../controller/wallet_controller.php" method="post" onsubmit="return withdrawReq();">
                                             <div class="row" >
                                                 <div class="col-sm-4 todo-inputbar">
+                                                	
                                                     <input type="text" id="withdrawAmount" autocomplete="off" required name="withdrawAmount" class="form-control" 
                                                     	placeholder="Withdraw Amount" style="margin-bottom:2px;" required>
+                                                    <small class="form-text text-muted "><i class="fa fa-info-circle" aria-hidden="true"></i> Withdraw amount should be multiples of 1000 (i.e 1000, 2000, 3000,..)</small>
+                                                    <!-- <p class="text-info"><i class="fa fa-info-circle" aria-hidden="true"></i> </p> -->
                                                 </div>
                                                 <div class="col-sm-4 todo-inputbar">
                                                     <input type="password" id="txnPassword" autocomplete="off" required name="txnPassword" class="form-control" 
@@ -118,7 +122,7 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                             <div class="col-md-6">
                                 <div class="card-box table-responsive">
                                     <h4 class="header-title">Withdraw Request List</h4>
-                                    <table id="datatable" class=" responsive-datatable table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <table id="withdraw-dt" class=" responsive-datatable table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                         <tr>
                                             <th>Amount</th>
@@ -162,7 +166,7 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                             <div class="col-md-6">
                                 <div class="card-box table-responsive">
                                     <h4 class="header-title">Transactions</h4>
-                                    <table id="responsive-datatable" class=" datatable table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <table id="txn-dt" class=" datatable table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                         <tr>
                                         	<th>Txn User</th>
@@ -247,7 +251,8 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
         <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
 
         <!-- Datatables init -->
-        <script src="../assets/js/pages/datatables.init.js"></script>
+        <!-- <script src="../assets/js/pages/datatables.init.js"></script> -->
+        <script src="../assets/libs/parsleyjs/parsley.min.js"></script>
 
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
@@ -255,29 +260,49 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
           $(document).ready(function(){
                 var  res = location.search;
                 res = res.split("=");
-                displayNotification(res[1],res[2]);
-							
-                
+                displayNotification(res);
+                $('form').each(function(){ $(this).parsley().on('field:validated', function() {})});//validations
+
+                $('#withdraw-dt').DataTable({
+                	"order": [[ 1, "desc" ]]
+                });
+
+                $('#txn-dt').DataTable({
+                	"order": [[ 4, "desc" ]]
+                });
           });
           function withdrawReq(){
         	var totalAmountEle = document.getElementById( "totalAmount" );
         	var withdrawAmountEle = document.getElementById( "withdrawAmount" );
         	var totalAmount = parseInt(totalAmountEle.innerText);
         	var withdrawAmount = withdrawAmountEle.value;
-        	if( totalAmount > withdrawAmount){
+        	var help_amount = $('#help_amount').val();
+			var msg = undefined;
+			var err = false;
+			withdrawAmount = withdrawAmount?parseInt(withdrawAmount):0;
+			help_amount = help_amount?parseInt(help_amount):0;
+        	if( !withdrawAmount || withdrawAmount%help_amount!=0 ){
+				err = true;
+				msg = 'Withdraw amount should be multiples of 1000 (i.e 1000, 2000, 3000,..)';
+            }else if(totalAmount < withdrawAmount ){
+            	err = true;
+				msg = 'Insufficient fund to withdraw!';
+            }
+                        
+        	if( !err ){
 				return true;
 			}else{
 				Swal.fire({title:"Request Declined!",
-                   text: 'Insufficient fund to withdraw!',
+                   text: msg,
                    type:"error",
                    confirmButtonClass: "btn btn-confirm mt-2"
                });
                return false;
 			}
           }
-          function displayNotification(result,type){
-          	if(result){
-          		var obj = getUserMessages(result, type)
+          function displayNotification(res){
+        	if(res){
+          		var obj = getUserMessages(res)
           		if(obj.type)
           		notification(obj);
               }
@@ -289,23 +314,29 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                  confirmButtonClass: "btn btn-confirm mt-2"
              });
           }
-          function getUserMessages(result,type){
+          function getUserMessages(res){
+              var result = res[1];
+              var type = res[2];
+              var msg = res.length>=5?res[4]:undefined;
               var res = {};
               if (result == "failure" && type == "invalid"){
               	res.type = 'error';
               	res.title = 'Failed!';
-                  res.msg = "Mobile no not exist!";
+                res.msg = "Mobile no not exist!";
               }
-              var msg = "";
               if (result == "success" && type == "addrequest"){
             	   res.type = 'success';
-                	res.title = 'Failed!';
+                	res.title = 'success!';
                     res.msg = "Successfully added Withdraw amount Request!";
                   
               }else if(result == "failure" && type == "addrequest"){
             	  res.type = 'error';
                 	res.title = 'Failed!';
-                    res.msg = "Failed to added Withdraw amount Request. Try again later";
+                	if(msg){
+                		res.msg = msg;
+                   	}else{
+                   		res.msg = "Failed to added Withdraw amount Request. Try again later";
+                     }                    
               }else if(result == "failure" && type == "invalidtxnpassword"){
             	res.type = 'error';
             	res.title = 'Failed!';

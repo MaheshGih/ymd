@@ -86,7 +86,7 @@
                                                     <i class=" far fa-eye"></i>
                                                     <span>Preview</span>
                                                 </button>
-                                                <button type="submit" name="btnSendInvitation" id="btnSendInvitation" class="btn btn-success waves-effect waves-light"><i class="fas fa-sms mr-1"></i> <span>Send Invitation</span></button>
+                                                <button type="submit" name="btnSendInvitation" id="btnSendInvitation" disabled="disabled" class="btn btn-success waves-effect waves-light"><i class="fas fa-sms mr-1"></i> <span>Send Invitation</span></button>
                                             </div>
                                         </div>
                                     </form>

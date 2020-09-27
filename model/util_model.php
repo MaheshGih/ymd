@@ -39,7 +39,7 @@ class UtilModel{
     }
     
     public function generateOTP(){
-        return rand(10,10000);
+        return rand(1000,9999);
     }
     
 }

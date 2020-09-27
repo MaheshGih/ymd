@@ -1039,15 +1039,15 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     public function GetChilds($sponsorId) {
-        $sql_qry = "with recursive cte (id,login_id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl_id,reward_id,lvl,id_path ) as (
-              select id,login_id,sponsor_id,spill_id,full_name,mobile,side, is_active, lvl_id,reward_id, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
+        $sql_qry = "with recursive cte (id,login_id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl_id,reward_id,date_created,expired_date,lvl,id_path ) as (
+              select id,login_id,sponsor_id,spill_id,full_name,mobile,side, is_active, lvl_id,reward_id,date_created,expired_date, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
               where  spill_id = $sponsorId and is_active=1
               union all
-              select u.id,u.login_id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, u.lvl_id,u.reward_id,cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
+              select u.id,u.login_id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, u.lvl_id,u.reward_id,u.date_created,u.expired_date,cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
               inner join user_details as u
             		  on cte.id = u.spill_id where u.is_active=cte.is_active
             )
-            select cte.id,cte.login_id,cte.sponsor_id,cte.spill_id,cte.full_name,cte.mobile,cte.side,cte.lvl_id,cte.id_path,
+            select cte.id,cte.login_id,cte.sponsor_id,cte.spill_id,cte.full_name,cte.mobile,cte.side,cte.date_created,cte.expired_date,cte.lvl_id,cte.id_path,
             l.level_name,l.left_pairs,l.right_pairs,l.inr_value,l.auto_pool_inr,l.req_direct_ids,l.l_order,
             reward_id,ur.level_id as reward_lvl_id 
             from cte left join levels l on cte.lvl_id = l.id 
@@ -1058,17 +1058,32 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     }
     
     public function GetChildsByCount($childs,$sponsorId) {
+        global $objPlanModel;
         $users = array();
         $key_data = array();
         while($row = $childs->fetch_assoc()) {
             array_push($users,$row);
             $key_data[$row['id']] = $row;
         }
+        
+        $levels = $objPlanModel->GetLevels();
+        $level_list = array();
+        $lvl_order_data = array();
+        while($row = $levels->fetch_assoc()) {
+            array_push($level_list,$row);
+            $lvl_order_data[$row['l_order']] = $row;
+        }
+        $reward_users = array();
+        
         foreach ($users as $ukey => $user){
             $parent_path = $user['id_path'].',';
             $lids = [];
             $rids = [];
             $l = $r= $ref_count= 0;
+            $lorder = $user['l_order'];
+            $next_lvl = $lvl_order_data[$lorder+1];
+            $left = $next_lvl['left_pairs'];
+            $right = $next_lvl['right_pairs'];
             
             foreach ($users as $child){
                 $child_path = $child['id_path'];
@@ -1099,39 +1114,25 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
                     }
                 }
             }
-            //$user['lsize'] = count($lids);
-            //$user['rsize'] = count($rids);
-            $users[$ukey] = array_merge($user,array('lsize'=>count($lids),'rsize'=>count($rids)));
-            
-        }
-        return $users;
-    }
-    
-    public function rewardUsers($sponsorId){
-        global $objPlanModel;
-        $childs = self::GetChilds($sponsorId);
-        $levels = $objPlanModel->GetLevels();
-        $level_list = array();
-        $lvl_order_data = array();
-        while($row = $levels->fetch_assoc()) {
-            array_push($level_list,$row);
-            $lvl_order_data[$row['l_order']] = $row;
-        }
-        $reward_users = array();
-        $users = self::GetChildsByCount($childs, $sponsorId);
-        foreach ($users as $user){
-            $lorder = $user['l_order'];
-            $next_lvl = $lvl_order_data[$lorder+1];
-            $lsize = $user['lsize'];
-            $rsize = $user['rsize'];
-            $left = $next_lvl['left_pairs'];
-            $right = $next_lvl['right_pairs'];
+            $lsize = count($lids);
+            $rsize = count($rids);
+            /* $lrsize = array('lsize'=>$lsize,'rsize'=>$rsize);
+            $users[$ukey] = array_merge($user,$lrsize);
+             */
             if(($lsize >= $left) && ($rsize >= $right)){
-                $user = array_merge($user,array('next_lvl'=>$next_lvl));
-                array_push($reward_users,$user);
+                $lrsize = array('lsize'=>$lsize,'rsize'=>$rsize,'next_lvl'=>$next_lvl);
+                $reward_user = array_merge($user,$lrsize);
+                array_push($reward_users,$reward_user);
             }
         }
         return $reward_users;
+    }
+    
+    public function rewardUsers($sponsorId){
+        
+        $childs = self::GetChilds($sponsorId);
+        $users = self::GetChildsByCount($childs, $sponsorId);
+        return $users;
     }
     
     public function AddRewards($users){
@@ -1234,16 +1235,31 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     public function validateOTP($login_id, $otp) {
         global $con;
         $status = self::getStausByKey("REG_VERIFIED");
+        $spl_qry = "select count(*) as cnt from user_details where login_id = ? and reg_otp=?";
+        $stmt = $con->prepare($spl_qry);
+        $verified = intval(true);
+        $stmt->bind_param("ss", $login_id, $otp);
+        $otp = $con->real_escape_string($otp);  
+        $login_id = $con->real_escape_string($login_id);
+        $res = $stmt->execute();
+        $res = mysqli_fetch_assoc($stmt->get_result());
+        $stmt->close();
+        return $res['cnt'];
+    }
+    
+    public function validateRegOTP($login_id, $otp) {
+        global $con;
+        $status = self::getStausByKey("REG_VERIFIED");
         $spl_qry = "update user_details set reg_verified=?, status=? where login_id = ? and reg_otp=?";
         $stmt = $con->prepare($spl_qry);
         $verified = intval(true);
         $stmt->bind_param("isss", $verified, $status, $login_id, $otp);
-        $otp = $con->real_escape_string($otp);  
+        $otp = $con->real_escape_string($otp);
         $login_id = $con->real_escape_string($login_id);
         $res = $stmt->execute();
+        $res = $stmt->affected_rows;
         $stmt->close();
-        $affected_rows = $stmt->affected_rows;
-        return $affected_rows;
+        return $res;
     }
     
     public function updateUserStatusById($login_id,$status) {
@@ -1560,7 +1576,8 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         
         // get total  users based on spilling
         // get total transactions
-        $tot_trans = mysqli_fetch_assoc(mysqli_query($con,"SELECT count(trans_id) as tottrans FROM `user_paid_reciept` where user_id=".$userId));
+        $tot_txn_sql = "SELECT count(trans_id) as tottrans FROM `user_paid_reciept` where paid_to='".$user['login_id']."'";
+        $tot_trans = mysqli_fetch_assoc(mysqli_query($con,$tot_txn_sql));
    
         $todayMyRefIncome = self::GetTotWalletTxnsByUserIdAndDate($userId, "REFERRAL",$cur_date);
         $todayMyLVLIncome = self::GetTotWalletTxnsByUserIdAndDate($userId, "LEVEL",$cur_date);
@@ -1573,6 +1590,8 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $totAutopoolIncome= self::GetTotWalletTxnsByUserIdAndCause($userId, "AUTO_POOL");
         $childs = self::GetUsersCountByMasterId($userId,1);
         $childCount = self::GetLeftAndRightChildCount($childs, $userId);
+        $user_lvl = self::GetLevelById($user['lvl_id']);
+        $next_lvl = self::GetLevelOrderNo($user_lvl['l_order']+1);
         $res = array (
             "tot_amount" => $tot_amount['total_amount'], 
             "tot_trans"=>$tot_trans['tottrans'],
@@ -1584,8 +1603,32 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             "totWithdrawnAmnt"=>$totWithdrawnAmnt['tot'],
             "totRewardAmnt"=>$totRewardAmnt['tot'],
             "totAutopoolIncome"=>$totAutopoolIncome['tot'],
-            "childCount"=>$childCount
+            "childCount"=>$childCount,
+            "present_lvl"=>$user_lvl,
+            "next_lvl"=>$next_lvl
         );
+        return $res;
+    }
+    
+    public function GetLevelById($levelId){
+        global $con;
+        $sql = "select * from levels where id=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$levelId);
+        $res = $wal_stmt->execute();
+        $res = mysqli_fetch_assoc($wal_stmt->get_result());
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetLevelOrderNo($orderNo){
+        global $con;
+        $sql = "select * from levels where l_order=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$orderNo);
+        $res = $wal_stmt->execute();
+        $res = mysqli_fetch_assoc($wal_stmt->get_result());
+        $wal_stmt->close();
         return $res;
     }
 }

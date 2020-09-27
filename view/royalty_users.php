@@ -65,7 +65,7 @@ $active_childs = $objUserModel->GetRoyaltyUsers();
                                             <li class="breadcrumb-item active">Active Users</li>
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Housefull Users</h4>
+                                    <h4 class="page-title">Royalty Users</h4>
                                 </div>
                             </div>
                         </div>     

@@ -52,7 +52,7 @@
     if(isset($_POST['btnOTPValidate'])){
         $login_id = $_POST['otpLoginId'];
         $mobile = $_POST['otpMobile'];
-        $res = $objUserModel->validateOTP($login_id, $_POST['otp']);
+        $res = $objUserModel->validateRegOTP($login_id, $_POST['otp']);
         if($res){
             $user = $objUserModel->GetUserBasicDetailsByLoginId($login_id);
             $objSMS->sendWelcomeMsg($user['mobile'], $login_id, $user['full_name'], $user['password']);

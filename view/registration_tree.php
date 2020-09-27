@@ -46,7 +46,7 @@ background:grey;
   right: 0px;
   bottom: 0px;
   left: 0px;
-  border : 0px 0px 0px 0px !important;
+  border: 1px solid lightgray;
 }
 </style>
 	
@@ -79,6 +79,8 @@ background:grey;
                                                 <?php if(isset($_GET['ref'])) echo 'disabled'?>
                                                 value="<?php if(isset($_GET['ref'])) echo $_GET['ref']?>"
                                                 style="margin-bottom:2px;" required>
+                                                <p class="text-info mb-0"> <a href="login.php" class=" ml-1 float-right"><b>Sign In</b></a></p>
+                                                
                                             </div>
                                             <div class="col-sm-2 todo-send">
                                                 <button class="btn-info btn-md btn waves-effect waves-light" type="button" id="todo-btn-submit"
@@ -198,7 +200,7 @@ background:grey;
                                     </div>
                                     <div class="col-5">
                                         <label for="emailaddress">Mobile</label>
-                                        <input class="form-control" type="text" required id="txtMobile" name="txtMobile" required="" placeholder="9XXXX XXXXX">
+                                        <input class="form-control" type="text" required id="txtMobile" name="txtMobile" required="" minlength="10"  maxlength="10"  placeholder="9XXXX XXXXX">
                                     </div>
                                 </div>
                                 <div class="form-group row">
