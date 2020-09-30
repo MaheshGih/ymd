@@ -16,6 +16,7 @@ class LoginModel{
     public $expired_date ="";
     public $user_id="";
     public $pwd="";
+    public $txn_pwd="";
     public $status="";
     
     public function getId(){ return $this->id;}
@@ -53,6 +54,9 @@ class LoginModel{
     }
     public function getPassword(){ return $this->pwd;}
     public function setPassword($vPwd){ $this->pwd=$vPwd;}
+    public function getTxnPassword(){ return $this->txn_pwd;}
+    public function setTxnPassword($vPwd){ $this->txn_pwd=$vPwd;}
+    
     public function getSpillId(){ return $this->spill_id;}
     public function setSpillId($vspillid){ $this->spill_id = $vspillid; }
     public function getStatus(){ return $this->status;}
@@ -143,8 +147,8 @@ class LoginModel{
 
         global $con;
         
-        $ins_user_det_qry = "INSERT INTO `user_details` (full_name,email,mobile,sponsor_id,spill_id,login_id,password,date_created,is_active,side,reg_verified,status,role,expired_date) 
-            VALUES('".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".self::getSpillId().",'".self::getUserId()."','".self::getPassword()."','".self::getDate()."',0,'".self::getSide()."',false,'".self::getStatus()."','ROLE_USER','".self::getExpiredDate()."')";
+        $ins_user_det_qry = "INSERT INTO `user_details` (full_name,email,mobile,sponsor_id,spill_id,login_id,password,date_created,is_active,side,reg_verified,status,role,expired_date,txn_password) 
+            VALUES('".self::getName()."','".self::getEmail()."','".self::getMobile()."',".self::getSponsorId().",".self::getSpillId().",'".self::getUserId()."','".self::getPassword()."','".self::getDate()."',0,'".self::getSide()."',false,'".self::getStatus()."','ROLE_USER','".self::getExpiredDate()."','".self::getTxnPassword()."')";
         $rand_user_id = self::getUserId();
         $check_user_id  = "select count(*) as cnt from user_details where login_id='".$rand_user_id."'";
         $cnt = mysqli_fetch_assoc( mysqli_query($con,$check_user_id));

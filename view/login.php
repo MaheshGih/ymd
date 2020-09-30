@@ -56,9 +56,16 @@
 
                                         <div class="form-group row">
                                             <div class="col-12">
-                                                <a href="forgot_password.php" class="text-muted float-right"><small>Forgot your password?</small></a>
+                                                <a href="#" onclick="sendPassword()" class="text-muted float-right"><small>Forgot your password?</small></a>
                                                 <label for="txtLogPassword">Password</label>
+												<div class="input-group">
                                                 <input class="form-control" type="password" required="" name="txtLogPassword" id="txtLogPassword" placeholder="Enter your password">
+												<div class="input-group-append">
+													<button class="btn btn btn-outline-secondary" type="button" id="eyeBtn" onclick="showPassword()">
+														<i class="fa fa-eye"></i>
+													</button>
+												</div>
+												</div>
                                             </div>
                                         </div>
 

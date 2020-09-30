@@ -70,13 +70,13 @@ var network = undefined;
 	var users = res.tree;
 	var manImgUrl = '../assets/images/man.png';
 	var manInactiveImgUrl = '../assets/images/maninactive.png';
-	var nodes = [{id:0, master_id:master['id'], label:master['full_name'], image : manImgUrl, shape : "circularImage"}];
+	var nodes = [{id:0, master_id:master['id'], label:master['login_id'], image : manImgUrl, shape : "circularImage"}];
 	var edges = []; 
 	for( var i=0; i<users.length;i++){
 		var user = $.extend(true,{},users[i]);
 		user['master_id'] = user['id'];
 		user['id'] = i+1;
-		user['label'] = user.full_name;
+		user['label'] = user.login_id;
 		user['image'] = manImgUrl;
 		user['is_active'] = parseInt(user['is_active']); 
 		if(user['is_active']){

@@ -24,6 +24,7 @@
         $objLoginModel->setEmail($_POST['txtEmail']);
         $mobile = $_POST['txtMobile'];
         $objLoginModel->setMobile($mobile);
+        $objLoginModel->setTxnPassword($_POST['txnPassword']);
         $spons_res = $objLoginModel->GetUserById($_POST['txtSponsorId']);
         $objLoginModel->setSponsorId(($spons_res['id']=="")?0:$spons_res['id']);
         $objLoginModel->setSide($_POST['ddlSide']);
@@ -54,8 +55,8 @@
         $mobile = $_POST['otpMobile'];
         $res = $objUserModel->validateRegOTP($login_id, $_POST['otp']);
         if($res){
-            $user = $objUserModel->GetUserBasicDetailsByLoginId($login_id);
-            $objSMS->sendWelcomeMsg($user['mobile'], $login_id, $user['full_name'], $user['password']);
+            $user = $objUserModel->GetUserDetails($login_id);
+            $objSMS->sendWelcomeMsg($user['mobile'], $login_id, $user['full_name'], $user['password'],$user['txn_password']);
             $msg = "OTP verified successfully. Please login with your username and password";
             echo "<script> location.href='../view/login.php?=success=insert';</script>";
         }else{

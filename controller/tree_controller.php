@@ -8,6 +8,7 @@ if(isset($_POST['hdnSignupBtn'])){
     $objLoginModel->setEmail($_POST['txtEmail']);
     $mobile = $_POST['txtMobile'];
     $objLoginModel->setMobile($mobile);
+    $objLoginModel->setTxnPassword($_POST['txnPassword']);
     $spons_res = $objLoginModel->GetUserById($_POST['txtSponsorId']);
     $objLoginModel->setSponsorId(($spons_res['id']=="")?0:$spons_res['id']);
     $objLoginModel->setSide($_POST['ddlSide']);
@@ -45,11 +46,11 @@ if(isset($_GET['loadspills'])){
         $user = $objUserModel->GetUserBasicDetailsById($sponsor_id);
     }
     if(!empty($sponsor_id)){
-        $tree_data = $objUserModel->GetUserTree($sponsor_id);
-        $data = array();
+        $tree_data = $objUserModel->GetUserTreeAndChildCount($sponsor_id);
+        /* $data = array();
         while($row = $tree_data->fetch_assoc()) {
             array_push($data,$row);
-        }
+        } */
         
         //To-do
         /* foreach($data as $r){
@@ -67,8 +68,9 @@ if(isset($_GET['loadspills'])){
                 }
             }
         } */
-        
-        $res = array("master"=>$user,"tree"=>$data);
+        $masterLR = array("lsize" => $tree_data['master_lsize'], "rsize" => $tree_data['master_rsize']);
+        $user = array_merge($user, $masterLR);
+        $res = array("master"=>$user,"tree"=>$tree_data['users']);
         
         // set response code - 200 OK
         http_response_code(200);
@@ -83,6 +85,8 @@ if(isset($_GET['loadspills'])){
 if(isset($_POST['btnOTPValidate'])){
     $res = $objUserModel->validateRegOTP($_POST['otpLoginId'], $_POST['otp']);
     if($res){
+        $user = $objUserModel->GetUserDetails($_POST['otpLoginId']);
+        $objSMS->sendWelcomeMsg($user['mobile'], $login_id, $user['full_name'], $user['password'], $user['txn_password']);
         $msg = "Registion done successfully.";
         echo "<script> location.href='../view/tree.php?=success=OTPValidated=msg=".$msg."';</script>";
     }else{

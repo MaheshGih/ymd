@@ -299,23 +299,40 @@ background:grey;
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <div class="col-7">
+                                    <div class="col-12">
                                         <label for="emailaddress">Email address</label>
                                         <input class="form-control" type="email" required id="txtEmail" name="txtEmail" required="" placeholder="john@deo.com">
                                     </div>
-                                    <div class="col-5">
-                                        <label for="emailaddress">Mobile</label>
-                                        <input class="form-control" type="text" required id="txtMobile" name="txtMobile" required="" minlength="10"  maxlength="10" placeholder="9XXXX XXXXX">
-                                    </div>
+                                   
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-6">
                                         <label for="username">LogIn Id</label>
                                         <input class="form-control" type="text" required id="txtUserId" name="txtUserId" required="" readonly>
                                     </div>
+                                     <div class="col-5">
+                                        <label for="emailaddress">Mobile</label>
+                                        <input class="form-control" type="text" required id="txtMobile" name="txtMobile" required="" minlength="10"  maxlength="10" placeholder="9XXXX XXXXX">
+                                    </div>
+                                    </div>
+                                 <div class="form-group row">
                                     <div class="col-6">
                                         <label for="password">Password</label>
-                                        <input class="form-control" type="password" required="" id="txtPassword" name="txtPassword" placeholder="Enter your password">
+                                        <input class="form-control" type="password" required="" id="txtPassword" name="txtPassword" placeholder="Enter password">
+                                    </div>
+                                     <div class="col-6">
+                                        <label for="txtconfPassword">Conform Password</label>
+                                        <input class="form-control" type="password" required="" data-parsley-equalto="#txtPassword" id="txtconfPassword" name="txtconfPassword" placeholder="Re-Enter password">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="txnPassword">Transaction Password</label>
+                                        <input class="form-control" type="password" required="" id="txnPassword" name="txnPassword" placeholder="Enter Transaction password">
+                                    </div>
+                                     <div class="col-6">
+                                        <label for="confirmTxnPassword">Conform Transaction Password</label>
+                                        <input class="form-control" type="password" data-parsley-equalto="#txnPassword"  required="" id="confirmTxnPassword" name="confirmTxnPassword" placeholder="Re-Enter trans password">
                                     </div>
                                 </div>
                                 <div class="form-group row">

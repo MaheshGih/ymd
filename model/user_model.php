@@ -2,6 +2,7 @@
 include('../include/config.php');
 include('plan_model.php');
 include('util_model.php');
+include('admin_model.php');
 include('../include/sms.php');
 ?>
 <?php
@@ -206,6 +207,13 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     
+    public function GetUserDetailsByLoginId($logid){
+        global $con;
+        $select_qry = "select u.*,sp.full_name as sponsor_name, sp.login_id as sponsor_login_id from user_details u join user_details sp on( u.sponsor_id = sp.id) where u.login_id='".$logid."'";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$select_qry));
+        return $res;
+    }
+    
     public function sendRegOtpAndUpdate($mobile,$full_name,$login_id){
         global $objUtilModel;
         global $objSMS;
@@ -215,11 +223,11 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     
-    public function UpdateMobile($logid,$mobile){
+    public function UpdateUserDetails($logid,$mobile,$full_name,$email){
         global $con;
-        $sql = "update user_details set mobile=? where login_id=?";
+        $sql = "update user_details set mobile=?,full_name=?,email=? where login_id=?";
         $wal_stmt = $con->prepare($sql);
-        $wal_stmt->bind_param('ss',$mobile,$logid);
+        $wal_stmt->bind_param('ssss',$mobile,$full_name,$email,$logid);
         $res = $wal_stmt->execute();
         $wal_stmt->close();
         return $res;
@@ -741,6 +749,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     public function AcceptInvitationPaymentReceived($invitationId,$txn_type,$cause_type){
         global $con;
         global $help_amount;
+        global $objSMS;
         $status=self::getInvitationStausByKey("ACCEPTED");
         
         $con -> autocommit(FALSE);
@@ -752,6 +761,9 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $wrd_req = self::GetWithdrawReqById($withdrawReqId);
         $wrd_req_udp = self::UpdateWithdrawRequest($withdrawReqId,$wrd_req['amount_req']);
         $actin_res = self::ActivateUserById($invitation['provide_help_userid']);
+        
+        $sms = $objSMS->sendActivationMsg($invitation['provide_mobile'], $invitation['provide_help_id'],$invitation['provide_help_name']);
+        
         $res = $con -> commit();
         return $res;
     }
@@ -814,20 +826,83 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $tree_data;
     }
     public function GetUserTree($sponsorId) {
-        $sql_qry = "with recursive cte (id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl,id_path ) as (
-              select id,sponsor_id,spill_id,full_name,mobile,side, is_active, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
+        $sql_qry = "with recursive cte (id,login_id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl,id_path ) as (
+              select id,login_id,sponsor_id,spill_id,full_name,mobile,side, is_active, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
               where  spill_id = $sponsorId 
               union all
-              select u.id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
+              select u.id,u.login_id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
               inner join user_details as u
                       on cte.id = u.spill_id
             )
-            select id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl,id_path from cte order by lvl,spill_id,side";
+            select id,login_id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl,id_path from cte order by lvl,spill_id,side";
         global $con;
         $child_count = mysqli_query($con,$sql_qry);
         return $child_count;
     }
     
+    public function GetUserTreeAndChildCount($sponsorId) {
+        $users = array();
+        $key_data = array();
+        $master_lsize = 0;
+        $master_rsize = 0;
+        $childs = self::GetUserTree($sponsorId);
+        while($row = $childs->fetch_assoc()) {
+            array_push($users,$row);
+            $key_data[$row['id']] = $row;
+        }
+        
+        $reward_users = array();
+        
+        foreach ($users as $ukey => $user){
+            $parent_path = $user['id_path'].',';
+            $lids = [];
+            $rids = [];
+            $l = $r= $ref_count= 0;
+            
+            foreach ($users as $child){
+                $child_path = $child['id_path'];
+                $ind = strpos($child_path, $parent_path);
+                if ($ind !== false){
+                    $len = $ind+strlen($parent_path);
+                    if(! (strlen($child_path)>$len))
+                        continue;
+                        $sub_path = substr($child_path,$len);
+                        $ids = explode(',',$sub_path);
+                        if(($l == 0 && $ids[0] != $r) || ($r == 0 && $ids[0] != $l)){
+                            $imidiate_child = $key_data[$ids[0]];
+                            if($imidiate_child['spill_id'] == $user['id']){
+                                if($imidiate_child['side'] == 'left'){
+                                    $l = $imidiate_child['id'];
+                                }else if($imidiate_child['side'] == 'right'){
+                                    $r = $imidiate_child['id'];
+                                }
+                            }
+                        }
+                        if($l == $ids[0] ){
+                            $lids = array_merge($lids,$ids);
+                            $lids = array_unique($lids);
+                        }
+                        if($r == $ids[0]){
+                            $rids = array_merge($rids,$ids);
+                            $rids = array_unique($rids);
+                        }
+                }
+            }
+            $lsize = count($lids);
+            $rsize = count($rids);
+            $lrsize = array('lsize'=>$lsize,'rsize'=>$rsize);
+            $users[$ukey] = array_merge($user,$lrsize);
+            if($sponsorId == $user['spill_id']){
+                if($user['side']=='left'){
+                    $master_lsize = $lsize + $rsize+ 1;
+                }else if($user['side']=='right'){
+                    $master_rsize = $lsize + $rsize+ 1;
+                }
+            }
+        }
+        $user_res = array("users" => $users, "master_lsize" => $master_lsize, "master_rsize" => $master_rsize);
+        return $user_res;
+    }
     public function GetSponsorChilds($sponsorId) {
         $sql_qry = "with recursive cte (id,sponsor_id,spill_id,full_name,side ) as (
               select id,sponsor_id,spill_id,full_name,side from user_details 
@@ -1568,6 +1643,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     public function GetUserDashboardMetrics($userId){
         global $con;
         global $objUtilModel;
+        global $objAdminModel;
         
         $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
         $user = self::GetUserDetailsByUserId($userId);
@@ -1580,7 +1656,8 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $tot_trans = mysqli_fetch_assoc(mysqli_query($con,$tot_txn_sql));
    
         $todayMyRefIncome = self::GetTotWalletTxnsByUserIdAndDate($userId, "REFERRAL",$cur_date);
-        $todayMyLVLIncome = self::GetTotWalletTxnsByUserIdAndDate($userId, "LEVEL",$cur_date);
+        $myRefIncome = self::GetTotWalletTxnsByUserIdAndCause($userId, "REFERRAL");
+        $myLVLIncome = self::GetTotWalletTxnsByUserIdAndCause($userId, "LEVEL");
         $myReferralTot = self::GetRefCountByUserId($userId);
         $myRoyalIncome = self::GetTotWalletTxnsByUserIdAndCause($userId, "HOUSE_FULL");
         $totPendingWithdrawAmnt = self::GetTotPendingWithdrawAmntByUserId($userId);
@@ -1592,11 +1669,14 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $childCount = self::GetLeftAndRightChildCount($childs, $userId);
         $user_lvl = self::GetLevelById($user['lvl_id']);
         $next_lvl = self::GetLevelOrderNo($user_lvl['l_order']+1);
+        $latestNews = $objAdminModel->GetActiveNews();
         $res = array (
+            "news" => $latestNews,
             "tot_amount" => $tot_amount['total_amount'], 
             "tot_trans"=>$tot_trans['tottrans'],
-            "todayMyRefIncome"=>$todayMyRefIncome['tot'], 
-            "todayMyLVLIncome"=>$todayMyLVLIncome['tot'],
+            "todayMyRefIncome"=>$todayMyRefIncome['tot'],
+            "myRefIncome"=>$myRefIncome['tot'],
+            "myLVLIncome"=>$myLVLIncome['tot'],
             "myReferralTot"=>$myReferralTot['tot'],
             "myRoyalIncome"=>$myRoyalIncome['tot'],
             "totPendingWithdrawAmnt"=>$totPendingWithdrawAmnt['tot'],

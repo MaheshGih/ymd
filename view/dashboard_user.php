@@ -1,5 +1,4 @@
 <?php 
-$user_list = $objUserModel->GetRecentUsers();
 $metrics = $objUserModel->GetUserDashboardMetrics($_SESSION['userid']);
 $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 ?>
@@ -8,96 +7,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 	<!-- Start Content-->
 	<div class="container-fluid">
 		<!-- start page update title -->
-		<div class="row">
-			<div class="col-12">
-				<div class="page-title-box">
-					<div class="row pull-right"></div>
-					<div class="row" style="margin: 30px 0 20px 0;">
-						<div class="col-md-2 col-xs-12">
-							<h4
-								style="font-size: 20px; font-weight: 600; margin: 4px 0 15px;">DASHBOARD</h4>
-						</div>
-						<div class="col-md-2 col-xs-12">
-							<div id="divreward" style="display: none">
-								<img id="imgreward"
-									style="width: 200px; padding-bottom: 20px; padding-top: 0x; margin: 0 auto; text-align: center;"
-									class="img-responsive ">
-							</div>
-						</div>
-						<div class="col-md-8 col-xs-12">
-							<div class="row">
-								<div class="col-md-3 col-xs-5">
-									<p
-										style="text-align: right; padding: 4px 10px; color: #ffffff; background: #f73104; border-top-left-radius: 60px;">
-										Referral Link :</p>
-								</div>
-								<div class="col-md-6 col-xs-7">
-									<div class="input-group input-group-sm"
-										style="margin-bottom: 8px;">
-										<input class="form-control" id="regRefLink" type="text"
-											value="http://admin.ymd1000us.com/view/registration_tree.php?ref=<?php echo $_SESSION['loginid']?>"
-											id="myInput"
-											style="background-color: rgb(255, 255, 255); font-size: 14px; color: #525252;">
-										<span class="input-group-btn ">
-											<button class="btn btn-success btn-flat"
-												onclick="copyRegLink()" onmouseout="outFunc()"
-												data-copytarget="#regRefLink">
-												<span class="tooltiptext" id="myTooltip"
-													style="display: none;">Copy to clipboard</span> Copy
-											</button>
-										</span>
-										<!-- <div class="tooltip">
-                                                            <button class="btn btn-success btn-flat" onclick="copyRegLink()" onmouseout="outFunc()">
-                                                              <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-                                                              Copy text
-                                                              </button>
-                                                            </div>-->
-									</div>
-								</div>
-
-							</div>
-						</div>
-					</div>
-					<div class="row" style="margin-bottom: 20px;">
-						<div class="col-md-2 col-xs-4">
-							<h3 class="box-title"
-								style="font-size: 16px; background: #3b146f; padding: 18px 20px; margin: 0; font-weight: bold; color: white; border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
-								<span class="hidden-xs">LATEST</span> NEWS
-							</h3>
-						</div>
-						<div id="form_1" class="col-md-8 col-xs-8">
-							<marquee loop="true" behavior="scroll" direction="left"
-								scrolldelay="60" scrollamount="2"
-								style="margin-top: 0px; height: 54px; padding: 6px; border-top-right-radius: 10px; box-shadow: 1px 1px 3px #c0c0c0; background: white; border-bottom-right-radius: 10px;"
-								onmouseover="this.stop();" onmouseout="this.start();">
-								<div class="comment-text" style="color: black;">
-									<span class="username" style="color: #c3602b;"><i
-										class="fa fa-info-circle"></i>&nbsp;YMD 1000 US. </span> <br>
-									<p><!-- Offer Extended Till 17th September 2020! --></p>
-								</div>
-								<hr>
-								<!--<div class="comment-text" style="color: black;">
-                                                            <span class="username" style="color: #c3602b;"><i class="fa fa-info-circle"></i>&nbsp;way2startup.org
-                                                            </span>
-                                                            <br>
-                                                            Wel-Come to 4WAYDIAL LTD.
-                                                        </div>
-                                                        <hr>-->
-
-							</marquee>
-						</div>
-						<div class="col-md-2 col-xs-4">
-							<h3 class="box-title"
-								style="font-size: 16px; background: #3b146f; padding: 18px 20px; margin: 0; font-weight: bold; color: white; border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
-								<span class="hidden-xs" style="color: #45ff17;">Rank:</span>
-								Rising
-							</h3>
-						</div>
-					</div>
-					<!-- end row -->
-				</div>
-			</div>
-		</div>
+		<?php include '../include/referrence_link.php';?>
 		<!-- end page update title -->
 		<div class="row">
 			<div class="col-xl-4 col-sm-4">
@@ -185,6 +95,24 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 					</div>
 				</div>
 			</div>
+			<div class="col-xl-4 col-sm-4">
+				<div class="card-box widget-box-two widget-two-custom">
+					<div class="media">
+						<div
+							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
+							<i class="mdi mdi-currency-usd avatar-title font-30 text-white"></i>
+						</div>
+						<div class="wigdet-two-content media-body">
+							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+								title="Statistics">My Direct Income</p>
+							<h3 class="font-weight-medium my-2">
+								&#8377 <span data-plugin="counterup"><?php echo $metrics['myRefIncome']; ?></span>
+							</h3>
+							
+						</div>
+					</div>
+				</div>
+			</div>
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
@@ -197,38 +125,16 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Today My Indirect Income</p>
+								title="Statistics">My Spill Income</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $metrics['todayMyLVLIncome']; ?></span>
+								<span data-plugin="counterup"><?php echo $metrics['myLVLIncome']; ?></span>
 							</h3>
 							
 						</div>
 					</div>
 				</div>
 			</div>
-			<!-- end col -->
-
-
-			<div class="col-xl-4 col-sm-4">
-				<div class="card-box widget-box-two widget-two-custom ">
-					<div class="media">
-						<div
-							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i
-								class="mdi mdi-account-multiple avatar-title font-30 text-white"></i>
-						</div>
-
-						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">My Direct Members</p>
-							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $metrics['myReferralTot']; ?></span>
-							</h3>
-							<p class="m-0">Till <?php echo $cur_date ?></p>
-						</div>
-					</div>
-				</div>
-			</div>
+			<!-- end col -->			
 			<!-- end col -->
 		</div>
 
@@ -344,41 +250,27 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 					<div class="media">
 						<div
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-currency-eur avatar-title font-30 text-white"></i>
+							<i
+								class="mdi mdi-account-multiple avatar-title font-30 text-white"></i>
 						</div>
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">More..</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- end col -->
-		</div>
-
-		<div class="row">
-			<div class="col-xl-4 col-sm-4">
-				<div class="card-box widget-box-two widget-two-custom ">
-					<div class="media">
-						<div
-							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-hand-right avatar-title font-30 text-white"></i>
-						</div>
-
-						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Right Team</p>
+								title="Statistics">My Direct Members</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $metrics['childCount']['rsize']; ?></span>
+								<span data-plugin="counterup"><?php echo $metrics['myReferralTot']; ?></span>
 							</h3>
 							<p class="m-0">Till <?php echo $cur_date ?></p>
 						</div>
 					</div>
 				</div>
 			</div>
+			
 			<!-- end col -->
-
+		</div>
+		
+			
+		<div class="row">
 			<div class="col-xl-4 col-sm-4">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
@@ -399,6 +291,42 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 				</div>
 			</div>
 			<!-- end col -->
+			
+			<div class="col-xl-4 col-sm-4">
+				<div class="card-box widget-box-two widget-two-custom ">
+					<div class="media">
+						<div
+							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
+							<i class="mdi mdi-hand-right avatar-title font-30 text-white"></i>
+						</div>
+
+						<div class="wigdet-two-content media-body">
+							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+								title="Statistics">Right Team</p>
+							<h3 class="font-weight-medium my-2">
+								<span data-plugin="counterup"><?php echo $metrics['childCount']['rsize']; ?></span>
+							</h3>
+							<p class="m-0">Till <?php echo $cur_date ?></p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end col -->
+			<div class="col-xl-4 col-sm-4">
+				<div class="card-box widget-box-two widget-two-custom ">
+					<div class="media">
+						<div
+							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
+							<i class="mdi mdi-currency-eur avatar-title font-30 text-white"></i>
+						</div>
+
+						<div class="wigdet-two-content media-body">
+							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+								title="Statistics">More..</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<!-- end row -->
 
@@ -465,76 +393,6 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 				</div>
 			</div>
 		</div>
-
-		<div class="row">
-			<div class="col-xl-6 col-lg-12">
-				<div class="card-box">
-					<h4 class="header-title">Recent Users</h4>
-					<p class="sub-header">Recently joined user details here</p>
-
-					<div class="table-responsive">
-						<table class="table table-hover m-0 table-actions-bar">
-
-							<thead>
-								<tr>
-									<!--<th></th>-->
-									<th>Name</th>
-									<th>Mobile</th>
-									<th>Date of Joining</th>
-								</tr>
-							</thead>
-							<tbody> <?php
-                                while ($r = mysqli_fetch_assoc($user_list)) {
-                                    ?>
-									<tr>
-									<td>
-										<h5 class="m-0 font-weight-medium"><?php echo $r['full_name']; ?></h5>
-									</td>
-
-									<td><i class="fas fa-mobile-alt text-primary"></i> <?php echo $r['mobile']; ?>
-                                                    </td>
-									<td><i class="far fa-calendar-alt text-success"></i>  <?php echo $r['date_created']; ?>
-                                                    </td>
-								</tr>
-								<?php }?>
-                           </tbody>
-						</table>
-					</div>
-				</div>
-
-			</div>
-			<!-- end col -->
-			<div class="col-xl-6 col-lg-6">
-
-				<div class="row">
-					<div class="col-xl-12 col-lg-12">
-						<div class="card-box widget-box-two widget-two-custom ">
-							<div class="media">
-								<div
-									class="avatar-lg rounded-circle bg-info widget-two-icon align-self-center">
-									<i class="mdi mdi-email avatar-title font-30 text-white"></i>
-								</div>
-								<div class="wigdet-two-content media-body">
-									<p class="m-0 text-uppercase font-weight-medium text-truncate"
-										title="Statistics"></p>
-									<h3 class="font-weight-medium my-2">
-										<span data-plugin="counterup"><?php  ?></span>
-									</h3>
-									<p class="m-0">Till <?php echo $cur_date ?></p>
-								</div>
-							</div>
-						</div>
-
-					</div>
-				</div>
-
-			</div>
-
-		</div>
-		<!--- end row -->
-
-
-
 	</div>
 	<!-- end container-fluid -->
 

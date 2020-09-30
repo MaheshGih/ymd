@@ -17,7 +17,7 @@ $(document).ready(function(){
 		}
 		return false;		
 	});
-	$('form').parsley().on('field:validated', function() {});
+	
 });
 
 
@@ -33,6 +33,7 @@ function getUserData( btnName, loginId){
             $("#txtEmail").val(res["email"]);
             $("#txtMobile").val(res["mobile"]);
             $("#txtLoginId").val(res["login_id"]);
+            $("#txtSponsorId").val();
             $("#txtAccName").val(res["acc_name"]);
             $("#txtAccNo").val(res["acc_no"]);
             $("#txtBankName").val(res["bank_name"]);
@@ -72,11 +73,11 @@ function getUserMessages(result,type){
     if (result == "success" && type == "updatemobile"){
         res.type = 'success';
         res.title = 'Congrats!';
-        res.msg = "User mobile number updated successfully.";
+        res.msg = "User deatails updated successfully.";
     }else if (result == "failure" && type == "updatemobile"){
     	res.type = 'error';
     	res.title = 'Failed!';
-        res.msg = "Mobile Number updating failed!. Please try again.";
+        res.msg = "User deatails updating failed!. Please try again.";
     }
     return res;
 }

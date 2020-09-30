@@ -98,15 +98,21 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
+                                            <label for="inputName" class="col-3 col-form-label">Sponor Id</label>
+                                            <div class="col-9">
+                                                <input type="text" class="form-control" name="txtSponsorId" id="txtSponsorId" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <label for="inputName" class="col-3 col-form-label">Name</label>
                                             <div class="col-9">
-                                                <input type="text" class="form-control" name="txtUserName" id="txtUserName" readonly>
+                                                <input type="text" class="form-control" name="txtUserName" id="txtUserName" required>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="inputEmail" class="col-3 col-form-label">Email</label>
                                             <div class="col-9">
-                                                <input type="email" class="form-control" name="txtEmail" id="txtEmail"  readonly>
+                                                <input type="email" class="form-control" name="txtEmail" id="txtEmail"  required>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -118,7 +124,7 @@
                                         <div class="form-group row">
                                             <div class="col-9">
                                                 <!-- <input type="submit" class="btn btn-success" name="btnSaveAddress" id="btnSaveAddress"  value="Save"/> -->
-                                                <button type="submit" name="btnEditMobile" id="btnEditMobile" class="btn btn-success waves-effect waves-light"> <i class="fas fa-save mr-1"></i> <span>Update Mobile</span> </button>
+                                                <button type="submit" name="btnEditMobile" id="btnEditMobile" class="btn btn-success waves-effect waves-light"> <i class="fas fa-save mr-1"></i> <span>Update</span> </button>
                                             </div>
                                         </div>
                                     </form>
@@ -269,7 +275,9 @@
         <script src="../assets/js/app.min.js"></script>
         <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
     	<script src="../assets/js/pages/sweet-alerts.init.js"></script>
+        <script src="../js/util.js"></script>
         <script src="../js/users.js"></script>
+        
         
     </body>
 

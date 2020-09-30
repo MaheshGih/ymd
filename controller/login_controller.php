@@ -88,4 +88,24 @@
         }
     }
     
+    if(isset($_GET['forgot_passsword'])){
+        $res = array( "status" => "success", "msg" => "");
+        $user = $objUserModel->GetUserDetails($_GET['login_id']);
+        if(!$user){
+         $res['status'] = "invalid_id";
+         $res['msg'] = "Please enter a valid login id";
+        }else{
+            $sms = $objSMS->sendForgotPassword($user['mobile'], $user['password'], $user['login_id']);
+            if($sms){
+                $res['status'] = "success";
+                $res['msg'] = "Password send as sms successfully";
+            }else{
+                $res['status'] = "failure";
+                $res['msg'] = "Password send as sms failed";
+            }
+        }
+                
+        echo json_encode($res);
+    }
+    
 ?>

@@ -3,6 +3,7 @@ class UtilModel{
     
     public $date_format = 'Y-m-d';
     public $datetime_format = 'Y-m-d H:i:s';
+    public $date_format_slash = 'Y/m/d';
     
     function getCurDate($format) {
         date_default_timezone_set("Asia/Calcutta");

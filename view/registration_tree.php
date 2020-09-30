@@ -76,7 +76,6 @@ background:grey;
 
                                             <div class="col-sm-4 todo-inputbar">
                                                 <input type="text" id="refId" name="refId" class="form-control" placeholder="Enter Referral Userid" 
-                                                <?php if(isset($_GET['ref'])) echo 'disabled'?>
                                                 value="<?php if(isset($_GET['ref'])) echo $_GET['ref']?>"
                                                 style="margin-bottom:2px;" required>
                                                 <p class="text-info mb-0"> <a href="login.php" class=" ml-1 float-right"><b>Sign In</b></a></p>
@@ -194,14 +193,11 @@ background:grey;
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <div class="col-7">
+                                    <div class="col-12">
                                         <label for="emailaddress">Email address</label>
                                         <input class="form-control" type="email" required id="txtEmail" name="txtEmail" required="" placeholder="john@deo.com">
                                     </div>
-                                    <div class="col-5">
-                                        <label for="emailaddress">Mobile</label>
-                                        <input class="form-control" type="text" required id="txtMobile" name="txtMobile" required="" minlength="10"  maxlength="10"  placeholder="9XXXX XXXXX">
-                                    </div>
+                                    
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-6">
@@ -209,8 +205,28 @@ background:grey;
                                         <input class="form-control" type="text" required id="txtUserId" name="txtUserId" value="<?php echo $logid;?>" required="" readonly>
                                     </div>
                                     <div class="col-6">
-                                        <label for="password">Password</label>
-                                        <input class="form-control" type="password" required="" id="txtPassword" name="txtPassword" placeholder="Enter your password">
+                                        <label for="emailaddress">Mobile</label>
+                                        <input class="form-control" type="text" required id="txtMobile" name="txtMobile" required="" minlength="10"  maxlength="10"  placeholder="9XXXX XXXXX">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                	<div class="col-6">
+                                        <label for="txtPassword">Password</label>
+                                        <input class="form-control" type="password" required="required" id="txtPassword" name="txtPassword" placeholder="Enter your password">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="txtconfPassword">Conform Password</label>
+                                        <input class="form-control" type="password" required="required" data-parsley-equalto="#txtPassword" id="txtconfPassword" name="txtconfPassword" placeholder="Re-Enter password">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="txnPassword">Transaction Password</label>
+                                        <input class="form-control" type="password" required="" id="txnPassword" name="txnPassword" placeholder="Enter Transaction password">
+                                    </div>
+                                     <div class="col-6">
+                                        <label for="confirmTxnPassword">Conform Transaction Password</label>
+                                        <input class="form-control" type="password" data-parsley-equalto="#txnPassword"  required="" id="confirmTxnPassword" name="confirmTxnPassword" placeholder="Re-Enter trans password">
                                     </div>
                                 </div>
                                 <div class="form-group row">

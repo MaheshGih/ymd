@@ -12,7 +12,7 @@ if(isset($_POST['getuserdata'])){
 }
 
 if(isset($_POST['btnSearchUserData'])){
-    $res = $objUserModel->GetUserDetails($_POST['loginId']);
+    $res = $objUserModel->GetUserDetailsByLoginId($_POST['loginId']);
     echo json_encode($res);
 }
 
@@ -39,14 +39,14 @@ if(isset($_POST['btnEditMobile'])){
     //$res = $objUserModel->UpdateMobile($_POST['txtLoginId'],$_POST['txtMobile']);
     $loginId = $_POST['txtLoginId'];
     $mobile = $_POST['txtMobile'];
-    $otp = $objUtilModel->generateOTP();
-    $objSMS->sendUpdateMobileOTP($mobile, $otp, $loginId);
-    $res = $objUserModel->updateUserOTP($loginId,$otp);
-    $mobileEnd = substr($mobile, -3);
-    $smsmsg = 'We have send an OTP to your registered mobile number *******'.$mobileEnd.' for Verification';
+    $full_name = $_POST['txtUserName'];
+    $email= $_POST['txtEmail'];
+    
+    $res = $objUserModel->UpdateUserDetails($loginId, $mobile, $full_name, $email);
+    $sms = $objSMS->sendUpdatedUserDetails($mobile, $loginId);
     
     if($res){
-        echo "<script> location.href='../view/mobileupdate_otp.php?msg=".$smsmsg."&mobile=".$mobile."&login_id=".$loginId."';</script>";
+        echo "<script> location.href='../view/users.php?=success=updatemobile';</script>";
     }else{
         echo "<script> location.href='../view/users.php?=failure=updatemobile';</script>";
     }
@@ -182,6 +182,12 @@ if(isset($_POST['changePasswordBtn'])){
     }else{
         echo "<script> location.href='../view/changepassword.php?=failure=changepassword';</script>";
     }
+}
+
+if(isset($_GET['forgot_txn_passsword'])){
+    $user = $objUserModel->GetUserDetailsById($_SESSION['userid']);
+    $res = $objSMS->sendForgotTxnPassword($user['mobile'], $user['txn_password'], $user['login_id']);
+    return $res;
 }
 
 if(isset($_POST['changeTxnPasswordBtn'])){

@@ -5,7 +5,7 @@ include('../model/payment_model.php');
 include('../model/user_model.php');
 //$reciepts = $objPaymentModel->GetUploadedReciepts($_SESSION['userid']);
 $objUserModel->invitationStatus["SENT"];
-$invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid'],);
+$invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -105,7 +105,7 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid'],);
                                         <input type="hidden" submitPBtnName=""  id="submitPBtnName_<?php echo $r['id']?>" name="submitBtnName_<?php echo $r['id']?>"/>
                                         <div class="clearfix text-left">
                                         	<button type="button" paymentPDoneBtn="" id="paymentPDoneBtn" name="paymentPDoneBtn" class="btn btn-success" > <i class="fa fa-thumbs-o-down"></i>Payment Done</button>	
-                                            <button type="button" rejectPBtn="" id="rejectPBtn" name="rejectPBtn" class="btn btn-danger"> <i class="fa fa-thumbs-o-down"></i>Reject</button>
+                                            <!-- <button type="button" rejectPBtn="" id="rejectPBtn" name="rejectPBtn" class="btn btn-danger"> <i class="fa fa-thumbs-o-down"></i>Reject</button> -->
                                         </div>
                                         
                                     </form>
@@ -117,7 +117,7 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid'],);
                                     	</div>    
                                         <div class="dz-message needsclick">
                                         	<label>Message : </label>
-                                        	<span class="text-muted font-13"> Your payment receipt uploded successfully. Helpper will accept your payment soon. Thanking you www.ymd1000us.com</span>
+                                        	<span class="text-muted font-13"> Your payment receipt uploded successfully. Received User <?php echo $r['to_user_name']?> (<?php echo $r['to_user_id']?>) will accept your payment soon. Please Contact <?php echo $r['to_mobile']?>. Thanking you www.ymd1000us.com</span>
                                     	</div>
                                     <?php } ?>
                                     

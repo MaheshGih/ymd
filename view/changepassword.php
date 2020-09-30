@@ -111,7 +111,7 @@ include("../include/session.php");
                                         <div class="col-12">
                                             <label for="oldTxnPassword" class="col-3 col-form-label">Old Password</label>
                                             <input type="password" required class="form-control" name="oldTxnPassword" id="oldTxnPassword" />
-                                            <a href="forgot_txn_password.php" class="text-muted float-right"><small>Forgot your password?</small></a>
+                                            <a href="" onclick="sendTxnPassword();" class="text-muted float-right"><small>Forgot your password?</small></a>
                                         </div>
                                         <div class="col-12">
                                             <label for="txnPassword" class="col-4 col-form-label">Password</label>
@@ -179,6 +179,7 @@ include("../include/session.php");
     <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
 	
 	<script src="../assets/libs/parsleyjs/parsley.min.js"></script>
+	<script src="../js/util.js"></script>
 	
     <!-- Datatables init -->
     <script src="../assets/js/pages/datatables.init.js"></script>
@@ -191,12 +192,7 @@ include("../include/session.php");
         $(document).ready(function(){
              var  res = location.search;
              res = res.split("=");
-             displayNotification(res[1],res[2]);
-    
-             $('form').parsley().on('field:validated', function() {
-             	  
-       	  	 });
-         	
+             displayNotification(res[1],res[2]);     	
         });
         function displayNotification(result,type){
         	if(result){
@@ -234,11 +230,36 @@ include("../include/session.php");
             	res.type = 'error';
             	res.title = 'Failed!';
                 res.msg = "Transaction Password changing failed!. Please try again.";
+            }else if (result == "success" && type == "sendtxnpass"){
+                res.type = 'success';
+                res.title = 'Congrats!';
+                res.msg = "Transaction Password sms send successfully!.";
+            }else if (result == "failed" && type == "sendtxnpass"){
+            	res.type = 'error';
+            	res.title = 'Failed!';
+                res.msg = "Transaction Password sms sending failed!. Please try again.";
             }
             return res;
         }
-          
-     
+
+        function sendTxnPassword(){
+        	$.ajax({
+    	    	url: "../controller/user_controller.php?forgot_txn_passsword=sendtxnpass",
+    	    	success: function(res){
+        	    	var status = "success"; 
+					var type = "sendtxnpass"
+        	    	if(res){
+        	    		status = "success"; 
+    					type = "sendtxnpass"
+                	}else{
+                		status = "failure"; 
+    					type = "sendtxnpass"
+                    }
+        	    	displayNotification(status,type);
+    	    	}
+    	   });
+        }
+       	
     </script>
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>

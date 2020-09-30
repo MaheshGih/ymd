@@ -76,15 +76,19 @@ function showSignupPoup(){
     		var res = JSON.parse(result);
     		var master = res.master;
     		var users = res.tree;
-    		
-			var nodes = [{id:0, master_id:master_id, label:full_name, shape: "circularImage", image:manImgUrl}];
+    		master.id = 0;
+    		master.master_id = master_id;
+    		master.label = master.login_id;
+    		master.shape = "circularImage"; 
+    		master.image = manImgUrl;
+			var nodes = [master];
 			var edges = []; 
 			var edge = { from : undefined, to : undefined};
 			for( var i=0; i<users.length;i++){
 				var user = $.extend(true,{},users[i]);
 				user['master_id'] = user['id'];
 				user['id'] = i+1;
-				user['label'] = user.full_name;
+				user['label'] = user.login_id;
 				user['is_active'] = parseInt(user['is_active']); 
 				if(user['is_active']){
 					user['image'] = manImgUrl;
@@ -103,6 +107,13 @@ function showSignupPoup(){
 					if(searchNode['master_id'] == node.spill_id){
 						u_edge.from = searchNode['id'];
 						u_edge.to = node.id;
+						var elabel = ""; 
+						if(node['side']=='left'){
+							elabel = 'L- ' + searchNode['lsize'];
+						}else if(node['side']=='right'){
+							elabel = 'R- ' + searchNode['rsize'];
+						}
+						u_edge.label = elabel;
 						edges.push(u_edge);
 						/*if(node.spill_id == master_id ){
 							var u_edge = $.extend(true,{},edge);
