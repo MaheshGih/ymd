@@ -218,8 +218,10 @@
             $(document).ready(function(){
                 var  res = location.search;
                 res = decodeURIComponent(res);
-                res = res.split("=");
-                displayNotification(res[1],res[2],res[3]);
+                if(res){
+                	res = res.split("=");
+                    displayNotification(res[1],res[2],res[3]);
+                }
           	  	$('form').each(function(){ $(this).parsley().on('field:validated', function() {})});//validations
            });
            function displayNotification(result,type, message){

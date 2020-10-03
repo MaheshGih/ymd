@@ -23,11 +23,12 @@
     $help_exp_time = 48;
     $inactive_user_exp_time = 48;
     $user_block_penalty = -200;
-    $royalty_amnt = 500;
-    $BASE_URL = "http://localhost/ymd/";
+    $royalty_amnt = 500; // every month roaylty user can get 
+    $housefull_amount = 1000; //after house full he will get
     $housefull_in_days = 4; // today + 4days back
     $housefull_size = 10;
     $royalty_points=12; //12 months
     $user_expired_in_months = 12;
     
+    $BASE_URL = "http://localhost/ymd/";
 ?>

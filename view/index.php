@@ -26,6 +26,8 @@
         <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
         <link href="../assets/css/app.min.css" rel="stylesheet" type="text/css"  id="app-stylesheet" />
 		<link href="../assets/css/pages/copytooltip.css" rel="stylesheet" type="text/css"  id="app-stylesheet" />
+		<!-- <link href="../assets/libs/jquery-countdown/jquery.countdownTimer.css" rel="stylesheet" type="text/css"  id="app-stylesheet" /> -->
+		
     </head>
 
     <body>
@@ -82,12 +84,32 @@
         <script src="../assets/js/pages/dashboard.init.js"></script>
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
-        
+        <script src="../assets/libs/jquery-countdown/jquery.countdownTimer.min.js"></script>
        	<script>   	
             $(document).ready(function(){
                  var  res = location.search;
                  res = res.split("=");
                  displayNotification(res[1],res[2]);
+
+               /*  var hrs = "hours";
+             	var expTime = $('#expTime').val();
+             	if(expTime){
+                 	if(!(expTime>0)){
+                 		expTime = -(expTime);	
+                     }
+                    var obj = {"hours":expTime};
+             		$("#expire_timer").countdowntimer(obj);
+                 } */
+                 var expTime = $('#expTime').val();
+              	if(expTime || expTime.length>0){
+              		var times = expTime.split('.'); 
+                  	if(times[0]>48){
+         				return true;
+                     }
+                  	var minutes = times.length>=1?times[1]:undefined;
+                     var obj = {"hours":parseInt(times[0])};
+              		$("#expire_timer").countdowntimer(obj);
+                  }
             });
                  
             function displayNotification(result,type){
@@ -133,6 +155,8 @@
         	  var tooltip = document.getElementById("myTooltip");
         	  tooltip.innerHTML = "Copy to clipboard";
         	}
+
+        	
         </script>
     </body>
 

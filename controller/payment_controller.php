@@ -88,15 +88,25 @@ include('../model/wallet_txn_model.php');
     }
     
     if(isset($_POST['btnAddRewards'])){
-        $users = $objUserModel->rewardUsers(0);
+        $users = $objUserModel->GetLevelRewardUsers();
         $res = $objUserModel->AddRewards($users);
         if($res){
-            echo "<script> location.href='../view/reward_users.php?=success=add_reward';</script>";
+            echo "<script> location.href='../view/reward_users.php?=success=AddRewards';</script>";
         }else{
-            echo "<script> location.href='../view/reward_users.php?=failure=add_reward';</script>";
-        }
-        
+            echo "<script> location.href='../view/reward_users.php?=failure=AddRewards';</script>";
+        }        
     }
+    
+    if(isset($_POST['btnUpgradeLevel'])){
+        $users = $objUserModel->GetNextLevelUsers(0);
+        $res = $objUserModel->UpgardeUserLevel($users);
+        if($res){
+            echo "<script> location.href='../view/user_level_upgrade.php?=success=lvlupgraded';</script>";
+        }else{
+            echo "<script> location.href='../view/user_level_upgrade.php?=failure=lvlupgraded';</script>";
+        }        
+    }
+    
     if(isset($_POST['btnAddRoyaltyUser'])){
         $users = $objUserModel->GetHousefullUsers(0);
         $res = $objUserModel->AddRoyalty($users);

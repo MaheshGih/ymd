@@ -71,10 +71,10 @@ if(isset($_GET['id'])){
                                         <li class="breadcrumb-item">
                                             <a href="javascript: void(0);">Rewards</a>
                                         </li>
-                                        <li class="breadcrumb-item active">Royalty Points</li>
+                                        <li class="breadcrumb-item active">User Levels</li>
                                     </ol>
                                 </div>
-                                <h4 class="page-title">Royalty Points</h4>
+                                <h4 class="page-title">User Levels</h4>
                             </div>
                         </div>
                     </div>
@@ -140,7 +140,7 @@ if(isset($_GET['id'])){
                     <div class="row">
                         <div class="col-12">
                             <div class="card-box table-responsive">
-                                <h4 class="header-title">Royalty Points</h4>
+                                <!-- <h4 class="header-title">Royalty Points</h4>-->
                                 <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr align="center">

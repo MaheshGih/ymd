@@ -66,11 +66,19 @@ var network = undefined;
   	}
   	var edge = { from : undefined, to : undefined};	
   	var res = JSON.parse(result);
-	var master = res.master;
+	var sponsor = res.master;
 	var users = res.tree;
 	var manImgUrl = '../assets/images/man.png';
 	var manInactiveImgUrl = '../assets/images/maninactive.png';
-	var nodes = [{id:0, master_id:master['id'], label:master['login_id'], image : manImgUrl, shape : "circularImage"}];
+	var master  = $.extend(true,{},sponsor);
+	master.id = 0;
+	master.master_id = sponsor.id;
+	master.label = master.login_id;
+	master.shape = "circularImage"; 
+	master.image = manImgUrl;
+	var nodes = [master];
+	//var nodes = [{id:0, master_id:master['id'], label:master['login_id'], image : manImgUrl, shape : "circularImage"}];
+	
 	var edges = []; 
 	for( var i=0; i<users.length;i++){
 		var user = $.extend(true,{},users[i]);
@@ -96,6 +104,14 @@ var network = undefined;
 			if(searchNode['master_id'] == node.spill_id){
 				u_edge.from = searchNode['id'];
 				u_edge.to = node.id;
+				var elabel = ""; 
+				if(node['side']=='left'){
+					elabel = 'L- ' + searchNode['lsize'];
+				}else if(node['side']=='right'){
+					elabel = 'R- ' + searchNode['rsize'];
+				}
+				u_edge.label = elabel;
+						
 				edges.push(u_edge);
 				/*if(node.spill_id == master_id ){
 					var u_edge = $.extend(true,{},edge);

@@ -145,8 +145,7 @@ include("../include/session.php");
 	
     <!-- Datatables init -->
     <script src="../assets/js/pages/datatables.init.js"></script>
-        <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
-
+    <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
     <script src="../assets/js/pages/sweet-alerts.init.js"></script>
     <script src="../assets/libs/custombox/custombox.min.js"></script>
 	
@@ -165,6 +164,7 @@ include("../include/session.php");
         function displayNotification(result,type){
         	if(result){
         		var obj = getUserMessages(result, type)
+        		if(obj.type)
         		notification(obj);
             }
         		
@@ -177,7 +177,7 @@ include("../include/session.php");
            });
         }
         function getUserMessages(result,type){
-            var res = {type:'sucess', msg:''};
+            var res = {type:undefined, msg:''};
             if (result == "success" && type == "changepassword"){
                 res.type = 'success';
                 res.title = 'Congrats!';

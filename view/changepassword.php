@@ -74,7 +74,7 @@ include("../include/session.php");
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card-box">
-                            	<h4 class="header-title mb-4">Change Password</h4>
+                            	<h4 class="header-title mb-4">Change Login Password</h4>
                                 <form class="form-horizontal" action="../controller/user_controller.php" method="post">
                                     <div class="form-group row account-content mt-4">
                                         <div class="col-12">
@@ -86,11 +86,11 @@ include("../include/session.php");
                                             <input type="password" required class="form-control" name="oldPassword" id="oldPassword" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="password" class="col-4 col-form-label">Password</label>
+                                            <label for="password" class="col-4 col-form-label">New Password</label>
                                             <input type="password" required class="form-control" name="password" id="password" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="confirmPassword" class="col-4 col-form-label">Conform Password</label>
+                                            <label for="confirmPassword" class="col-4 col-form-label">Conform New Password</label>
                                             <input type="password" required data-parsley-equalto="#password" class="form-control" name="confirmPassword" id="confirmPassword" />
                                         </div>
                                         <div class="col-12">
@@ -111,14 +111,14 @@ include("../include/session.php");
                                         <div class="col-12">
                                             <label for="oldTxnPassword" class="col-3 col-form-label">Old Password</label>
                                             <input type="password" required class="form-control" name="oldTxnPassword" id="oldTxnPassword" />
-                                            <a href="" onclick="sendTxnPassword();" class="text-muted float-right"><small>Forgot your password?</small></a>
+                                            <a href="#" onclick="sendTxnPassword();" class="text-muted float-right"><small>Forgot your Tran password?</small></a>
                                         </div>
                                         <div class="col-12">
-                                            <label for="txnPassword" class="col-4 col-form-label">Password</label>
+                                            <label for="txnPassword" class="col-4 col-form-label">New Password</label>
                                             <input type="password" required class="form-control" name="txnPassword" id="txnPassword" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="confirmTxnPassword" class="col-4 col-form-label">Conform Password</label>
+                                            <label for="confirmTxnPassword" class="col-4 col-form-label">Conform New Password</label>
                                             <input type="password" required data-parsley-equalto="#txnPassword" class="form-control" name="confirmTxnPassword" id="confirmTxnPassword" />
                                         </div>
                                         <div class="col-12">
@@ -233,7 +233,7 @@ include("../include/session.php");
             }else if (result == "success" && type == "sendtxnpass"){
                 res.type = 'success';
                 res.title = 'Congrats!';
-                res.msg = "Transaction Password sms send successfully!.";
+                res.msg = "Transaction Password is sent to your registerd mobile number.";
             }else if (result == "failed" && type == "sendtxnpass"){
             	res.type = 'error';
             	res.title = 'Failed!';

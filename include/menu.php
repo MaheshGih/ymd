@@ -86,12 +86,12 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> In-Active Users </span>
                 </a>
             </li>
-            <li>
+            <!--  <li>
                 <a href="invitation.php">
                     <i class=" fas fa-share-alt"></i>
                     <span> Send Invitations </span>
                 </a>
-            </li>
+            </li>-->
 			
 			<li class="menu-title">Finance</li>
 
@@ -130,7 +130,7 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
             <li>
                 <a href="royalty_points.php">
                     <i class="fas fa-hand-holding-usd "></i>
-                    <span> Royalty Points </span>
+                    <span> User Levels </span>
                 </a>
             </li>
             <li>
@@ -159,12 +159,12 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Get/Provide Help </span>
                 </a>
             </li>
-			<!-- <li>
+			<li>
                 <a href="user_level_upgrade.php">
                     <i class="fas fa-share-alt"></i>
                     <span> Level Upgrade </span>
                 </a>
-            </li> -->
+            </li>
             <li>
                 <a href="reward_users.php">
                     <i class="fas fa-money-bill "></i>

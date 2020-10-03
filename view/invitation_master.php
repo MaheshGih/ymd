@@ -326,7 +326,7 @@
                     var rowData = gh_table.rows( indexes ).data();
                     req = parseInt(rowData[0][4]);
 					ph_rows = ph_table.rows({selected: false});
-					ph_rows.each(function(row, ind){
+					$.each(ph_rows[0],function(ind, row){
 						if(ind<req)
 							ph_rows.row(row).select();
 					});

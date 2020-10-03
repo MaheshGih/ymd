@@ -41,7 +41,7 @@
                                         </a>
                                     </div>
                                     <h5 class="text-uppercase mb-1 mt-4">Sign In</h5>
-                                    <p class="mb-0">Login to your Admin account</p>
+                                    <p class="mb-0">Login to your account</p>
                                 </div>
 
                                 <div class="account-content mt-4">

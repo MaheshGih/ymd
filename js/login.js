@@ -40,6 +40,8 @@ function getUserMessages(result, type) {
     	return "Password sms sending failed!. Please try again.";
     }else if(result == "failure" && type == "invalid_id") {
     	return "Please enter a valid login id";
+    }else if(result == "failure" && type == "account_expired") {
+    	return "Your account was expired!.";
     }
 }
 

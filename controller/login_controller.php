@@ -8,18 +8,7 @@
         $res = $objLoginModel->CheckLogin($_POST['txtLoginId'],$_POST['txtLogPassword']);
         if($res>0){
             $details = $objLoginModel->GetLogUserDetails($_POST['txtLoginId']);
-            $_SESSION["uname"] = $details['sponsorid'];  
-            $_SESSION["loginid"] = $_POST['txtLoginId'];  
-            $_SESSION["fname"] = $details['fname'];  
-            $_SESSION['userid'] = $details['userid'];
-            $_SESSION['mobile'] = $details['mobile'];
-            $_SESSION['role'] = $details['role'];
-            $_SESSION['start'] = time();
-            $_SESSION['expire'] = $_SESSION['start'] + (1440* 60);
-            $user_lvl = $objUserModel->GetLevelById($details['lvl_id']);
-            $_SESSION['lvl_name'] = $user_lvl['level_name'];
-            
-            if($_SESSION['role']=='ROLE_USER'){
+            if($details['role']=='ROLE_USER'){
                 if($details['is_active']){
                     //$_SESSION['expired_date'] = $details['expired_date'];
                     $exp = $objUtilModel->formatStrDate($details['expired_date'], $objUtilModel->date_format);
@@ -32,13 +21,35 @@
                     $_SESSION['expiredin'] = $diff->format("%r%a days");
                 }else{
                     $date_created = $details['date_created'];
-                    $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
-                    $hourdiff = round((strtotime($cur_date) - strtotime($date_created))/3600, 1);
-                    $expTime = $inactive_user_exp_time - $hourdiff;
+                    //date("Y-m-d H:i:s", strtotime($date_created,strtotime('+5 hours')));
+                    $cur_date = $objUtilModel->getCurDate($objUtilModel->datetime_format);
+                    $diff = strtotime($cur_date) - strtotime($date_created);
+                    $hours = $diff/3600;
+                    $hourdiff = round($hours, 2);
+                    $expTime = 0;
+                    if($hourdiff<$inactive_user_exp_time){
+                        $expTime = $inactive_user_exp_time - $hourdiff;
+                    }else{
+                        echo "<script> location.href='../view/login.php?=failure=account_expired';</script>";
+                        return;
+                    }
                     $_SESSION['expiredin'] = $expTime.' Hours';
+                    $_SESSION['expTime'] = $expTime;
                 }
                 
             }
+            $_SESSION["uname"] = $details['sponsorid'];  
+            $_SESSION["loginid"] = $_POST['txtLoginId'];  
+            $_SESSION["fname"] = $details['fname'];  
+            $_SESSION['userid'] = $details['userid'];
+            $_SESSION['mobile'] = $details['mobile'];
+            $_SESSION['role'] = $details['role'];
+            $_SESSION['kyc_done'] = $details['kyc_done'];
+            $_SESSION['start'] = time();
+            $_SESSION['expire'] = $_SESSION['start'] + (1440* 60);
+            $user_lvl = $objUserModel->GetLevelById($details['lvl_id']);
+            $_SESSION['lvl_name'] = $user_lvl['level_name'];
+            
             echo "<script> location.href='../view/index.php?=success=login';</script>";
         }else{
             echo "<script> location.href='../view/login.php?=failure=login';</script>";

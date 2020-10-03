@@ -17,6 +17,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
 							<i class="mdi mdi-currency-inr avatar-title font-30 text-white"></i>
 						</div>
+						<a href="wallet.php">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Wallet Balance</p>
@@ -25,6 +26,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							</h3>
 							<p class="m-0">Till <?php echo $cur_date ?></p>
 						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -38,7 +40,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							<i
 								class="mdi mdi-account-multiple avatar-title font-30 text-white"></i>
 						</div>
-
+						<a href="#">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Total Users</p>
@@ -47,6 +49,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							</h3>
 							<p class="m-0">Till <?php echo $cur_date ?></p>
 						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -59,7 +62,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
 							<i class="mdi mdi-currency-gbp avatar-title font-30 text-white"></i>
 						</div>
-
+						<a href="wallet.php">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Total Transactions</p>
@@ -68,6 +71,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							</h3>
 							<p class="m-0">Till <?php echo $cur_date ?></p>
 						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -102,6 +106,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
 							<i class="mdi mdi-currency-usd avatar-title font-30 text-white"></i>
 						</div>
+						<a href="#">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">My Direct Income</p>
@@ -110,6 +115,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							</h3>
 							
 						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -122,7 +128,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
 							<i class="mdi mdi-currency-krw avatar-title font-30 text-white"></i>
 						</div>
-
+					<a href="wallet.php">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">My Spill Income</p>
@@ -131,6 +137,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							</h3>
 							
 						</div>
+					</a>
 					</div>
 				</div>
 			</div>
@@ -147,6 +154,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
 							<i class="mdi mdi-currency-try avatar-title font-30 text-white"></i>
 						</div>
+						<a href="wallet.php">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">My Royality Income</p>
@@ -155,6 +163,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							</h3>
 							<p class="m-0">Till <?php echo $cur_date ?></p>
 						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -213,14 +222,16 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
 							<i class="mdi mdi-currency-inr avatar-title font-30 text-white"></i>
 						</div>
+						<a href="rewards.php">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Matching Rewards Income</p>
+								title="Statistics">YMD Matching Rewards Income</p>
 							<h3 class="font-weight-medium my-2">
 								&#8377 <span data-plugin="counterup"><?php echo $metrics['totRewardAmnt']; ?></span>
 							</h3>
 							<p class="m-0">Till <?php echo $cur_date ?></p>
 						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -232,7 +243,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
 							<i class="mdi mdi-currency-cny avatar-title font-30 text-white"></i>
 						</div>
-
+						<a href="rewards.php">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">YMD AutoPool Income</p>
@@ -241,6 +252,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							</h3>
 							<p class="m-0">Till <?php echo $cur_date ?></p>
 						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -253,7 +265,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							<i
 								class="mdi mdi-account-multiple avatar-title font-30 text-white"></i>
 						</div>
-
+						<a href="referred_users.php">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">My Direct Members</p>
@@ -262,6 +274,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							</h3>
 							<p class="m-0">Till <?php echo $cur_date ?></p>
 						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -278,7 +291,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
 							<i class="mdi mdi-hand-left avatar-title font-30 text-white"></i>
 						</div>
-
+						<a href="tree.php">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Left Team</p>
@@ -287,6 +300,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							</h3>
 							<p class="m-0">Till <?php echo $cur_date ?></p>
 						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -299,7 +313,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
 							<i class="mdi mdi-hand-right avatar-title font-30 text-white"></i>
 						</div>
-
+						<a href="tree.php">
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Right Team</p>
@@ -308,6 +322,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							</h3>
 							<p class="m-0">Till <?php echo $cur_date ?></p>
 						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -322,7 +337,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">More..</p>
+								title="Statistics">UPDATE SOON</p>
 						</div>
 					</div>
 				</div>

@@ -5,7 +5,7 @@
 ?>
 <?php
     //$active_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],1);
-$active_childs = $objUserModel->rewardUsers(0);
+$active_childs = $objUserModel->GetLevelRewardUsers();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -101,11 +101,11 @@ $active_childs = $objUserModel->rewardUsers(0);
                                                    	<td><?php echo $r['login_id'];?></td>
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
-                                                    <td><?php echo $r['next_lvl']['level_name'];?></td>
-                                                    <td><?php echo $r['lsize'];?></td>
-                                                    <td><?php echo $r['rsize'];?></td>
-                                                    <td><?php echo $r['next_lvl']['inr_value'];?></td>
-                                                    <td><?php echo $r['next_lvl']['auto_pool_inr'];?></td>   
+                                                    <td><?php echo $r['level_name'];?></td>
+                                                    <td><?php echo $r['left_pairs'];?></td>
+                                                    <td><?php echo $r['right_pairs'];?></td>
+                                                    <td><?php echo $r['inr_value'];?></td>
+                                                    <td><?php echo $r['auto_pool_inr'];?></td>   
                                                 </tr>
                                             <?php
                                                }
@@ -170,7 +170,9 @@ $active_childs = $objUserModel->rewardUsers(0);
 		<script type="text/javascript" src="../assets/libs/datatables/dataTables.checkboxes.min.js"></script>
         <!-- Datatables init -->
         <!-- <script src="../assets/js/pages/datatables.init.js"></script> -->
-
+		<script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    	<script src="../assets/js/pages/sweet-alerts.init.js"></script>
+    
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
         <script type="text/javascript">
@@ -199,6 +201,50 @@ $active_childs = $objUserModel->rewardUsers(0);
         	});			
 
         </script>
+            <script>
+      $(document).ready(function () {
+             $(document).ready(function(){
+             var  res = location.search;
+             res = res.split("=");
+             //displayNotification(res[1],res[2]);
+
+             $('form').parsley().on('field:validated', function() {
+             	  
+       	  	 });
+         	
+        });
+        function displayNotification(result,type){
+        	if(result){
+        		var obj = getUserMessages(result, type);
+        		if(obj.type)
+        		notification(obj);;
+            }
+        		
+        }
+        function notification(obj){
+        	Swal.fire({title:obj.title,
+                text : obj.msg,
+               type : obj.type,
+               confirmButtonClass: "btn btn-confirm mt-2"
+           });
+        }
+        function getUserMessages(result,type){
+            var res = {type:undefined, msg:''};
+            if (result == "success" && type == "AddRewards"){
+                res.type = 'success';
+                res.title = 'Congrats!';
+                res.msg = "Rewards added successfully!.";
+            }else if (result == "failure" && type == "AddRewards"){
+            	res.type = 'error';
+            	res.title = 'Failed!';
+                res.msg = "Rewards adding failed!. Please try again later.";
+            }
+            return res;
+        }
+          
+     });
+    </script>
+        
     </body>
 
 

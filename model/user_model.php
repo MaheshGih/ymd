@@ -248,7 +248,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     
     public function GetUserBasicDetailsById($userId){
         global $con;
-        $sql = "select id,login_id,full_name,side,sponsor_id,spill_id from user_details where id=?";
+        $sql = "select id,login_id,full_name,side,sponsor_id,spill_id,is_active from user_details where id=?";
         $wal_stmt = $con->prepare($sql);
         $wal_stmt->bind_param('i',$userId);
         $res = $wal_stmt->execute();
@@ -260,7 +260,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     
     public function GetUserBasicDetailsByLoginId($loginId){
         global $con;
-        $sql = "select id,login_id,full_name,mobile,side,sponsor_id,spill_id from user_details where login_id=?";
+        $sql = "select id,login_id,full_name,mobile,side,sponsor_id,spill_id,is_active from user_details where login_id=?";
         $wal_stmt = $con->prepare($sql);
         $wal_stmt->bind_param('s',$loginId);
         $res = $wal_stmt->execute();
@@ -1002,6 +1002,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         global $objUtilModel;
         global $help_amount;
         global $royalty_amnt;
+        global $housefull_amount;
         global $user_expired_in_months;
         $con->autoCommit(FALSE);
         
@@ -1023,7 +1024,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             
             $user_id=$user['id'];
             $name=$user['full_name'];
-            $amnt=$help_amount;
+            $amnt=$help_amount+$housefull_amount;
             $txn_type='CREDIT';
             $txn_is_done =1 ;
             $txn_ref_cause='HOUSE_FULL';
@@ -1123,13 +1124,93 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             		  on cte.id = u.spill_id where u.is_active=cte.is_active
             )
             select cte.id,cte.login_id,cte.sponsor_id,cte.spill_id,cte.full_name,cte.mobile,cte.side,cte.date_created,cte.expired_date,cte.lvl_id,cte.id_path,
-            l.level_name,l.left_pairs,l.right_pairs,l.inr_value,l.auto_pool_inr,l.req_direct_ids,l.l_order,
+            l.level_name,l.left_pairs,l.right_pairs,l.inr_value,l.auto_pool_inr,l.req_ref_cnt,l.l_order,
             reward_id,ur.level_id as reward_lvl_id 
             from cte left join levels l on cte.lvl_id = l.id 
             left join user_rewards ur on cte.reward_id = ur.id order by id_path ";
         global $con;
         $child_count = mysqli_query($con,$sql_qry);
         return $child_count;
+    }
+    
+    public function GetNextLevelUsers($sponsorId) {
+        global $objPlanModel;
+        $childs = self::GetChilds($sponsorId);
+        $users = array();
+        $key_data = array();
+        while($row = $childs->fetch_assoc()) {
+            array_push($users,$row);
+            $key_data[$row['id']] = $row;
+        }
+        
+        $levels = $objPlanModel->GetLevels();
+        $level_list = array();
+        $lvl_order_data = array();
+        while($row = $levels->fetch_assoc()) {
+            array_push($level_list,$row);
+            $lvl_order_data[$row['l_order']] = $row;
+        }
+        $nxt_users = array();
+        
+        foreach ($users as $ukey => $user){
+            $parent_path = $user['id_path'].',';
+            $lids = [];
+            $rids = [];
+            $l = $r= $ref_count= 0;
+            $lorder = $user['l_order'];
+            $ref_cnt = 0;
+            $cur_levl = $lvl_order_data[$lorder];
+            $next_lvl = $lvl_order_data[$lorder+1];
+            $nxt_left = $next_lvl['left_pairs'];
+            $nxt_right = $next_lvl['right_pairs'];
+            
+            foreach ($users as $child){
+                $child_path = $child['id_path'];
+                $ind = strpos($child_path, $parent_path);
+                if ($ind !== false){
+                    $len = $ind+strlen($parent_path);
+                    if(! (strlen($child_path)>$len))
+                        continue;
+                        $sub_path = substr($child_path,$len);
+                        $ids = explode(',',$sub_path);
+                        if(($l == 0 && $ids[0] != $r) || ($r == 0 && $ids[0] != $l)){
+                            $imidiate_child = $key_data[$ids[0]];
+                            if($imidiate_child['spill_id'] == $user['id']){
+                                if($imidiate_child['side'] == 'left'){
+                                    $l = $imidiate_child['id'];
+                                }else if($imidiate_child['side'] == 'right'){
+                                    $r = $imidiate_child['id'];
+                                }
+                            }
+                        }
+                        if($l == $ids[0] ){
+                            $lids = array_merge($lids,$ids);
+                            $lids = array_unique($lids);
+                            if($cur_levl['left_pairs']<$nxt_left && $child['sponsor_id'] == $user['id']){
+                                $ref_cnt = $ref_cnt + 1;
+                            }
+                        }
+                        if($r == $ids[0]){
+                            $rids = array_merge($rids,$ids);
+                            $rids = array_unique($rids);
+                            if($cur_levl['right_pairs']<$nxt_right && $child['sponsor_id'] == $user['id']){
+                                $ref_cnt = $ref_cnt + 1;
+                            }
+                        }
+                }
+            }
+            $lsize = count($lids);
+            $rsize = count($rids);
+            /* $lrsize = array('lsize'=>$lsize,'rsize'=>$rsize);
+             $users[$ukey] = array_merge($user,$lrsize);
+             */
+            if(($lsize >= $nxt_left) && ($rsize >= $nxt_right)){
+                $lrsize = array('lsize'=>$lsize,'rsize'=>$rsize,'next_lvl'=>$next_lvl,'ref_cnt'=>$ref_cnt);
+                $reward_user = array_merge($user,$lrsize);
+                array_push($nxt_users,$reward_user);
+            }
+        }
+        return $nxt_users;
     }
     
     public function GetChildsByCount($childs,$sponsorId) {
@@ -1210,26 +1291,64 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $users;
     }
     
+    public function UpgardeUserLevel($users){
+        global $con;
+        $con->autoCommit(FALSE);
+        
+        $lvl_ins = "INSERT INTO user_level(user_id,login_id,level_id,ref_cnt,has_reward) VALUES(?,?,?,?,?)";
+        $lvl_ins_stmt = $con->prepare($lvl_ins);
+        $user_sql = "update user_details set lvl_id=? where login_id=?";
+        $user_stmt = $con->prepare($user_sql);
+        
+        foreach ($users as $user){
+            $next_lvl = $user['next_lvl'];
+            $next_lvl_id = $next_lvl['id'];
+            $user_id=$user['id'];
+            $login_id = $user['login_id'];
+            $ref_cnt = $user['ref_cnt'];
+            $has_reward = 0;
+            if($next_lvl['req_ref_cnt'] <= $ref_cnt){
+                $has_reward = 1;
+            }
+            $lvl_ins_stmt->bind_param("isiii",$user_id,$login_id,$next_lvl_id,$ref_cnt,$has_reward);
+            $ins_res = $lvl_ins_stmt->execute();
+            $user_stmt->bind_param('is',$next_lvl_id,$login_id);
+            $user_stmt->execute();
+        }
+        $res = $con->commit();
+        return $res;        
+    }
+    
+    public function GetLevelRewardUsers(){
+        global $con;
+        $sql = "SELECT ul.id as user_lvl_id,ul.user_id,ul.login_id,u.full_name,u.mobile,
+                l.id as level_id, l.level_name,l.left_pairs,l.right_pairs,l.inr_value,l.auto_pool_inr,l.req_ref_cnt,l.l_order 
+                FROM user_level ul join user_details u on ul.user_id = u.id join levels l on l.id=ul.level_id
+                where ul.has_reward=true and ul.is_reward_added=false";
+        $users = mysqli_query($con, $sql);
+        return $users;
+    }
+    
     public function AddRewards($users){
         global $con;
         $con->autoCommit(FALSE);
         
         $wal_ins_qry = "insert into user_wallet_txn(user_id,full_name,amount,txn_type,is_done,cause_type,cause_full_name,cause_user_id) values(?,?,?,?,?,?,?,?)";
         $wal_ins_stmt = $con->prepare($wal_ins_qry);
-        $rew_sql = "INSERT INTO user_rewards (login_id,full_name,mobile,level_id,amount,auto_pool,status) values(?,?,?,?,?,?,?)";
+        $rew_sql = "INSERT INTO user_rewards (user_id,login_id,full_name,mobile,level_id,amount,auto_pool,status) values(?,?,?,?,?,?,?,?)";
         $rew_ins_stmt = $con->prepare($rew_sql);
-        $rew_sel =" select * from user_rewards where login_id=? and level_id =?";
-        $rew_sel_stmt = $con->prepare($rew_sel);
+        $lvl_upd = "UPDATE user_level set is_reward_added=1 where id=?";
+        $lvl_upd_stmt = $con->prepare($lvl_upd);
         
-        $user_sql = "update user_details set lvl_id=?,reward_id=? where login_id=?";
+        $user_sql = "update user_details set reward_id=? where login_id=?";
         $user_stmt = $con->prepare($user_sql);
         
         foreach ($users as $user){
-            $next_lvl = $user['next_lvl'];
-            $user_id=$user['id'];
+            
+            $user_id=$user['user_id'];
             $login_id = $user['login_id'];
             $name=$user['full_name'];
-            $amnt=$next_lvl['inr_value'];
+            $amnt=$user['inr_value'];
             $txn_dtype='CREDIT';
             $txn_is_done =1 ;
             $txn_ref_cause='REWARD';
@@ -1237,10 +1356,8 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             $cause_user_id=null;
             $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_dtype,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
             $ins_res = $wal_ins_stmt->execute();
-            if($next_lvl['auto_pool_inr']>0){
-                $user_id=$user['id'];
-                $name=$user['full_name'];
-                $amnt=$next_lvl['auto_pool_inr'];
+            if($user['auto_pool_inr']>0){
+                $amnt=$user['auto_pool_inr'];
                 $txn_dtype='CREDIT';
                 $txn_is_done =1 ;
                 $txn_ref_cause='AUTO_POOL';
@@ -1249,27 +1366,31 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
                 $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_dtype,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
                 $ins_res = $wal_ins_stmt->execute();
             }
-            $amnt = $next_lvl['inr_value'] + $next_lvl['auto_pool_inr'];
+            $amnt = $user['inr_value'] + $user['auto_pool_inr'];
             $wal_udp_res = self::UpdateWalletById($user_id,$amnt);
             
             //add reward
-            $amnt = $next_lvl['inr_value'];
-            $auto_pool=$next_lvl['auto_pool_inr'];
-            $level_id = $next_lvl['id'];
+            $amnt = $user['inr_value'];
+            $auto_pool=$user['auto_pool_inr'];
+            $level_id = $user['level_id'];
             $mobile = $user['mobile'];
             $status = 1;
-            $rew_ins_stmt->bind_param('sssidds',$login_id,$name,$mobile,$level_id,$amnt,$auto_pool,$status);
+            $rew_ins_stmt->bind_param('isssidds',$user_id,$login_id,$name,$mobile,$level_id,$amnt,$auto_pool,$status);
             $rew_ins_res = $rew_ins_stmt->execute();
             
             /* $rew_sel_res = $rew_sel_stmt->bind_param('si',$login_id,$level_id);
             $rew_sel_stmt->execute();
             $rew_res = mysqli_fetch_assoc($rew_sel_stmt->get_result());
             $rew_id = $rew_res['id']; */
+            $user_lvl_id = $user['user_lvl_id'];
+            $lvl_upd_stmt->bind_param('i',$user_lvl_id);
+            $lvl_upd_stmt->execute();
             $rew_id = $rew_ins_stmt->insert_id;
-            $user_res = $user_stmt->bind_param('iis',$level_id,$rew_id,$login_id);
+            $user_res = $user_stmt->bind_param('is',$level_id,$rew_id,$login_id);
             $user_stmt->execute();
         }
-        $con->commit();
+        $res = $con->commit();
+        return $res;
     }
     
     

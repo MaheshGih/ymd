@@ -63,7 +63,7 @@
 
                                         <div class="col-md-6">
                                             <div class="card-box">
-                                                <h4 class="header-title mb-4">PROFILE</h4>
+                                                <h4 class="header-title mb-4">PROFILE<span style="color:red;">  -(User Can't Edit Profile Details)</span></h4>
             
                                                 <form class="form-horizontal">
 
@@ -100,7 +100,7 @@
             
                                         <div class="col-md-6">
                                             <div class="card-box">
-                                                <h4 class="header-title mb-4">CONTACT DETAILS</h4>
+                                                <h4 class="header-title mb-2" align="center">CONTACT DETAILS</h4>
             
                                                 <form class="form-horizontal">
                                                     <div class="form-group row">
@@ -127,6 +127,11 @@
                                                             <input type="text" class="form-control" id="txtState" name="txtState" readonly/>
                                                         </div>
                                                     </div>
+													<div class="row">
+   
+												<a href="kyc.php"><button type="button" class="btn btn-primary">EDIT</button></a>
+ 
+												</div>
                                                 </form>
                                             </div>
                                         </div>
@@ -169,7 +174,11 @@
                                                                         <input type="text" name="txtIFSC" id="txtIFSC" class="form-control" readonly>
                                                                     </div>
                                                                 </div>
-                                                                
+                                                                <div class="row">
+   
+												<a href="kyc.php"><button type="button" class="btn btn-primary">EDIT</button></a>
+ 
+												</div>
                                                             </form>
                                                         </div>
                                                     </div>
@@ -201,6 +210,11 @@
                                                             <input type="email" class="form-control" name="txtPaytm" id="txtPaytm"  readonly>
                                                         </div>
                                                     </div>
+													<div class="row">
+   
+												<a href="kyc.php"><button type="button" class="btn btn-primary">EDIT</button></a>
+ 
+												</div>
                                                 </form>
                                             </div><!-- end card-box -->
                                         </div><!-- end col -->

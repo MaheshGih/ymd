@@ -147,7 +147,7 @@ if(isset($_POST['btnProvideHelp'])){
 if(isset($_POST['reciverId'])){
         $res_provide_help_user = $objUserModel->GetUserDetailsById($_POST['helperid']);
         $res_get_help_user = $objUserModel->GetUserDetailsById($_POST['gethelperid']);
-        $provide_help_mesage =  "You have to Provide help Rs.1,000/- ($14.2) to ".$res_provide_help_user['full_name']." (".$res_provide_help_user['login_id'].").Please Contact ".$res_provide_help_user['mobile'].".Thanking you www.ymd1000us.com";
+        $provide_help_mesage =  "You have to Provide help Rs.1,000/- to ".$res_provide_help_user['full_name']." (".$res_provide_help_user['login_id'].").Please Contact ".$res_provide_help_user['mobile'].".Thanking you www.ymd1000us.com";
         $get_help_message = "Hello '".$res_provide_help_user['login_id']."', You will get Help of Rs 1000/- ($14.2) from '".$res_get_help_user['full_name']."' ('".$res_get_help_user['login_id']."').Please Contact '".$res_get_help_user['mobile']."' .Thanking you www.ymd1000us.com";
         echo $provide_help_mesage."@@@@".$get_help_message;
  }
@@ -155,7 +155,7 @@ if(isset($_POST['reciverId'])){
  if(isset($_POST['provideHelpMsg'])){
      $res_provide_help_user = $objUserModel->GetUserDetailsByUserId($_POST['helperid']);
      $res_get_help_user = $objUserModel->GetUserDetailsByUserId($_POST['gethelperid']);
-     $provide_help_mesage =  "You have to Provide help Rs.1,000/- ($14.2) to ".$res_get_help_user['full_name']." (".$res_get_help_user['login_id'].").Please Contact ".$res_get_help_user['mobile'].".Thanking you www.ymd1000us.com";
+     $provide_help_mesage =  "You have to Provide help Rs.1,000/- to ".$res_get_help_user['full_name']." (".$res_get_help_user['login_id'].").Please Contact ".$res_get_help_user['mobile'].".Thanking you www.ymd1000us.com";
      $get_help_message = "Hello '".$res_get_help_user['login_id']."', You will get Help of Rs 1000/- ($14.2) from '".$res_provide_help_user['full_name']."' ('".$res_provide_help_user['login_id']."').Please Contact '".$res_provide_help_user['mobile']."' .Thanking you www.ymd1000us.com";
      echo $provide_help_mesage."@@@@".$get_help_message;
  }

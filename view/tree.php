@@ -109,6 +109,7 @@ background:grey;
         <div class="content-page">
             <div class="content">
 				<input type="hidden" id="master_id" name="master_id" value="<?php echo $master?>"></input>
+				<input type="hidden" id="master_login_id" name="master_login_id" value="<?php echo $_SESSION['loginid'];?>"></input>
 				<input type="hidden" id="full_name" name="full_name" value="<?php echo $master_name?>"></input>
 				
                 <!-- Start Content-->
@@ -118,14 +119,22 @@ background:grey;
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box">
-                                <div class="page-title-right">
-                                    <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
-                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Tree</a></li>
-                                        <li class="breadcrumb-item active">View Network  </li>
-                                    </ol>
-                                </div>
-                                <h4 class="page-title">Tree</h4>
+                            	<div class="row ">
+                                    <div class="col-4 todo-inputbar">
+                                        <input type="text" id="refId" name="refId" class="form-control" placeholder="Enter Referral Userid" 
+                                        value="<?php echo $_SESSION['loginid'];?>"
+                                        style="margin-bottom:2px;" required>
+                                        
+                                    </div>
+                                    <div class="col-4 todo-send">
+                                        <button class="btn-info btn-md btn waves-effect waves-light" type="button" id="todo-btn-submit"
+                                        onclick="getTreeData();return;" 
+                                        name="todo-btn-submit" style="margin-bottom:2px;"><i class="fas fa-search"></i><span> Search </span></button>
+                                    </div>
+    					    		<div class="col-2">
+                                         <a href="#" onclick="backToTree();return;" class="btn btn-purple"><i class="fas fa-long-arrow-alt-left"> </i> Back to Tree </a> 
+                                    </div>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -158,7 +167,7 @@ background:grey;
                     <div class="row">
                         <div class="col-12">
                             <div class="card-box" id="dvTree">
-                                <!-- <h4 class="header-title mb-4">User Network</h4> -->
+                                <h4 class="header-title mb-4">User Network</h4>
                                 <div class="row text-center mycontainer" style="height: 500px;">
                                     <div id="mynetwork" >
                                         

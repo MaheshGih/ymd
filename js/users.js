@@ -33,7 +33,7 @@ function getUserData( btnName, loginId){
             $("#txtEmail").val(res["email"]);
             $("#txtMobile").val(res["mobile"]);
             $("#txtLoginId").val(res["login_id"]);
-            $("#txtSponsorId").val();
+            $("#txtSponsorId").val(res["sponsor_login_id"]);
             $("#txtAccName").val(res["acc_name"]);
             $("#txtAccNo").val(res["acc_no"]);
             $("#txtBankName").val(res["bank_name"]);

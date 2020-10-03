@@ -40,6 +40,10 @@ var network = undefined;
     }
   };
   
+var manImgUrl = '../assets/images/man.png';
+var manInactiveImgUrl = '../assets/images/maninactive.png';
+	  
+	  
 function drawNetwork(container, data, options){
 	  network = new vis.Network(container, data, options);
 	  return network;
@@ -68,124 +72,140 @@ function showSignupPoup(){
 
       var master_id = $('#master_id').val();
       var full_name = $('#full_name').val();
-	  var manImgUrl = '../assets/images/man.png';
-	  var manInactiveImgUrl = '../assets/images/maninactive.png';	
-	  $.ajax({
-    	url: "../controller/tree_controller.php?loadspills=loadspills&sponsor_id="+master_id, 
-    	success: function(result){
-    		var res = JSON.parse(result);
-    		var master = res.master;
-    		var users = res.tree;
-    		master.id = 0;
-    		master.master_id = master_id;
-    		master.label = master.login_id;
-    		master.shape = "circularImage"; 
-    		master.image = manImgUrl;
-			var nodes = [master];
-			var edges = []; 
-			var edge = { from : undefined, to : undefined};
-			for( var i=0; i<users.length;i++){
-				var user = $.extend(true,{},users[i]);
-				user['master_id'] = user['id'];
-				user['id'] = i+1;
-				user['label'] = user.login_id;
-				user['is_active'] = parseInt(user['is_active']); 
-				if(user['is_active']){
-					user['image'] = manImgUrl;
-				}else{
-					user['image'] = manInactiveImgUrl;
-				}		
-				user['shape'] = "circularImage";
-				nodes.push(user);
-			}
-			
-			for( var i=0; i<nodes.length;i++){
-				var node = $.extend(true,{},nodes[i]);//cloning	
-				var u_edge = $.extend(true,{},edge);
-				for( var j=0; j<nodes.length;j++){
-					var searchNode = nodes[j];
-					if(searchNode['master_id'] == node.spill_id){
-						u_edge.from = searchNode['id'];
-						u_edge.to = node.id;
-						var elabel = ""; 
-						if(node['side']=='left'){
-							elabel = 'L- ' + searchNode['lsize'];
-						}else if(node['side']=='right'){
-							elabel = 'R- ' + searchNode['rsize'];
-						}
-						u_edge.label = elabel;
-						edges.push(u_edge);
-						/*if(node.spill_id == master_id ){
-							var u_edge = $.extend(true,{},edge);
-							u_edge.from = 0;
-							u_edge.to = node.id;
-							edges.push(u_edge);
-						}*/		
-					} 
-				}
-				
-			}
-			console.log(nodes);
-			console.log(edges);
-			var visNodes = new vis.DataSet(nodes);
-	        var visEdges = new vis.DataSet(edges);
-	        
-			var data = {
-		        nodes: visNodes,
-		        edges: visEdges
-		    };
-			network = drawNetwork(container, data, options);
-			
-			network.on("selectNode", function(properties){
-				var ids = properties.nodes;
-				var nodeEdges = properties.edges;
-				/*$.each(nodeEdges,function(ind,e){
-					var nodeEdge = visEdges.get(e);
-					console.log(nodeEdge);
-				});*/
-			    var clickedNodes = visNodes.get(ids);
-			    if(!(clickedNodes[0]['is_active']))
-	    			return;
-	    
-			    //console.log('clicked nodes:', clickedNodes);
-			    if(nodeEdges.length<=2){
-			    	if(nodeEdges.length==2){
-			    		var nodeEdge = visEdges.get(nodeEdges[1]);
-			    		var childNode = visNodes.get(nodeEdge.to);
-			    		var side = '';
-			    		if(childNode.side=='left'){
-			    			side = 'right';
-			    		}else{
-			    			side = 'left';
-			    		}
-			    		$('#ddlSide').val(side);
-			    		$('#ddlSide option:not(:selected)').each(function(){
-			    			$(this).prop('disabled','true');
-			    		});
-			    		//$('#ddlSide').prop('disabled','true');
-			    	}else{
-			    		
-			    		$('#ddlSide option').each(function(){
-			    			$(this).removeAttr('disabled');;
-			    		});
-			    		
-			    		$('#ddlSide').val(0);
-			    		
-			    	}
-			    	
-				    $('#hdnSpillId').val(clickedNodes[0].master_id);
-					$('#activateusersmodal').modal('show');	
-				}else{
-					$('#ddlSide').removeAttr('disabled');
-					//$('#activateusersmodal2').modal('show');
-				}
-			});
-		}
-	   });    
-
-	   //Search url and validate requests
-	   				   
+	  getTreeData();
+	  	   				   
   });	
+  
+  function backToTree(){
+  	var refId = document.getElementById("refId");
+  	var master_login_id = $('#master_login_id').val();
+  	refId.value = master_login_id;
+  	getTreeData();
+  }
+  
+  function getTreeData(){
+  	var refId = document.getElementById("refId");
+  	if(!refId.value)
+  		return;
+  	container.innerHTML='';
+  	$.ajax({
+    	url: "../controller/tree_controller.php?loadspills=loadspills&login_id="+refId.value, 
+    	success: function(result){
+    		loadTree(result);
+		 }
+	  });
+  }
+  
+  function loadTree(result){
+  	var res = JSON.parse(result);
+	var sponsor = res.master;
+	var master  = $.extend(true,{},sponsor);
+	var users = res.tree;
+	master.id = 0;
+	master.master_id = sponsor.id;
+	master.label = master.login_id;
+	master.shape = "circularImage"; 
+	master.image = manImgUrl;
+	var nodes = [master];
+	var edges = []; 
+	var edge = { from : undefined, to : undefined};
+	for( var i=0; i<users.length;i++){
+		var user = $.extend(true,{},users[i]);
+		user['master_id'] = user['id'];
+		user['id'] = i+1;
+		user['label'] = user.login_id;
+		user['is_active'] = parseInt(user['is_active']); 
+		if(user['is_active']){
+			user['image'] = manImgUrl;
+		}else{
+			user['image'] = manInactiveImgUrl;
+		}		
+		user['shape'] = "circularImage";
+		nodes.push(user);
+	}
+	
+	for( var i=0; i<nodes.length;i++){
+		var node = $.extend(true,{},nodes[i]);//cloning	
+		var u_edge = $.extend(true,{},edge);
+		for( var j=0; j<nodes.length;j++){
+			var searchNode = nodes[j];
+			if(searchNode['master_id'] == node.spill_id){
+				u_edge.from = searchNode['id'];
+				u_edge.to = node.id;
+				var elabel = ""; 
+				if(node['side']=='left'){
+					elabel = 'L- ' + searchNode['lsize'];
+				}else if(node['side']=='right'){
+					elabel = 'R- ' + searchNode['rsize'];
+				}
+				u_edge.label = elabel;
+				edges.push(u_edge);
+				/*if(node.spill_id == master_id ){
+					var u_edge = $.extend(true,{},edge);
+					u_edge.from = 0;
+					u_edge.to = node.id;
+					edges.push(u_edge);
+				}*/		
+			} 
+		}
+		
+	}
+	console.log(nodes);
+	console.log(edges);
+	var visNodes = new vis.DataSet(nodes);
+    var visEdges = new vis.DataSet(edges);
+    
+	var data = {
+        nodes: visNodes,
+        edges: visEdges
+    };
+	network = drawNetwork(container, data, options);
+	
+	network.on("selectNode", function(properties){
+		var ids = properties.nodes;
+		var nodeEdges = properties.edges;
+		/*$.each(nodeEdges,function(ind,e){
+			var nodeEdge = visEdges.get(e);
+			console.log(nodeEdge);
+		});*/
+	    var clickedNodes = visNodes.get(ids);
+	    if(!(clickedNodes[0]['is_active']))
+			return;
+
+	    //console.log('clicked nodes:', clickedNodes);
+	    if(nodeEdges.length<=2){
+	    	if(nodeEdges.length==2){
+	    		var nodeEdge = visEdges.get(nodeEdges[1]);
+	    		var childNode = visNodes.get(nodeEdge.to);
+	    		var side = '';
+	    		if(childNode.side=='left'){
+	    			side = 'right';
+	    		}else{
+	    			side = 'left';
+	    		}
+	    		$('#ddlSide').val(side);
+	    		$('#ddlSide option:not(:selected)').each(function(){
+	    			$(this).prop('disabled','true');
+	    		});
+	    		//$('#ddlSide').prop('disabled','true');
+	    	}else{
+	    		
+	    		$('#ddlSide option').each(function(){
+	    			$(this).removeAttr('disabled');;
+	    		});
+	    		
+	    		$('#ddlSide').val(0);
+	    		
+	    	}
+	    	
+		    $('#hdnSpillId').val(clickedNodes[0].master_id);
+			$('#activateusersmodal').modal('show');	
+		}else{
+			$('#ddlSide').removeAttr('disabled');
+			//$('#activateusersmodal2').modal('show');
+		}
+	});
+  }
   
   function resendRegOtp() {
   	var mobile = $('#otpMobile').val();

@@ -98,7 +98,7 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                                         <form name="todo-form" id="todo-form" class="mt-4" action="../controller/wallet_controller.php" method="post" onsubmit="return withdrawReq();">
                                             <div class="row" >
                                                 <div class="col-sm-4 todo-inputbar">
-                                                	
+                                                	<input type="hidden" id="kyc_done" value=<?php echo $_SESSION['kyc_done'];?> name="kyc_done"/>
                                                     <input type="text" id="withdrawAmount" autocomplete="off" required name="withdrawAmount" class="form-control" 
                                                     	placeholder="Withdraw Amount" style="margin-bottom:2px;" required>
                                                     <small class="form-text text-muted "><i class="fa fa-info-circle" aria-hidden="true"></i> Withdraw amount should be multiples of 1000 (i.e 1000, 2000, 3000,..)</small>
@@ -272,6 +272,19 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                 });
           });
           function withdrawReq(){
+			
+          	var kyc_done = $("#kyc_done").val();
+          	kyc_done = kyc_done?parseInt(kyc_done):0;
+          	if(!kyc_done){
+          		Swal.fire({title:"Kyc not completed",
+                    text: 'Please fill all the details',
+                    type:"error",
+                    confirmButtonClass: "btn btn-confirm mt-2"
+                }).then((value) => {
+                	window.location.href = "kyc.php";
+                });
+                return false;
+            }
         	var totalAmountEle = document.getElementById( "totalAmount" );
         	var withdrawAmountEle = document.getElementById( "withdrawAmount" );
         	var totalAmount = parseInt(totalAmountEle.innerText);
