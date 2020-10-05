@@ -88,7 +88,7 @@ include('../model/wallet_txn_model.php');
     }
     
     if(isset($_POST['btnAddRewards'])){
-        $users = $objUserModel->GetLevelRewardUsers();
+        $users = $objUserModel->rewardUsers(0);
         $res = $objUserModel->AddRewards($users);
         if($res){
             echo "<script> location.href='../view/reward_users.php?=success=AddRewards';</script>";

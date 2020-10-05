@@ -143,7 +143,7 @@ $newsList = $objAdminModel->GetAllNews();
                                                     }
                                             ?>
                                              <tr>
-                                                <td><?php echo $r['news'];?></td>
+                                                <td class="text-wrap"><?php echo $r['news'];?></td>
                                                 <td><?php echo $r['start_date'];?></td>
                                                 <td><?php echo $r['end_date'];?></td>
                                                 <td ><span class="badge label-table <?php echo $class;?>"><?php echo $status;?></span></td>

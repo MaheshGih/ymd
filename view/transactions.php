@@ -110,9 +110,9 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
                                         
                                     </form>
                                     <?php }else{?>
-                                    	<div class="">
+                                    	<div class="mb-1">
                                         	<?php if ($r['img_path']!=null){ ?>
-                                        		<img height="300px" src="../<?php echo trim($r['img_path'])?>"/>
+                                        		<img class="col-lg-8" src="../<?php echo trim($r['img_path'])?>"/>
                                         	<?php }?>
                                     	</div>    
                                         <div class="dz-message needsclick">
@@ -138,7 +138,9 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
                                         <input type="hidden" invitationId="" name="invitationId" value="<?php echo $r['id']?>"/>
                                         <input type="hidden" provideHelpId="" name="provide_help_id" value="<?php echo $r['provide_help_id']?>"/>
                                         <?php if ($r['img_path']!=null){ ?>
-                                        	<img height="300px" src="../<?php echo trim($r['img_path'])?>"/>
+                                        	<div class="mb-1">
+                                        		<img class="col-lg-8" src="../<?php echo trim($r['img_path'])?>"/>
+                                        	</div>
                                         <?php }?>
                                         <br/>
                                         <div class="dz-message needsclick">
@@ -198,6 +200,7 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
 <script src="../assets/libs/parsleyjs/parsley.min.js"></script>
 <!-- App js -->
 <script src="../assets/js/app.min.js"></script>
+<script src="../js/util.js"></script>
 <script>
         $(document).ready(function () {
             
@@ -237,6 +240,7 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
         	    fileReuiredToast("Invalid extension!. Required images types png,jpg,jpeg.");
 				return; 
         	}
+        	$(event.target).attr('disabled','disabled');
 			var receiverUserId = $(event.target).closest("form").find("input[receiverUserId]").val();
 			var withdrawReqId = $(event.target).closest("form").find("input[withdrawReqId]").val();
 			var invitationId = $(event.target).closest("form").find("input[invitationId]").val();
@@ -287,6 +291,7 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
     			fileReuiredToast("Something wen wrong. Please try again.!");
     			return;
             }
+    		$(event.target).attr('disabled','disabled');
 			var data = { "invitationId" : invitationId, 'provideHelpId': provideHelpId, 'submitPBtnName' :'acceptGBtn'};
     		$.post('../controller/payment_controller.php', data, function(res){
     			if(res){

@@ -69,6 +69,9 @@ background:grey;
 .hide{
     display:none;
 }
+.decrease{
+    margin-bottom: 10px !important;
+}
 </style>
     
 </head>
@@ -126,18 +129,18 @@ background:grey;
                         <div class="col-12">
                             <div class="page-title-box">
                             	<div class="row ">
-                                    <div class="col-4 todo-inputbar">
+                                    <div class="col-sm-3 mb-1 todo-inputbar">
                                         <input type="text" id="refId" name="refId" class="form-control" placeholder="Enter Referral Userid" 
                                         value="<?php echo $_SESSION['loginid'];?>"
                                         style="margin-bottom:2px;" required>
                                         
                                     </div>
-                                    <div class="col-4 todo-send">
+                                    <div class="col-sm-3 mb-1 todo-send">
                                         <button class="btn-info btn-md btn waves-effect waves-light" type="button" id="todo-btn-submit"
                                         onclick="getTreeData();return;" 
                                         name="todo-btn-submit" style="margin-bottom:2px;"><i class="fas fa-search"></i><span> Search </span></button>
                                     </div>
-    					    		<div class="col-2">
+    					    		<div class="col-sm-3 mb-1">
                                          <a href="#" onclick="backToTree();return;" class="btn btn-purple"><i class="fas fa-long-arrow-alt-left"> </i> Back to Tree </a> 
                                     </div>
                               </div>
@@ -173,8 +176,8 @@ background:grey;
                     <div class="row">
                         <div class="col-12">
                             <div class="card-box" id="dvTree">
-                                <h4 class="header-title mb-4">User Network</h4>
-                                <div class="row text-center mycontainer" style="height: 500px;">
+                                <h4 class="header-title mb-1">User Network</h4>
+                                <div class="row text-center mycontainer col-lg-12" style="height: 500px;">
                                     <div id="mynetwork" >
                                         
                                     </div>

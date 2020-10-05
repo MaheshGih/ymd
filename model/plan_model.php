@@ -38,15 +38,15 @@ class PlanModel{
         if(!empty($max_lvl['l_order'])){
             $order = $max_lvl['l_order']+1;
         }
-        $ins_qry = "insert into levels(level_name,left_pairs,right_pairs,inr_value,auto_pool_inr,req_direct_ids,l_order) 
-          values('".self::GetLevelName()."',".self::GetLeftPair().",".self::GetRightPair().",".self::GetInrValue().",".self::GetAutoPoolInr().",".self::GetReqDirectIds().",".$order.")";
+        $ins_qry = "insert into levels(level_name,left_pairs,right_pairs,inr_value,auto_pool_inr,l_order) 
+          values('".self::GetLevelName()."',".self::GetLeftPair().",".self::GetRightPair().",".self::GetInrValue().",".self::GetAutoPoolInr().",".$order.")";
         $res = mysqli_query($con,$ins_qry);
         return $res;
         //return $ins_qry;
     }
     public function UpdateLevelById($vlid){
         global $con;
-        $upd_qry = "update levels set level_name='".self::GetLevelName()."',left_pairs=".self::GetLeftPair().", right_pairs=".self::GetRightPair().",inr_value= ".self::GetInrValue().",auto_pool_inr=".self::GetAutoPoolInr().",req_direct_ids=".self::GetReqDirectIds()." where id=".$vlid;
+        $upd_qry = "update levels set level_name='".self::GetLevelName()."',left_pairs=".self::GetLeftPair().", right_pairs=".self::GetRightPair().",inr_value= ".self::GetInrValue().",auto_pool_inr=".self::GetAutoPoolInr()." where id=".$vlid;
         $res = mysqli_query($con,$upd_qry);
         return $res;
     }

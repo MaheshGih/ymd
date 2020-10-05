@@ -1340,15 +1340,15 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $lvl_upd = "UPDATE user_level set is_reward_added=1 where id=?";
         $lvl_upd_stmt = $con->prepare($lvl_upd);
         
-        $user_sql = "update user_details set reward_id=? where login_id=?";
+        $user_sql = "update user_details set lvl_id=?,reward_id=? where login_id=?";
         $user_stmt = $con->prepare($user_sql);
         
         foreach ($users as $user){
-            
-            $user_id=$user['user_id'];
+            $next_lvl = $user['next_lvl'];
+            $user_id=$user['id'];
             $login_id = $user['login_id'];
             $name=$user['full_name'];
-            $amnt=$user['inr_value'];
+            $amnt=$next_lvl['inr_value'];
             $txn_dtype='CREDIT';
             $txn_is_done =1 ;
             $txn_ref_cause='REWARD';
@@ -1356,8 +1356,8 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             $cause_user_id=null;
             $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_dtype,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
             $ins_res = $wal_ins_stmt->execute();
-            if($user['auto_pool_inr']>0){
-                $amnt=$user['auto_pool_inr'];
+            if($next_lvl['auto_pool_inr']>0){
+                $amnt=$next_lvl['auto_pool_inr'];
                 $txn_dtype='CREDIT';
                 $txn_is_done =1 ;
                 $txn_ref_cause='AUTO_POOL';
@@ -1366,13 +1366,13 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
                 $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_dtype,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
                 $ins_res = $wal_ins_stmt->execute();
             }
-            $amnt = $user['inr_value'] + $user['auto_pool_inr'];
+            $amnt = $next_lvl['inr_value'] + $next_lvl['auto_pool_inr'];
             $wal_udp_res = self::UpdateWalletById($user_id,$amnt);
             
             //add reward
-            $amnt = $user['inr_value'];
-            $auto_pool=$user['auto_pool_inr'];
-            $level_id = $user['level_id'];
+            $amnt = $next_lvl['inr_value'];
+            $auto_pool=$next_lvl['auto_pool_inr'];
+            $level_id = $next_lvl['id'];
             $mobile = $user['mobile'];
             $status = 1;
             $rew_ins_stmt->bind_param('isssidds',$user_id,$login_id,$name,$mobile,$level_id,$amnt,$auto_pool,$status);
@@ -1382,11 +1382,8 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             $rew_sel_stmt->execute();
             $rew_res = mysqli_fetch_assoc($rew_sel_stmt->get_result());
             $rew_id = $rew_res['id']; */
-            $user_lvl_id = $user['user_lvl_id'];
-            $lvl_upd_stmt->bind_param('i',$user_lvl_id);
-            $lvl_upd_stmt->execute();
             $rew_id = $rew_ins_stmt->insert_id;
-            $user_res = $user_stmt->bind_param('is',$level_id,$rew_id,$login_id);
+            $user_res = $user_stmt->bind_param('iis',$level_id,$rew_id,$login_id);
             $user_stmt->execute();
         }
         $res = $con->commit();

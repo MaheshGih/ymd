@@ -97,14 +97,14 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                                     	<input type="hidden" id="help_amount" value=<?php echo $help_amount;?>/>
                                         <form name="todo-form" id="todo-form" class="mt-4" action="../controller/wallet_controller.php" method="post" onsubmit="return withdrawReq();">
                                             <div class="row" >
-                                                <div class="col-sm-4 todo-inputbar">
+                                                <div class="col-sm-4 mb-1 todo-inputbar">
                                                 	<input type="hidden" id="kyc_done" value=<?php echo $_SESSION['kyc_done'];?> name="kyc_done"/>
                                                     <input type="text" id="withdrawAmount" autocomplete="off" data-parsley-type="number" required name="withdrawAmount" class="form-control" 
                                                     	placeholder="Withdraw Amount" style="margin-bottom:2px;" required>
                                                     <small class="form-text text-muted "><i class="fa fa-info-circle" aria-hidden="true"></i> Withdraw amount should be multiples of 1000 (i.e 1000, 2000, 3000,..)</small>
                                                     <!-- <p class="text-info"><i class="fa fa-info-circle" aria-hidden="true"></i> </p> -->
                                                 </div>
-                                                <div class="col-sm-4 todo-inputbar">
+                                                <div class="col-sm-4 mb-1 todo-inputbar">
                                                     <input type="password" id="txnPassword" autocomplete="off" required name="txnPassword" class="form-control" 
                                                     	placeholder="Transaction Password" style="margin-bottom:2px;" required>
                                                     <a href="#" onclick="sendTxnPassword();" class="text-muted float-right"><small>Forgot your Tran password?</small></a>
@@ -254,17 +254,19 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
         <!-- Datatables init -->
         <!-- <script src="../assets/js/pages/datatables.init.js"></script> -->
         <script src="../assets/libs/parsleyjs/parsley.min.js"></script>
-
-        <!-- App js -->
+		<!-- App js -->
         <script src="../assets/js/app.min.js"></script>
+        <script src="../js/util.js"></script>
+        
         <script type="text/javascript">
           $(document).ready(function(){
                 var  res = location.search;
                 res = decodeURIComponent(res);
                 res = res.split("=");
                 displayNotification(res);
-                $('form').each(function(){ $(this).parsley().on('field:validated', function() {})});//validations
 
+                addParselyValidations();
+                
                 $('#withdraw-dt').DataTable({
                 	"order": [[ 1, "desc" ]]
                 });
@@ -306,6 +308,7 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
             }
                         
         	if( !err ){
+        		disableBtn('#withdrawReqBtn');
 				return true;
 			}else{
 				Swal.fire({title:"Request Declined!",
@@ -316,6 +319,7 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                return false;
 			}
           }
+          
           function displayNotification(res){
         	if(res){
           		var obj = getUserMessages(res)

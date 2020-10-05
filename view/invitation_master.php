@@ -172,7 +172,7 @@
                         <div class="form-group row">
                             <div class="col-md-6">
                             	<form class="form-horizontal" action="../controller/user_controller.php" method="POST">
-                            		<button type="button" disabled="disabled" name="btnPreview" id="btnPreview" class="btn btn-info waves-effect waves-light" data-toggle="modal" data-target="#previewmessagemodal">
+                            		<button type="button" disabled="disabled" name="btnPreview" id="btnPreview" class="btn btn-info waves-effect waves-light mb-1" data-toggle="modal" data-target="#previewmessagemodal">
                                         <i class=" far fa-eye"></i>
                                         <span>Preview</span>
                                     </button>
@@ -216,7 +216,7 @@
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-md-6">
-                                                <button type="button" disabled="disabled" name="btnPreview" id="btnPreview" class="btn btn-info waves-effect waves-light" data-toggle="modal" data-target="#previewmessagemodal">
+                                                <button type="button" disabled="disabled" name="btnPreview" id="btnPreview" class="btn btn-info waves-effect waves-light mb-1" data-toggle="modal" data-target="#previewmessagemodal">
                                                     <i class=" far fa-eye"></i>
                                                     <span>Preview</span>
                                                 </button>

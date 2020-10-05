@@ -37,7 +37,7 @@
                                 <div class="account-logo-box">
                                     <div class="text-center">
                                         <a href="index.php">
-                                            <img src="../assets/images/logo-dark.png" alt="" height="100">
+                                            <img class="col-sm-12" src="../assets/images/logo-dark.png" alt="" height="100">
                                         </a>
                                     </div>
                                     <h5 class="text-uppercase mb-1 mt-4">Sign In</h5>

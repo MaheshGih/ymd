@@ -78,23 +78,23 @@ include("../include/session.php");
                                 <form class="form-horizontal" action="../controller/user_controller.php" method="post">
                                     <div class="form-group row account-content mt-4">
                                         <div class="col-12">
-                                            <label for="loginId" class="col-4 col-form-label">Login Id</label>
+                                            <label for="loginId" class="col-md-3 col-form-label">Login Id</label>
                                             <input type="text" readonly required class="form-control" name="loginId" id="loginId" value="<?php  echo $_SESSION['loginid']?>" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="oldPassword" class="col-3 col-form-label">Old Password</label>
+                                            <label for="oldPassword" class="col-md-3 col-form-label">Old Password</label>
                                             <input type="password" required class="form-control" name="oldPassword" id="oldPassword" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="password" class="col-4 col-form-label">New Password</label>
+                                            <label for="password" class="col-md-3 col-form-label">New Password</label>
                                             <input type="password" required class="form-control" name="password" id="password" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="confirmPassword" class="col-4 col-form-label">Conform New Password</label>
+                                            <label for="confirmPassword" class="col-md-3 col-form-label">Conform New Password</label>
                                             <input type="password" required data-parsley-equalto="#password" class="form-control" name="confirmPassword" id="confirmPassword" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="changePasswordBtn" class="col-2 col-form-label"></label>
+                                            <label for="changePasswordBtn" class="col-md-10 col-form-label"></label>
                                             <button name="changePasswordBtn" id="changePasswordBtn" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Change Password
                                             </button>
                                             
@@ -109,20 +109,20 @@ include("../include/session.php");
                                 <form class="form-horizontal" action="../controller/user_controller.php" method="post">
                                     <div class="form-group row account-content mt-4">
                                         <div class="col-12">
-                                            <label for="oldTxnPassword" class="col-3 col-form-label">Old Password</label>
+                                            <label for="oldTxnPassword" class="col-md-3 col-form-label">Old Password</label>
                                             <input type="password" required class="form-control" name="oldTxnPassword" id="oldTxnPassword" />
                                             <a href="#" onclick="sendTxnPassword();" class="text-muted float-right"><small>Forgot your Tran password?</small></a>
                                         </div>
                                         <div class="col-12">
-                                            <label for="txnPassword" class="col-4 col-form-label">New Password</label>
+                                            <label for="txnPassword" class="col-md-3 col-form-label">New Password</label>
                                             <input type="password" required class="form-control" name="txnPassword" id="txnPassword" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="confirmTxnPassword" class="col-4 col-form-label">Conform New Password</label>
+                                            <label for="confirmTxnPassword" class="col-md-3 col-form-label">Conform New Password</label>
                                             <input type="password" required data-parsley-equalto="#txnPassword" class="form-control" name="confirmTxnPassword" id="confirmTxnPassword" />
                                         </div>
                                         <div class="col-12">
-                                            <label for="changeTxnPasswordBtn" class="col-2 col-form-label"></label>
+                                            <label for="changeTxnPasswordBtn" class="col-md-10 col-form-label"></label>
                                             <button name="changeTxnPasswordBtn" id="changeTxnPasswordBtn" class="btn btn-md btn-block btn-primary waves-effect waves-light" type="submit">Change Password
                                             </button>
                                             
@@ -192,7 +192,10 @@ include("../include/session.php");
         $(document).ready(function(){
              var  res = location.search;
              res = res.split("=");
-             displayNotification(res[1],res[2]);     	
+             displayNotification(res[1],res[2]);
+
+             addParselyValidations();
+                  	
         });
         function displayNotification(result,type){
         	if(result){

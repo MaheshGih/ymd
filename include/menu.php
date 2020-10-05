@@ -159,12 +159,12 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Get/Provide Help </span>
                 </a>
             </li>
-			<li>
+			<!-- <li>
                 <a href="user_level_upgrade.php">
                     <i class="fas fa-share-alt"></i>
                     <span> Level Upgrade </span>
                 </a>
-            </li>
+            </li> -->
             <li>
                 <a href="reward_users.php">
                     <i class="fas fa-money-bill "></i>

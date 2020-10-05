@@ -48,7 +48,9 @@ background:grey;
   left: 0px;
   border: 1px solid lightgray;
 }
-
+.decrease{
+    margin-bottom: 10px !important;
+}
 .hide{
     display:none;
 }
@@ -67,7 +69,7 @@ background:grey;
                     <!-- start page title -->
                     <div class="row">
                         <div class="col-12">
-                            <div class="card-box">
+                            <div class="card-box decrease">
                                 <h4 align="center"> REGISTRATION</h4>
                               
                                 <div class="col-12">
@@ -78,20 +80,20 @@ background:grey;
                                                
                                             </div>
 
-                                            <div class="col-sm-3 mb-3 todo-inputbar">
+                                            <div class="col-sm-3 mb-1 todo-inputbar">
                                                 <input type="text" id="refId" name="refId" class="form-control" placeholder="Enter Referral Userid" 
                                                 value="<?php if(isset($_GET['ref'])) echo $_GET['ref']?>"
                                                 style="margin-bottom:2px;" required>
                                                
                                                 
                                             </div>
-                                            <div class="col-sm-2 mb-3 todo-send">
+                                            <div class="col-sm-2 mb-1 todo-send">
                                                 <button class="btn-info btn-md btn waves-effect waves-light" type="button" id="todo-btn-submit"
                                                 onclick="getTreeData();return;" 
                                                 name="todo-btn-submit" style="margin-bottom:2px;"><i class="fas fa-search"></i><span> Search </span></button>
                                             </div>
-											<div class="col-sm-2 mb-3">
-                                                 <p class="text-info mb-0"> <a href="login.php" class=" ml-1 float-center btn btn-success"><b>Sign In</b></a></p> 
+											<div class="col-sm-2 mb-1">
+                                                 <p class="text-info mb-0"> <a href="login.php" class="float-center btn btn-success"><b>Sign In</b></a></p> 
                                             </div>
 					    <div class="col-sm-2">
                                                  <a href="tree.php" class="btn btn-danger"><i class="fas fa-long-arrow-alt-left"> </i> Back to Tree </a> 
@@ -108,8 +110,8 @@ background:grey;
                     <div class="row">
                         <div class="col-12">
                             <div class="card-box" id="dvTree">
-                                <h4 class="header-title mb-4">User Network</h4>
-                                <div class="row text-center" style="height: 500px">
+                                <h4 class="header-title mb-1">User Network</h4>
+                                <div class="row text-center  mycontainer col-lg-12" style="height: 500px;">
                                     <div id="mynetwork" >
                                         
                                     </div>

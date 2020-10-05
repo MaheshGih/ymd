@@ -77,7 +77,7 @@ $active_childs = $objUserModel->GetHousefullUsers(0);
                                     <div class="card-box table-responsive">
                                     	<form class="form-horizontal" id="blockUsersForm" action="../controller/payment_controller.php" method="post">
                                           <div Class="form-group row">
-                                                <div class="col-8 col-sm-2">
+                                                <div class="col-lg-3 col-sm-12">
                                                     <input type="submit" name="btnAddRoyaltyUser" id="btnAddRoyaltyUser" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Housefull User"></input>
                                                 </div>    
                                         	</div>

@@ -10,4 +10,12 @@ menu.bind('keydown', function (evt) {
 var scrollToVal = $(menu).scrollTop() + $('#side-menu').position().top;
 $(scrolledArea).slimScroll({ scrollTo : scrollToVal + 'px' });*/
 
-$('form').each(function(){ $(this).parsley().on('field:validated', function() {})});//validations
+function addParselyValidations(){
+	$('form').each(function(){ $(this).parsley().on('field:validated', function() {})});//validations
+}
+
+function disableBtn(btnId){
+	setTimeout(function () {
+		$(btnId).attr('disabled','disabled');
+    });
+}

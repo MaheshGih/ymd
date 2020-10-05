@@ -3,7 +3,9 @@ $(document).ready(function(){
 	var  res = location.search;
     res = res.split("=");
     displayNotification(res[1],res[2]);
-                         	 
+    
+    addParselyValidations();
+        	 
 	$('#btnSearchUserData').on('click', function(e){
 		e.preventDefault();
 		$('form[clean-form]').each(function(){

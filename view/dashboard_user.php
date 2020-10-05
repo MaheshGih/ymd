@@ -21,7 +21,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							<i class="mdi mdi-currency-inr avatar-title font-30 text-white"></i>
 						</div>
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium"
 								title="Statistics">Wallet Balance</p>
 							<h3 class="font-weight-medium my-2">
 								&#8377 <span data-plugin="counterup"><?php echo $metrics['tot_amount']; ?></span>
@@ -46,7 +46,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 						
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium "
 								title="Statistics">Total Users</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $metrics['childCount']['cnt']; ?></span>
@@ -70,7 +70,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 						
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium "
 								title="Statistics">Total Transactions</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $metrics['tot_trans']; ?></span>
@@ -96,7 +96,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 							<i class="mdi mdi-currency-usd avatar-title font-30 text-white"></i>
 						</div>
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium"
 								title="Statistics">Today My Direct Income</p>
 							<h3 class="font-weight-medium my-2">
 								&#8377 <span data-plugin="counterup"><?php echo $metrics['todayMyRefIncome']; ?></span>
@@ -116,7 +116,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 						
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium "
 								title="Statistics">My Direct Income</p>
 							<h3 class="font-weight-medium my-2">
 								&#8377 <span data-plugin="counterup"><?php echo $metrics['myRefIncome']; ?></span>
@@ -140,7 +140,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 					
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium "
 								title="Statistics">My Spill Income</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $metrics['myLVLIncome']; ?></span>
@@ -168,7 +168,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 						
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium"
 								title="Statistics">My Royality Income</p>
 							<h3 class="font-weight-medium my-2">
 								&#8377 <span data-plugin="counterup"><?php echo $metrics['myRoyalIncome']; ?></span>
@@ -192,7 +192,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium "
 								title="Statistics">Pending Withdraw Income</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $metrics['totPendingWithdrawAmnt']; ?></span>
@@ -215,7 +215,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium "
 								title="Statistics">Total Withdraws</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $metrics['totWithdrawnAmnt']; ?></span>
@@ -242,7 +242,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 						
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium"
 								title="Statistics">YMD Matching Rewards Income</p>
 							<h3 class="font-weight-medium my-2">
 								&#8377 <span data-plugin="counterup"><?php echo $metrics['totRewardAmnt']; ?></span>
@@ -265,7 +265,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 						
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium "
 								title="Statistics">YMD AutoPool Income</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $metrics['totAutopoolIncome']; ?></span>
@@ -289,7 +289,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 						
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium"
 								title="Statistics">My Direct Members</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $metrics['myReferralTot']; ?></span>
@@ -317,7 +317,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 						
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium "
 								title="Statistics">Left Team</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $metrics['childCount']['lsize']; ?></span>
@@ -341,7 +341,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 						
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium "
 								title="Statistics">Right Team</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $metrics['childCount']['rsize']; ?></span>
@@ -363,7 +363,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 						</div>
 
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium"
 								title="Statistics">UPDATE SOON</p>
 						</div>
 					</div>
@@ -379,7 +379,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 					style="background-color: #4d1f8c;">
 					<div class="media">
 						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							<p class="m-0 text-uppercase font-weight-medium "
 								title="Statistics" style="color: #f1e906">Present <?php echo $metrics['present_lvl']['level_name'];?></p>
 							<h5 style="color: #FFFFFF" class="font-weight-medium my-2">
 								Earned Amount: &#8377 <span data-plugin="counterup">
@@ -398,12 +398,12 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 					</div>
 				</div>
 			</div>
-			<div class="col-xl-8 col-sm-8">
-				<div class="card-box widget-box-two widget-two-custom "
+			<div class="col-lg-8 col-sm-8">
+				<div class="card-box widget-box-two widget-two-custom"
 					style="background-color: #4d1f8c;">
 
-					<div class="media">
-						<div class="responsive">
+					<div class="media row">
+						<div class="responsive col-lg-4 col-sm-8">
 							<p style="color: #f1e906">NEXT LEVEL: <?php echo $metrics['next_lvl']['level_name'];?></p>
 
 						</div>
@@ -415,9 +415,9 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
                                 $req_l = $next_l - $lsize;
                                 $req_r = $next_r - $rsize;
                              ?>
-                            <div class="wigdet-two-content media-body">
+                            <div class="wigdet-two-content media-body col-lg-8 col-sm-12">
 							<p style="color: #f1e906"
-								class="m-0 text-uppercase font-weight-medium text-truncate"
+								class="m-0 text-uppercase font-weight-medium"
 								title="Statistics">Earn Rewords: <?php echo $metrics['next_lvl']['inr_value'];?> Rs. </p>
                                  <?php  if($metrics['present_lvl']['auto_pool_inr']>0){ ?>
                                  <h5 style="color: #ffffff" class="font-weight-medium my-2">
@@ -428,7 +428,7 @@ $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
                                                 echo '<br/><br/>';
                                             }
                                             ?>
-                              <p style="color: #4bf505" align="center" class="m-0">Required Persions :Left Side <?php echo $req_l?> & Right Side <?php echo $req_r?></p>
+                              <p style="color: #4bf505" align="right" class="m-0">Required Persions :Left Side <?php echo $req_l?> & Right Side <?php echo $req_r?></p>
 						
 						</div>
 					</div>

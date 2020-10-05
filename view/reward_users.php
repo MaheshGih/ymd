@@ -5,7 +5,7 @@
 ?>
 <?php
     //$active_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],1);
-$active_childs = $objUserModel->GetLevelRewardUsers();
+$active_childs = $objUserModel->rewardUsers(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,7 +72,7 @@ $active_childs = $objUserModel->GetLevelRewardUsers();
                                     <div class="card-box table-responsive">
                                     	<form class="form-horizontal" id="blockUsersForm" action="../controller/payment_controller.php" method="post">
                                           <div Class="form-group row">
-                                                <div class="  col-6 col-sm-2">
+                                                <div class=" col-lg-2 col-sm-12">
                                                     <input type="submit" name="btnAddRewards" id="btnAddRewards" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Rewards"></input>
                                                 </div>    
                                         	</div>
@@ -101,11 +101,11 @@ $active_childs = $objUserModel->GetLevelRewardUsers();
                                                    	<td><?php echo $r['login_id'];?></td>
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
-                                                    <td><?php echo $r['level_name'];?></td>
-                                                    <td><?php echo $r['left_pairs'];?></td>
-                                                    <td><?php echo $r['right_pairs'];?></td>
-                                                    <td><?php echo $r['inr_value'];?></td>
-                                                    <td><?php echo $r['auto_pool_inr'];?></td>   
+                                                    <td><?php echo $r['next_lvl']['level_name'];?></td>
+                                                    <td><?php echo $r['lsize'];?></td>
+                                                    <td><?php echo $r['rsize'];?></td>
+                                                    <td><?php echo $r['next_lvl']['inr_value'];?></td>
+                                                    <td><?php echo $r['next_lvl']['auto_pool_inr'];?></td>   
                                                 </tr>
                                             <?php
                                                }

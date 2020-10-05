@@ -1,16 +1,16 @@
 <?php
     //local
     $con = "";
-    $server ="localhost";
+    /* $server ="localhost";
     $user = "root";
     $pwd = "Quad@access";
     $db ="ymd";
-    
+     */
     //Server 
-    /* $server ="localhost";
+    $server ="localhost";
     $user = "ymd";
     $pwd = "#Veera123";
-    $db ="ymd"; */
+    $db ="ymd";
     
     
     $con = mysqli_connect($server,$user,$pwd,$db);
