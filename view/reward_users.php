@@ -72,7 +72,7 @@ $active_childs = $objUserModel->GetLevelRewardUsers();
                                     <div class="card-box table-responsive">
                                     	<form class="form-horizontal" id="blockUsersForm" action="../controller/payment_controller.php" method="post">
                                           <div Class="form-group row">
-                                                <div class=" col-2">
+                                                <div class="  col-6 col-sm-2">
                                                     <input type="submit" name="btnAddRewards" id="btnAddRewards" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Rewards"></input>
                                                 </div>    
                                         	</div>

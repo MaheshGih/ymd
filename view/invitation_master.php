@@ -80,13 +80,14 @@
                                     <table id="gh_table" class="table table-bordered  dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                             <tr>
-                                            	<th></th>
+                                            	<th></th>                                            	
                                                 <th>Name</th>
                                                 <th>Req Amount</th>
                                                 <th>Invitations</th>
                                                 <th>Required Providers</th>
                                                 <th>Mobile</th>
                                                 <th>User Id</th>
+                                                <th>Id</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -115,6 +116,7 @@
                                                 <td>
                                             		<?php  echo $rw['login_id']; ?>
                                             	</td>
+                                            	<td><?php  echo $rw['id']; ?></td>
                                             </tr>
                                             <?php
                                             }
@@ -170,11 +172,11 @@
                         <div class="form-group row">
                             <div class="col-md-6">
                             	<form class="form-horizontal" action="../controller/user_controller.php" method="POST">
-                            		<button type="button" name="btnPreview" id="btnPreview" class="btn btn-info waves-effect waves-light" data-toggle="modal" data-target="#previewmessagemodal">
+                            		<button type="button" disabled="disabled" name="btnPreview" id="btnPreview" class="btn btn-info waves-effect waves-light" data-toggle="modal" data-target="#previewmessagemodal">
                                         <i class=" far fa-eye"></i>
                                         <span>Preview</span>
                                     </button>
-                            		<button type="submit" name="btnProvideHelp" id="btnProvideHelp" class="btn btn-success waves-effect waves-light"> <i class="fas fa-sms mr-1"></i> <span>Send SMS</span> </button>
+                            		<button type="button" name="btnProvideHelp" id="btnProvideHelp" class="btn btn-success waves-effect waves-light"> <i class="fas fa-sms mr-1"></i> <span>Send Invitations</span> </button>
                                 </form>
                             </div>
                         </div>
@@ -214,7 +216,7 @@
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-md-6">
-                                                <button type="button" name="btnPreview" id="btnPreview" class="btn btn-info waves-effect waves-light" data-toggle="modal" data-target="#previewmessagemodal">
+                                                <button type="button" disabled="disabled" name="btnPreview" id="btnPreview" class="btn btn-info waves-effect waves-light" data-toggle="modal" data-target="#previewmessagemodal">
                                                     <i class=" far fa-eye"></i>
                                                     <span>Preview</span>
                                                 </button>
@@ -308,62 +310,89 @@
 		
 		<script type="text/javascript">
         	$(document).ready(function (){
-        	   var gh_table = $('#gh_table').DataTable({
-        		   dom: 'Bfrtip',
+
+         	   var gh_table = $('#gh_table').DataTable({
+        		   //dom: 'Bfrtip',
         	      'columnDefs': [
         	         {
         	            'targets': 0,
         	            'checkboxes': {
         	               'selectRow': true
         	            }
-        	         }
+        	         },
+        	         {
+    	                "targets": 7,
+    	                "visible": false,
+    	            }
         	      ],
-        	      'select': {style: 'multi'},
-        	      'order': [[1, 'asc']]
-        	   });
-        	   gh_table
-               .on( 'select', function ( e, dt, type, indexes ) {
-                    var rowData = gh_table.rows( indexes ).data();
-                    req = parseInt(rowData[0][4]);
-					ph_rows = ph_table.rows({selected: false});
-					$.each(ph_rows[0],function(ind, row){
-						if(ind<req)
-							ph_rows.row(row).select();
-					});
-	               
-               } )
-               .on( 'deselect', function ( e, dt, type, indexes ) {
-            	   var rowData = gh_table.rows( indexes ).data();
-                   req = parseInt(rowData[0][4]);
-    			   ph_rows = ph_table.rows({selected: true});
-    			   ph_rows.each(function(row, ind){
-    				 	if(ind<req)
-    						ph_rows.row(row).deselect();
-    			   });
-               } );
-               
-        	   var ph_table = $('#ph_table').DataTable({
-        		   dom: 'Bfrtip',
         	      'select': {style: 'multi'},
         	      //'order': [[1, 'asc']]
         	   });
+         	  var ph_table = $('#ph_table').DataTable({
+           		   //dom: 'Bfrtip',
+           	      'select': {style: 'multi'},
+           	      //'order': [[1, 'asc']]
+           	   });
+          	   
+        	   gh_table.on( 'select', function ( e, dt, type, indexes ) {
+                    var rowData = gh_table.rows( indexes ).data();
+                    $.each(rowData,function(ind, row){
+                        req = parseInt(row[4]);
+    					ph_rows = ph_table.rows({selected: false});
+    					$.each(ph_rows[0],function(ind, row){
+    						if(ind<req)
+    							ph_rows.row(row).select();
+    					});
+                    });
+               })
+               .on( 'deselect', function ( e, dt, type, indexes ) {
+            	   var rowData = gh_table.rows( indexes ).data();
+            	   $.each(rowData,function(ind, row){
+                       req = parseInt(row[4]);
+        			   ph_rows = ph_table.rows({selected: true});
+        			   $.each(ph_rows[0],function(ind, row){
+        				 	if(ind<req)
+        						ph_rows.row(row).deselect();
+        			   });
+            	   });
+               } );
+
+        	   $('#btnConformBlock').on('click', function(evt){
+       		    //evt.preventDefault();
+					var rows = table.rows({selected:true}).data();
+					var ids = [];
+					rows.each(function(row, ind){
+						ids.push(row[1]);
+					});
+					$('#userIds').val(ids.join());
+					if(ids.length>0)
+						$('form').submit();
+						//return true;
+					else return false;
+              });
         	   
-			  $('#btnGetProvideHelp1').on('click', function(evt){
+			  $('#btnProvideHelp').on('click', function(evt){
 				   evt.preventDefault();
 				   var gh_rows = gh_table.rows({selected: true}).data();
+				   var ph_rows = ph_table.rows({selected: true}).data();
+				   if(gh_rows.length==0 || ph_rows.length == 0){
+						return false;
+				   }
 				   var gh_data = [];
 				   var ph_data = [];
 	        	   gh_rows.each( function(row, ind){
-	        		    var gh_row = { full_name : row[1],invitations : row[3],req_invs:row[4],mobile:row[5],login_id:row[6] };
+	        		    var gh_row = { id:row[7], full_name : row[1],invitations : row[3],req_invs:row[4],mobile:row[5],login_id:row[6] };
 	        		    gh_data.push(gh_row);	
 	               });
-	        	   ph_rows = ph_table.rows({selected: true}).data();
+	        	   
 				   ph_rows.each(function(row, ind){
 					  var ph_row = { full_name : row[1],mobile:row[2],date_created:row[3],login_id:row[4] };
 	        		  ph_data.push(ph_row);
 				   });
-				   var data = { '':'', 'gh_data':gh_data, 'ph_data':ph_data };
-				   sendInvitation();
+				   
+				   var data = { 'btnGetProvideHelping':'btnGetProvideHelping', 'gh_data':gh_data, 'ph_data':ph_data };
+				   sendInvitation(data);
+				   $(this).attr('disabled','disabled');
 			  });        	    
         	});			
         	function sendInvitation(data){
@@ -373,9 +402,32 @@
 	                    data: data,
 	                    success: function (result) {
 	                        console.log(result);
+	                 		if(result)
+		                 		result = result.trim();
+	                 		
+	                        if(!result || result == 'failure'){
+	                            Swal.fire({
+	                                type: "error",
+	                                title: "Oops...",
+	                                text: "Something went wrong!",
+	                                confirmButtonClass: "btn btn-confirm mt-2",
+	                                footer: 'Invitation message sending failed.Please enter valid mobiel or try again later.'
+	                            })
+	                        }else if(result == 'success'){
+	                                Swal.fire({title:"Good job!",
+	                                    text: 'Invitations sent successfully!',
+	                                type:"success",
+	                                confirmButtonClass:"btn btn-confirm mt-2"
+		                            }).then(function(){
+										window.location.reload();
+		                            });
+	                        }
 	                    },
 	                    failure: function (erresult) {
-	                    	console.log(erresult);
+                            Swal.fire({title:"error!",
+                                text: 'Invitation message sending failed.Please enter valid mobiel or try again later.',
+                            type:"error",
+                            confirmButtonClass:"btn btn-confirm mt-2"});
 	                    }
 	                });	
 			 }

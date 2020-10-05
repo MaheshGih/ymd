@@ -27,7 +27,21 @@ function getUserData( btnName, loginId){
         method:'POST',
         data:{ btnSearchUserData : btnName, loginId : loginId},
         success:function(res){
+        	if(!res){
+        		var obj = {};
+        		obj.type = 'error';
+		        obj.title = 'Failed!';
+		        obj.msg = "User Data retriving failed. Enter a valid Id.";
+        		notification(obj);
+        	}
         	res = JSON.parse(res);
+        	if(!res){
+        		var obj = {};
+        		obj.type = 'error';
+		        obj.title = 'Failed!';
+		        obj.msg = "User Data retriving failed. Enter a valid Id.";
+        		notification(obj);
+        	}
             //res = res.split("+");
             $("#txtUserName").val(res['full_name']);
             $("#txtEmail").val(res["email"]);
@@ -45,7 +59,8 @@ function getUserData( btnName, loginId){
             $("#txtPaytm").val(res["PayTm"]);
             $("#txtCity").val(res["city"]);
             $("#txtState").val(res["state"]);
-         
+         	$("#txtPassword").val(res["password"]);
+            $("#txnPassword").val(res["txn_password"]);
         },
         error:function(erres){
             console.log(erres);

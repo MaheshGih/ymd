@@ -223,11 +223,11 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     
-    public function UpdateUserDetails($logid,$mobile,$full_name,$email){
+    public function UpdateUserDetails($logid,$mobile,$full_name,$email,$password,$txn_password){
         global $con;
-        $sql = "update user_details set mobile=?,full_name=?,email=? where login_id=?";
+        $sql = "update user_details set mobile=?,full_name=?,email=?,password=?,txn_password=? where login_id=?";
         $wal_stmt = $con->prepare($sql);
-        $wal_stmt->bind_param('ssss',$mobile,$full_name,$email,$logid);
+        $wal_stmt->bind_param('ssssss',$mobile,$full_name,$email,$password,$txn_password,$logid);
         $res = $wal_stmt->execute();
         $wal_stmt->close();
         return $res;
@@ -618,7 +618,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
                 $res = $stmt->execute();
             }
         }
-        $con -> commit();
+        $res = $con -> commit();
         $stmt->close();
         return $res;
     }
@@ -1408,12 +1408,12 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     }
     
     public function smsGetHelperMsg($receiver_login_id, $helper_name, $helper_login_id, $helper_mobile){
-        $get_help_message = "Hello '".$receiver_login_id."', You will get Help of Rs 1000/- ($14.2) from '".$helper_name."' ('".$helper_login_id."').Please Contact '".$helper_mobile."' .Thanking you www.ymd1000us.com";
+        $get_help_message = "Hello '".$receiver_login_id."', You will get Help of Rs 1000/- from '".$helper_name."' ('".$helper_login_id."').Please Contact '".$helper_mobile."' .Thanking you www.ymd1000us.com";
         return $get_help_message;
     }
     
     public function smsProviderHelpMsg($receiver_login_id, $receiver_name, $receiver_mobile){
-        $provide_help_mesage =  "You have to Provide help Rs.1,000/- ($14.2) to ".$receiver_name." (".$receiver_login_id.").Please Contact ".$receiver_mobile.".Thanking you www.ymd1000us.com";
+        $provide_help_mesage =  "You have to Provide help Rs.1,000/- to ".$receiver_name." (".$receiver_login_id.").Please Contact ".$receiver_mobile.".Thanking you www.ymd1000us.com";
         return $provide_help_mesage;
     }
     
@@ -1789,7 +1789,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $childs = self::GetUsersCountByMasterId($userId,1);
         $childCount = self::GetLeftAndRightChildCount($childs, $userId);
         $user_lvl = self::GetLevelById($user['lvl_id']);
-        $next_lvl = self::GetLevelOrderNo($user_lvl['l_order']+1);
+        $next_lvl = self::GetLevelByOrderNo($user_lvl['l_order']+1);
         $latestNews = $objAdminModel->GetActiveNews();
         $res = array (
             "news" => $latestNews,
@@ -1822,7 +1822,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     
-    public function GetLevelOrderNo($orderNo){
+    public function GetLevelByOrderNo($orderNo){
         global $con;
         $sql = "select * from levels where l_order=?";
         $wal_stmt = $con->prepare($sql);

@@ -148,7 +148,7 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                 </a>
             </li>
             <li>
-                <a href="inactive_users_admin.php">
+                <a href="block_users.php">
                     <i class="fas fa-user-alt-slash "></i>
                     <span> Block Users </span>
                 </a>

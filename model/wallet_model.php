@@ -80,6 +80,18 @@ class WalletContactModel{
         $res = mysqli_fetch_assoc(mysqli_query($con,"select * from user_wallet_concat where user_id=".$userId));
         return $res;
     }
+    
+    public function GetTotPendingWithdrawAmntByUserId($userId){
+        global $con;
+        $sql = "select sum(amount_req)as tot from user_withdrawls where  user_id = ? and is_done=0";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$userId);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $res = $res->fetch_assoc();
+        $wal_stmt->close();
+        return $res;
+    }
 }
 
 $objWalletFianlModel = new WalletFinalModel();

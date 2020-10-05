@@ -99,7 +99,7 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                                             <div class="row" >
                                                 <div class="col-sm-4 todo-inputbar">
                                                 	<input type="hidden" id="kyc_done" value=<?php echo $_SESSION['kyc_done'];?> name="kyc_done"/>
-                                                    <input type="text" id="withdrawAmount" autocomplete="off" required name="withdrawAmount" class="form-control" 
+                                                    <input type="text" id="withdrawAmount" autocomplete="off" data-parsley-type="number" required name="withdrawAmount" class="form-control" 
                                                     	placeholder="Withdraw Amount" style="margin-bottom:2px;" required>
                                                     <small class="form-text text-muted "><i class="fa fa-info-circle" aria-hidden="true"></i> Withdraw amount should be multiples of 1000 (i.e 1000, 2000, 3000,..)</small>
                                                     <!-- <p class="text-info"><i class="fa fa-info-circle" aria-hidden="true"></i> </p> -->
@@ -107,6 +107,7 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                                                 <div class="col-sm-4 todo-inputbar">
                                                     <input type="password" id="txnPassword" autocomplete="off" required name="txnPassword" class="form-control" 
                                                     	placeholder="Transaction Password" style="margin-bottom:2px;" required>
+                                                    <a href="#" onclick="sendTxnPassword();" class="text-muted float-right"><small>Forgot your Tran password?</small></a>
                                                 </div>
                                                 <div class="col-sm-3 todo-send">
                                                     <button class="btn-info btn-md btn waves-effect waves-light" type="submit" id="withdrawReqBtn" name="withdrawReqBtn" 
@@ -259,6 +260,7 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
         <script type="text/javascript">
           $(document).ready(function(){
                 var  res = location.search;
+                res = decodeURIComponent(res);
                 res = res.split("=");
                 displayNotification(res);
                 $('form').each(function(){ $(this).parsley().on('field:validated', function() {})});//validations
@@ -275,7 +277,8 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
 			
           	var kyc_done = $("#kyc_done").val();
           	kyc_done = kyc_done?parseInt(kyc_done):0;
-          	if(!kyc_done){
+          	kyc_done = undefined;
+          	if(kyc_done){
           		Swal.fire({title:"Kyc not completed",
                     text: 'Please fill all the details',
                     type:"error",
@@ -356,6 +359,25 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                 res.msg = "Invalid Transaction Password";
               }
               return res;
+          }
+
+          function sendTxnPassword(){
+          	$.ajax({
+      	    	url: "../controller/user_controller.php?forgot_txn_passsword=sendtxnpass",
+      	    	success: function(res){
+          	    	var obj = {status:undefined,type:undefined,msg:undefined};
+          	    	if(res){
+          	    	  obj.type = 'success';
+	                  obj.title = 'Congrats!';
+	                  obj.msg = "Transaction Password is sent to your registerd mobile number.";
+                  	}else{
+                  		res.type = 'error';
+      	              	res.title = 'Failed!';
+      	                res.msg = "Transaction Password sms sending failed!. Please try again.";
+                    }
+                    notification(obj)
+      	    	}
+      	   });
           }
         </script>
     </body>

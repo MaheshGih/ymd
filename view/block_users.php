@@ -84,7 +84,7 @@ $inactiv_childs = $objUserModel->GetAllUsersByStatus(0, $expiryTime);
                                       	<input type="hidden" name="hdnBlockUsers" id="hdnBlockUsers"/>
                                       <div Class="form-group row">
                                         
-                                            <div class=" col-2">
+                                            <div class="  col-4 col-sm-2">
                                                 <button type="button" name="btnBlockUsers" id="btnBlockUsers" class="btn btn-md btn-block btn-primary waves-effect waves-light" >Block Users</button>
                                             </div>
                                             <div class="col-2"></div>

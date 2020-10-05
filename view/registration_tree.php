@@ -48,6 +48,10 @@ background:grey;
   left: 0px;
   border: 1px solid lightgray;
 }
+
+.hide{
+    display:none;
+}
 </style>
 	
 </head>
@@ -69,25 +73,28 @@ background:grey;
                                 <div class="col-12">
                                     
                                         <div class="row" >
-                                             <div class="col-sm-4 todo-inputbar">
+                                             <div class="col-sm-3 todo-inputbar">
                                                 <img src="../assets/images/frontendlogo - Copy.png" alt="Nature" class="responsive">
                                                
                                             </div>
 
-                                            <div class="col-sm-4 todo-inputbar">
+                                            <div class="col-sm-3 mb-3 todo-inputbar">
                                                 <input type="text" id="refId" name="refId" class="form-control" placeholder="Enter Referral Userid" 
                                                 value="<?php if(isset($_GET['ref'])) echo $_GET['ref']?>"
                                                 style="margin-bottom:2px;" required>
-                                                <p class="text-info mb-0"> <a href="login.php" class=" ml-1 float-right"><b>Sign In</b></a></p>
+                                               
                                                 
                                             </div>
-                                            <div class="col-sm-2 todo-send">
+                                            <div class="col-sm-2 mb-3 todo-send">
                                                 <button class="btn-info btn-md btn waves-effect waves-light" type="button" id="todo-btn-submit"
                                                 onclick="getTreeData();return;" 
                                                 name="todo-btn-submit" style="margin-bottom:2px;"><i class="fas fa-search"></i><span> Search </span></button>
                                             </div>
+											<div class="col-sm-2 mb-3">
+                                                 <p class="text-info mb-0"> <a href="login.php" class=" ml-1 float-center btn btn-success"><b>Sign In</b></a></p> 
+                                            </div>
 					    <div class="col-sm-2">
-                                                 <a href="tree.php" class="btn btn-purple"><i class="fas fa-long-arrow-alt-left"> </i> Back to Tree </a> 
+                                                 <a href="tree.php" class="btn btn-danger"><i class="fas fa-long-arrow-alt-left"> </i> Back to Tree </a> 
                                             </div>
                                         </div>
                                         <div class="row">
@@ -140,6 +147,7 @@ background:grey;
                                         <input type="hidden" id="otpMobile" name="otpMobile" />
                                         <input type="hidden" id="otpLoginId" name="otpLoginId"/>
                                         <input class="form-control" required type="text" id="otp" name="otp" placeholder="OTP" required="required"/>
+                                        
                                     </div>
                                 </div>
                                 <div class="form-group row text-center mt-2">
@@ -276,7 +284,7 @@ background:grey;
     <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
 
     <script src="../assets/js/pages/sweet-alerts.init.js"></script>
-    <script src="../assets/libs/custombox/custombox.min.js"></script>
+    
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
 	<script src="../assets/libs/parsleyjs/parsley.min.js"></script>

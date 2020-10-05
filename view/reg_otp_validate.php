@@ -68,6 +68,7 @@
                                                         <input type="hidden" id="otpMobile" name="otpMobile" value="<?php echo $_GET['mobile'];?>"/>
                                                         <input type="hidden" id="otpLoginId" name="otpLoginId" value="<?php echo $_GET['login_id'];?>"/>
                                                         <input class="form-control" type="text" id="otp" name="otp" placeholder="OTP" required="required"/>
+                                                        <a href="#" id="resendRegOtp">Resend Otp</a>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row text-center mt-2">
@@ -107,7 +108,35 @@
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
     <script src="../assets/libs/parsleyjs/parsley.min.js"></script>	
+    <script>
+        $(document).ready(function () {
+      	  $('#resendRegOtp').on('click', function(){
+      	  	resendRegOtp();
+      	  });
+        });
     
+        function resendRegOtp() {
+          	var mobile = $('#otpMobile').val();
+            var loginId = $('#otpLoginId').val();
+            var otpResendUrl = '../controller/tree_controller.php';
+            
+            $.ajax({
+                url: otpResendUrl,
+                method: "POST",
+                data: { resendRegOtp:'resendRegOtp', mobile:mobile, login_id:loginId},
+                success: function (res) {
+                    $('#otpmsg').text(res);
+                },
+                error: function (erres) {
+                    $("#spnLeft").text('0');
+                    $("#spnRight").text('0');
+                    $("#spnWallet").text('0');
+                }
+            });
+            
+        }
+    
+    </script>
 </body>
 
 

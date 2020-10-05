@@ -122,6 +122,18 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
+                                            <label for="password" class="col-3 col-form-label">Password</label>
+                                            <div class="col-9">
+                                            <input class="form-control" type="password" required="" id="txtPassword" name="txtPassword" placeholder="Enter password">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="txnPassword" class="col-3 col-form-label">Transaction Password</label>
+                                            <div class="col-9">
+                                            <input class="form-control" type="password" required="" id="txnPassword" name="txnPassword" placeholder="Enter Transaction password">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <div class="col-9">
                                                 <!-- <input type="submit" class="btn btn-success" name="btnSaveAddress" id="btnSaveAddress"  value="Save"/> -->
                                                 <button type="submit" name="btnEditMobile" id="btnEditMobile" class="btn btn-success waves-effect waves-light"> <i class="fas fa-save mr-1"></i> <span>Update</span> </button>

@@ -33,11 +33,10 @@ var network = undefined;
       arrows: "to",
     },
     interaction : {
-    	selectable: true,
-    	zoomView: true,
     	navigationButtons: true,
-      	keyboard: true
-    	
+      	keyboard: true,
+    	selectable: true,
+    	zoomView: true
     }
   };
   
@@ -75,7 +74,8 @@ var network = undefined;
 	master.master_id = sponsor.id;
 	master.label = master.login_id;
 	master.shape = "circularImage"; 
-	master.image = manImgUrl;
+	master['is_active'] = parseInt(master['is_active']);
+	master.image = master['is_active']?manImgUrl:manInactiveImgUrl;
 	var nodes = [master];
 	//var nodes = [{id:0, master_id:master['id'], label:master['login_id'], image : manImgUrl, shape : "circularImage"}];
 	
@@ -123,8 +123,8 @@ var network = undefined;
 		}
 		
 	}
-	console.log(nodes);
-	console.log(edges);
+	//console.log(nodes);
+	//console.log(edges);
 	var visNodes = new vis.DataSet(nodes);
     var visEdges = new vis.DataSet(edges);
     
@@ -135,40 +135,60 @@ var network = undefined;
 	network = drawNetwork(container, data, options);
 	
 	setTimeout(function(){ $('.vis-zoomExtends')[0].click(); });
-	
-	network.on("selectNode", function(properties){
+	                                        
+	var childSides = {
+		'empty':'<option value="" selected="selected">Choose</option>',
+		'left':'<option value="left">Left</option>',
+		'right':'<option value="right">Right</option>'
+	}
+	network.on("click", function(properties){
 		var ids = properties.nodes;
-		var nodeEdges = properties.edges;
-		/*$.each(nodeEdges,function(ind,e){
-			var nodeEdge = visEdges.get(e);
-			console.log(nodeEdge);
-		});*/
-	    var clickedNodes = visNodes.get(ids);
+		if(!ids || ids.length==0){
+			return;
+		}
+		var clickedNodes = visNodes.get(ids);
 	    if(!(clickedNodes[0]['is_active']))
-	    	return;
+			return;
+		var nodeId = clickedNodes[0]['id'];
+		var nodeEdges = properties.edges;
+		var fromEdgeCnt = 0;
+		var toEdges = [];
+		$.each(nodeEdges,function(ind,e){
+			var nodeEdge = visEdges.get(e);
+			if(nodeId == nodeEdge['from']){
+				fromEdgeCnt = fromEdgeCnt  + 1;
+				toEdges.push(nodeEdge);
+			}
+				
+		});
+	    
 	    //console.log('clicked nodes:', clickedNodes);
-	    if(nodeEdges.length<=2){
-	    	if(nodeEdges.length==2){
-	    		var nodeEdge = visEdges.get(nodeEdges[1]);
-	    		var childNode = visNodes.get(nodeEdge.to);
+	    if(fromEdgeCnt<2){
+	    	var ddlSideEle = $('#ddlSide');
+    		$('#ddlSide option').each(function(){
+    			$(this).remove();
+    		});
+    		
+	    	if(fromEdgeCnt==1){
+	    		//var nodeEdge = visEdges.get(nodeEdges[1]);
+	    		var childNode = visNodes.get(toEdges[0].to);
 	    		var side = '';
+	    		
 	    		if(childNode.side=='left'){
 	    			side = 'right';
 	    		}else{
 	    			side = 'left';
 	    		}
-	    		$('#ddlSide').val(side);
-	    		$('#ddlSide option:not(:selected)').each(function(){
-	    			$(this).prop('disabled','true');
-	    		});
-	    		//$('#ddlSide').prop('disabled','true');
+	    		ddlSideEle.append(childSides[side]);
+	    		ddlSideEle.val(side);
+	    		ddlSideEle.attr('readonly','true');
 	    	}else{
 	    		
-	    		$('#ddlSide option').each(function(){
-	    			$(this).removeAttr('disabled');;
+	    		$.each(childSides, function(key,value){
+	    			ddlSideEle.append(value);
 	    		});
 	    		
-	    		$('#ddlSide').val(0);
+	    		ddlSideEle.val('').removeAttr('readonly');
 	    		
 	    	}
 	    	

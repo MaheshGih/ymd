@@ -36,6 +36,9 @@ include('../model/user_model.php');
     <link href="../assets/libs/datatables/buttons.bootstrap4.css" rel="stylesheet" type="text/css" />
     <link href="../assets/libs/datatables/responsive.bootstrap4.css" rel="stylesheet" type="text/css" />
     <!-- <link href="https://visjs.github.io/vis-network/dist/vis-network.min.css"></link> -->
+    <!-- Jquery Toast css -->
+    <link href="../assets/libs/jquery-toast/jquery.toast.min.css" rel="stylesheet" type="text/css" />
+        
 <style>
 /* html,
 body {
@@ -62,6 +65,9 @@ background:grey;
   left: 0px;
   border: 1px solid lightgray;
   /*border : 0px 0px 0px 0px !important;*/
+}
+.hide{
+    display:none;
 }
 </style>
     
@@ -415,30 +421,11 @@ background:grey;
     <!-- END wrapper -->
     <!-- Vendor js -->
     <script src="../assets/js/vendor.min.js"></script>
-     <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
-
-    <script src="../assets/js/pages/sweet-alerts.init.js"></script>
+    <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+	<script src="../assets/js/pages/sweet-alerts.init.js"></script>
     <script src="../assets/libs/custombox/custombox.min.js"></script>
-    <!-- Required datatable js -->
-    <script src="../assets/libs/datatables/jquery.dataTables.min.js"></script>
-    <script src="../assets/libs/datatables/dataTables.bootstrap4.min.js"></script>
-    <!-- Buttons examples -->
-    <script src="../assets/libs/datatables/dataTables.buttons.min.js"></script>
-    <script src="../assets/libs/datatables/buttons.bootstrap4.min.js"></script>
-    <script src="../assets/libs/jszip/jszip.min.js"></script>
-    <script src="../assets/libs/pdfmake/pdfmake.min.js"></script>
-    <script src="../assets/libs/pdfmake/vfs_fonts.js"></script>
-    <script src="../assets/libs/datatables/buttons.html5.min.js"></script>
-    <script src="../assets/libs/datatables/buttons.print.min.js"></script>
-    <script src="../assets/libs/datatables/buttons.colVis.js"></script>
-
-    <!-- Responsive examples -->
-    <script src="../assets/libs/datatables/dataTables.responsive.min.js"></script>
-    <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
-
-    <!-- Datatables init -->
-    <script src="../assets/js/pages/datatables.init.js"></script>
-    <script src="../assets/js/pages/jquery.todo.js"></script>
+    <!-- Tost-->
+    <script src="../assets/libs/jquery-toast/jquery.toast.min.js"></script>
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
     <script src="../assets/libs/parsleyjs/parsley.min.js"></script>

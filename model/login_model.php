@@ -222,6 +222,18 @@ class LoginModel{
         $res = mysqli_fetch_assoc(mysqli_query($con,$sel_qry));
         return $res;
     }
+    
+    public function GetUsersBySpillId($spill_id){
+        global $con;
+        $sql ="SELECT id,side,login_id FROM user_details as ud where ud.spill_id=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$spill_id);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $wal_stmt->close();
+        return $res;
+    }
+    
     /*
         Check Login Details
      */
@@ -236,7 +248,7 @@ class LoginModel{
     public function GetLogUserDetails($vlogid){
         global $con;
         $get_user_id = mysqli_fetch_assoc(mysqli_query($con,"select id as userid from user_details where login_id='".$vlogid."'"));
-        $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid,mobile,role,date_created,
+        $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid, login_id, mobile,role,date_created,
     expired_date,lvl_id,is_active,kyc_done from user_details where id=".$get_user_id['userid'])) ;
         return $get_det;
     }

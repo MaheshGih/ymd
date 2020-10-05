@@ -63,7 +63,8 @@
 
                                         <div class="col-md-6">
                                             <div class="card-box">
-                                                <h4 class="header-title mb-4">PROFILE<span style="color:red;">  -(User Can't Edit Profile Details)</span></h4>
+                                                <h4 class="header-title mb-4 col-sm-12 col-md-2" style="display:inline-block;">PROFILE</h4>
+												<span style="color:red;" class="col-sm-12 col-md-6">  -(User Can't Edit Profile Details)</span>
             
                                                 <form class="form-horizontal">
 
@@ -142,7 +143,7 @@
 
 
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-md-6 col-sm-12">
                                             <div class="card-box">
                                                 <h4 class="header-title mb-4">BANK DETAILS</h4>
                                                 <div class="row">
@@ -188,7 +189,7 @@
             
                                             </div> <!-- end card-box -->
                                         </div><!-- end col -->
-                                        <div class="col-6">
+                                        <div class="col-md-6 col-sm-12">
                                             <div class="card-box">
                                             <h4 class="header-title mb-4">PAYMENT DETAILS</h4>
                                             <form class="form-horizontal">

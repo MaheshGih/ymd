@@ -8,6 +8,8 @@ include("../model/withdraw_model.php");
 if(isset($_POST['withdrawReqBtn'])){
     $withdrawAmount = $_POST['withdrawAmount'];
     $wallet = $objWalletContactModel->GetWalletByUserId($_SESSION['userid']);
+    $totPendingAmnt = $objWalletContactModel->GetTotPendingWithdrawAmntByUserId($_SESSION['userid']);
+    
     $err = false;
     $msg = '';
     if( !($withdrawAmount) || ($withdrawAmount % $help_amount != 0) ){
@@ -16,6 +18,13 @@ if(isset($_POST['withdrawReqBtn'])){
     }else if($wallet['total_amount'] < $withdrawAmount ){
         $err = true;
         $msg = 'Insufficient fund to withdraw!';
+    }
+    
+    $afterBal = $wallet['total_amount'] - $totPendingAmnt['tot'] - $withdrawAmount;
+    
+    if($afterBal < 0 ){
+        $err = true;
+        $msg = 'Insufficient fund to withdraw!. Already have pending withdrawls.';
     }
     
     if($err){

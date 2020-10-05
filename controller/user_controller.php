@@ -41,8 +41,9 @@ if(isset($_POST['btnEditMobile'])){
     $mobile = $_POST['txtMobile'];
     $full_name = $_POST['txtUserName'];
     $email= $_POST['txtEmail'];
-    
-    $res = $objUserModel->UpdateUserDetails($loginId, $mobile, $full_name, $email);
+    $password = $_POST['txtPassword'];
+    $txn_password = $_POST['txnPassword'];
+    $res = $objUserModel->UpdateUserDetails($loginId, $mobile, $full_name, $email,$password,$txn_password);
     $sms = $objSMS->sendUpdatedUserDetails($mobile, $loginId);
     
     if($res){
@@ -140,15 +141,52 @@ if(isset($_POST['btnProvideHelp'])){
         $r = array_merge($gh_row,array('ph_list'=>$ph_rows));
         array_push($gh_send_list,$r);
     }
-    $rest = $objUserModel->AddUserInvitations($gh_send_list);
-    $rest = $objUserModel->smsSendInvitations($gh_send_list);
+    $res = $objUserModel->AddUserInvitations($gh_send_list);
+    $smsres = $objUserModel->smsSendInvitations($gh_send_list);
     echo "<script> location.href='../view/invitation_master.php?=success=invitation';</script>";
+    
 }
+
+if(isset($_POST['btnGetProvideHelping'])){
+    
+    //$phlist = $objWithdrawModel->GetProvideHelpersList();
+    //$gh_list = $objWithdrawModel->GetRequestHelpers();
+    $gh_list =$_POST['gh_data'];
+    $ph_list  = $_POST['ph_data'];
+    /* while($r=mysqli_fetch_assoc($phlist)){
+        array_push($ph_list,$r);
+    } */
+    $gh_send_list = array();
+    foreach ($gh_list as $gh_key=>$gh_row){
+        if(empty($ph_list)){
+            break;
+        }
+        $req_invs = $gh_row['req_invs'];
+        $ph_rows = [];
+        foreach (range(1, $req_invs) as $i) {
+            if(empty($ph_list)){
+                break;
+            }
+            $ph_row =  array_shift($ph_list);
+            array_push($ph_rows,$ph_row);
+        }
+        $r = array_merge($gh_row,array('ph_list'=>$ph_rows));
+        array_push($gh_send_list,$r);
+    }
+    $res = $objUserModel->AddUserInvitations($gh_send_list);
+    $smsres = $objUserModel->smsSendInvitations($gh_send_list);
+    if($res){
+        echo 'success';
+    }else{
+        echo 'failure';
+    }
+}
+
 if(isset($_POST['reciverId'])){
         $res_provide_help_user = $objUserModel->GetUserDetailsById($_POST['helperid']);
         $res_get_help_user = $objUserModel->GetUserDetailsById($_POST['gethelperid']);
         $provide_help_mesage =  "You have to Provide help Rs.1,000/- to ".$res_provide_help_user['full_name']." (".$res_provide_help_user['login_id'].").Please Contact ".$res_provide_help_user['mobile'].".Thanking you www.ymd1000us.com";
-        $get_help_message = "Hello '".$res_provide_help_user['login_id']."', You will get Help of Rs 1000/- ($14.2) from '".$res_get_help_user['full_name']."' ('".$res_get_help_user['login_id']."').Please Contact '".$res_get_help_user['mobile']."' .Thanking you www.ymd1000us.com";
+        $get_help_message = "Hello '".$res_provide_help_user['login_id']."', You will get Help of Rs 1000/- from '".$res_get_help_user['full_name']."' ('".$res_get_help_user['login_id']."').Please Contact '".$res_get_help_user['mobile']."' .Thanking you www.ymd1000us.com";
         echo $provide_help_mesage."@@@@".$get_help_message;
  }
  
@@ -156,7 +194,7 @@ if(isset($_POST['reciverId'])){
      $res_provide_help_user = $objUserModel->GetUserDetailsByUserId($_POST['helperid']);
      $res_get_help_user = $objUserModel->GetUserDetailsByUserId($_POST['gethelperid']);
      $provide_help_mesage =  "You have to Provide help Rs.1,000/- to ".$res_get_help_user['full_name']." (".$res_get_help_user['login_id'].").Please Contact ".$res_get_help_user['mobile'].".Thanking you www.ymd1000us.com";
-     $get_help_message = "Hello '".$res_get_help_user['login_id']."', You will get Help of Rs 1000/- ($14.2) from '".$res_provide_help_user['full_name']."' ('".$res_provide_help_user['login_id']."').Please Contact '".$res_provide_help_user['mobile']."' .Thanking you www.ymd1000us.com";
+     $get_help_message = "Hello '".$res_get_help_user['login_id']."', You will get Help of Rs 1000/- from '".$res_provide_help_user['full_name']."' ('".$res_provide_help_user['login_id']."').Please Contact '".$res_provide_help_user['mobile']."' .Thanking you www.ymd1000us.com";
      echo $provide_help_mesage."@@@@".$get_help_message;
  }
  

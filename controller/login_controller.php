@@ -19,7 +19,9 @@
                     
                     $diff = date_diff($exp,$cur_date );
                     $_SESSION['expiredin'] = $diff->format("%r%a days");
+                    
                 }else{
+                    
                     $date_created = $details['date_created'];
                     //date("Y-m-d H:i:s", strtotime($date_created,strtotime('+5 hours')));
                     $cur_date = $objUtilModel->getCurDate($objUtilModel->datetime_format);
@@ -38,8 +40,13 @@
                 }
                 
             }
+            if($details['is_active']){
+                $_SESSION['profileUrl'] = '../assets/images/man.png';
+            }else{
+                $_SESSION['profileUrl'] = '../assets/images/maninactive.png';
+            }
             $_SESSION["uname"] = $details['sponsorid'];  
-            $_SESSION["loginid"] = $_POST['txtLoginId'];  
+            $_SESSION["loginid"] = $details['login_id'];  
             $_SESSION["fname"] = $details['fname'];  
             $_SESSION['userid'] = $details['userid'];
             $_SESSION['mobile'] = $details['mobile'];

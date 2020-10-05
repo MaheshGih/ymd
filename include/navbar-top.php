@@ -20,7 +20,7 @@
                         $expMsg = 'Your Membership was expired ';
                     }
                     else{
-                        $expMsg = 'Your Membership is expires in <span id="expire_timer" style="color: white;"></span>';
+                        $expMsg = 'Your Membership is expires in <b><span id="expire_timer" style="color:red;"></span></b>';
                     }
                 }else if($_SESSION['expiredin']!=0){
                     $expMsg = 'Your Membership is expired in '.$_SESSION['expiredin'];
@@ -30,7 +30,11 @@
          ?>
 		<li>
 			 <input type="hidden" id="expTime" value="<?php if(isset($_SESSION['expTime'])) echo $_SESSION['expTime'];?>">
-             <h6 class="text-danger float-right"><?php echo $expMsg?></h6>
+             <!--  <h6 class="text-danger float-right" style="color : #ffa91c !important;"><?php echo $expMsg?></h6>-->
+             <div class="alert alert-danger text-danger alert-dismissible fade show" role="alert">
+                <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button> -->
+                <?php echo $expMsg;?>
+             </div>
         </li>
 		<?php }?>
     </ul>

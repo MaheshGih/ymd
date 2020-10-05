@@ -19,6 +19,22 @@
     }
     
     if(isset($_POST['hdnSignupBtn'])){
+        $spillId = $_POST['hdnSpillId'];
+        $side = $_POST['ddlSide'];
+        $spillUsers = $objLoginModel->GetUsersBySpillId($spillId);
+        $cnt = 0;
+        
+        while($r=mysqli_fetch_assoc($spillUsers)){
+            $cnt=$cnt+1;
+            if($cnt>=2){
+                echo "<script> location.href='../view/tree.php?=failure=insert';</script>";
+                return;
+            }else if($side == $r['side']){
+                echo "<script> location.href='../view/tree.php?=failure=insert';</script>";
+                return;
+            }
+        }
+        
         $full_name = $_POST['txtFirstName'];
         $objLoginModel->setName($full_name);
         $objLoginModel->setEmail($_POST['txtEmail']);

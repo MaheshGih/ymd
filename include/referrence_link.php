@@ -25,7 +25,7 @@
     						<div class="input-group input-group-sm"
     							style="margin-bottom: 8px;">
     							<input class="form-control" id="regRefLink" type="text"
-    								value="http://admin.ymd1000us.com/view/registration_tree.php?ref=<?php echo $_SESSION['loginid']?>"
+    								value="<?php echo $ref_link.$_SESSION['loginid'];?>"
     								id="myInput"
     								style="background-color: rgb(255, 255, 255); font-size: 14px; color: #525252;">
     							<span class="input-group-btn ">

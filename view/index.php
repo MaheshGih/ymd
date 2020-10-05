@@ -26,6 +26,7 @@
         <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
         <link href="../assets/css/app.min.css" rel="stylesheet" type="text/css"  id="app-stylesheet" />
 		<link href="../assets/css/pages/copytooltip.css" rel="stylesheet" type="text/css"  id="app-stylesheet" />
+		<link href="../assets/css/responsive.css" rel="stylesheet" type="text/css"  id="app-stylesheet" />
 		<!-- <link href="../assets/libs/jquery-countdown/jquery.countdownTimer.css" rel="stylesheet" type="text/css"  id="app-stylesheet" /> -->
 		
     </head>

@@ -3,6 +3,22 @@ include("../model/login_model.php");
 ?>
 <?php
 if(isset($_POST['hdnSignupBtn'])){
+    $spillId = $_POST['hdnSpillId'];
+    $side = $_POST['ddlSide'];
+    $spillUsers = $objLoginModel->GetUsersBySpillId($spillId);
+    $cnt = 0;
+    
+    while($r=mysqli_fetch_assoc($spillUsers)){
+        $cnt=$cnt+1;
+        if($cnt>=2){
+            echo "<script> location.href='../view/tree.php?=failure=insert';</script>";
+            return;
+        }else if($side == $r['side']){
+            echo "<script> location.href='../view/tree.php?=failure=insert';</script>";
+            return;
+        }
+    }
+    
     $full_name = $_POST['txtFirstName'];
     $objLoginModel->setName($full_name);
     $objLoginModel->setEmail($_POST['txtEmail']);
@@ -11,9 +27,8 @@ if(isset($_POST['hdnSignupBtn'])){
     $objLoginModel->setTxnPassword($_POST['txnPassword']);
     $spons_res = $objLoginModel->GetUserById($_POST['txtSponsorId']);
     $objLoginModel->setSponsorId(($spons_res['id']=="")?0:$spons_res['id']);
-    $objLoginModel->setSide($_POST['ddlSide']);
-    //$objLoginModel->setSide($_POST['hdnSide']);
-    $objLoginModel->setSpillId($_POST['hdnSpillId']);
+    $objLoginModel->setSide($side);
+    $objLoginModel->setSpillId($spillId);
     $login_id = $_POST['txtUserId'];
     $objLoginModel->setUserId($login_id);
     $objLoginModel->setPassword($_POST['txtPassword']);
@@ -83,6 +98,7 @@ if(isset($_GET['loadspills'])){
 }
 
 if(isset($_POST['btnOTPValidate'])){
+    $login_id = $_POST['otpLoginId'];
     $res = $objUserModel->validateRegOTP($_POST['otpLoginId'], $_POST['otp']);
     if($res){
         $user = $objUserModel->GetUserDetails($_POST['otpLoginId']);

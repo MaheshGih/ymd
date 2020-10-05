@@ -7,10 +7,10 @@
     $db ="ymd";
     
     //Server 
-    /* $server ="166.62.28.113";
-    $user = "ymd_new";
+    /* $server ="localhost";
+    $user = "ymd";
     $pwd = "#Veera123";
-    $db ="ymd_new"; */
+    $db ="ymd"; */
     
     
     $con = mysqli_connect($server,$user,$pwd,$db);
@@ -30,5 +30,5 @@
     $royalty_points=12; //12 months
     $user_expired_in_months = 12;
     
-    $BASE_URL = "http://localhost/ymd/";
+    $ref_link = "http://ymd1000us.com/app/view/registration_tree.php?ref=";
 ?>

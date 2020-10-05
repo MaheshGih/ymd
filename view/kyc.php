@@ -142,7 +142,7 @@
                                     </div>
                                     <!-- end row -->
                                     <div class="row"> <!-- start row -->
-                                        <div class="col-6"> <!-- Start col -->
+                                        <div class="col-md-6 col-sm-12"> <!-- Start col -->
                                             <div class="card-box">
                                             <h4 class="header-title mb-4">PAYMENT DETAILS</h4>   
                                             <form class="form-horizontal" action="../controller/kyc_controller.php" method="POST">
