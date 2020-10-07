@@ -6,7 +6,7 @@ include( "../include/session.php");
 
 <?php include("../model/user_model.php");?>
 <?php include("../model/withdraw_model.php");?>
-<?php include("../model/wallet_model.php");?>
+
 <?php
 $withdraw_reqs = $objWithdrawModel->GetWithdrwalsByUserId($_SESSION['userid']);
 $wallet = $objWalletContactModel->GetWalletByUserId($_SESSION['userid']);

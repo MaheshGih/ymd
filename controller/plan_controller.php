@@ -9,7 +9,7 @@ if(isset($_POST['btnAddLevel'])){
     
     $res = $objPlanModel->AddLevel();
     if($res){
-    echo "<script>location.href='../view/royalty_points.php'; </script>";
+    echo "<script>location.href='../view/ymd_levels.php'; </script>";
     }
 }
 
@@ -23,7 +23,7 @@ if(isset($_POST['btnEditLevel'])){
     
     $res = $objPlanModel->UpdateLevelById($_POST['hdnId']);
     if($res){
-    echo "<script>location.href='../view/royalty_points.php'; </script>";
+    echo "<script>location.href='../view/ymd_levels.php'; </script>";
     }
 }
 ?>

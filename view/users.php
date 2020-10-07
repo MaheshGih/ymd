@@ -184,7 +184,7 @@
 
 
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-md-6 col-sm-12">
                                 <div class="card-box">
                                     <h4 class="header-title mb-4">BANK DETAILS</h4>
                                     <div class="row">
@@ -226,7 +226,7 @@
 
                                 </div> <!-- end card-box -->
                             </div><!-- end col -->
-                            <div class="col-6">
+                            <div class="col-md-6 col-sm-12">
                                 <div class="card-box">
                                 <h4 class="header-title mb-4">PAYMENT DETAILS</h4>
                                 <form class="form-horizontal" clean-form="">

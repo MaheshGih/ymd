@@ -156,7 +156,7 @@
         <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
 		<script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
 		
-		<script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
+		<script type="text/javascript" src="../assets/libs/datatables/dataTables.checkboxes.min.js"></script>
 
         <!-- Datatables init -->
         <script src="../assets/js/pages/datatables.init.js"></script>

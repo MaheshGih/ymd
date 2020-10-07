@@ -165,7 +165,7 @@ if(isset($_GET['id'])){
                                             <td><i class="fas fa-rupee-sign"></i> <?php echo $r['inr_value'];?></td>
                                             <td><i class="fas fa-rupee-sign"></i> <?php echo $r['auto_pool_inr'];?></td>
                                             
-                                            <td><a href="royalty_points.php?id=<?php echo $r['id']; ?>"><i class="fas fa-pencil-alt"></i></a></td>
+                                            <td><a href="ymd_levels.php?id=<?php echo $r['id']; ?>"><i class="fas fa-pencil-alt"></i></a></td>
                                         </tr>        
                                     <?php
                                         }

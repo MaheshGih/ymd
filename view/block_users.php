@@ -115,7 +115,7 @@ $inactiv_childs = $objUserModel->GetAllUsersByStatus(0, $expiryTime);
                                             </thead>
                                             <tbody>
                                             <?php
-                                                    while($r = mysqli_fetch_assoc($inactiv_childs)){
+                                            while($r = $inactiv_childs->fetch_assoc()){
                                             ?>
                                                 <tr>
                                                     <!--<td><input type="checkbox" id="<?php echo $r['id'];?>" name="<?php echo $r['id'];?>" /></td>-->
@@ -199,7 +199,7 @@ $inactiv_childs = $objUserModel->GetAllUsersByStatus(0, $expiryTime);
         <!-- Responsive examples -->
         <script src="../assets/libs/datatables/dataTables.responsive.min.js"></script>
         <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
-		<script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+		<script src="../assets/libs/datatables/dataTables.select.min.js"></script>
 		<script type="text/javascript" src="../assets/libs/datatables/dataTables.checkboxes.min.js"></script>
         <!-- Datatables init -->
         <script src="../assets/js/pages/datatables.init.js"></script>
@@ -242,7 +242,14 @@ $inactiv_childs = $objUserModel->GetAllUsersByStatus(0, $expiryTime);
 					if(ids.length>0)
 						$('form').submit();
 						//return true;
-					else return false;
+					else {
+						Swal.fire({
+		                    type: "error",
+		                    title: "Select at least one user to block",
+		                    confirmButtonClass: "btn btn-confirm mt-2",
+		                });		
+						return false;
+					}
                });
 
               $('#expiryTime').on('change', function(){

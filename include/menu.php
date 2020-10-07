@@ -107,7 +107,14 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span>  Invitations </span>
                 </a>
             </li>
-            
+            <?php if(isset($_SESSION['royalty_id'])){ ?>
+            <li>
+                <a href="royalty_user_credits.php">
+                    <i class=" fas fa-home "></i>
+                    <span>  My Royalty Credits </span>
+                </a>
+            </li>
+            <?php }?>
             <li class="menu-title">Tree</li>
             <li>
                 <a href="tree.php">
@@ -128,9 +135,9 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
             </li>
             <?php }?>
             <li>
-                <a href="royalty_points.php">
+                <a href="ymd_levels.php">
                     <i class="fas fa-hand-holding-usd "></i>
-                    <span> User Levels </span>
+                    <span> YMD Levels </span>
                 </a>
             </li>
             <li>

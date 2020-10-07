@@ -195,7 +195,7 @@
         <!-- Responsive examples -->
         <script src="../assets/libs/datatables/dataTables.responsive.min.js"></script>
         <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
-		<script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+		<script src="../assets/libs/datatables/dataTables.select.min.js"></script>
 		<script type="text/javascript" src="../assets/libs/datatables/dataTables.checkboxes.min.js"></script>
         <!-- Datatables init -->
         <script src="../assets/js/pages/datatables.init.js"></script>

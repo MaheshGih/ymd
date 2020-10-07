@@ -4,7 +4,7 @@
     include("../model/user_model.php");
 ?>
 <?php
-    $active_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],1);
+    $royalty_credits = $objUserModel->GetChildsByUserId($_SESSION['userid'],1);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -82,7 +82,7 @@
                                             </thead>
                                             <tbody>
                                             <?php
-                                                    while($r = mysqli_fetch_assoc($active_childs)){
+                                                    while($r = mysqli_fetch_assoc($royalty_credits)){
                                             ?>
                                                 <tr>
                                                     <!--<td><input type="checkbox" id="<?php echo $r['id'];?>" name="<?php echo $r['id'];?>" /></td>-->

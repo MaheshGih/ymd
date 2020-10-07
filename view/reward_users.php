@@ -5,7 +5,7 @@
 ?>
 <?php
     //$active_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],1);
-$active_childs = $objUserModel->rewardUsers(0);
+$royalty_credits = $objUserModel->rewardUsers(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,7 +94,7 @@ $active_childs = $objUserModel->rewardUsers(0);
                                             </thead>
                                             <tbody>
                                             <?php
-                                                    foreach ($active_childs as $r){
+                                                    foreach ($royalty_credits as $r){
                                             ?>
                                                 <tr>
                                                 	<td></td>
@@ -165,7 +165,7 @@ $active_childs = $objUserModel->rewardUsers(0);
         <!-- Responsive examples -->
         <script src="../assets/libs/datatables/dataTables.responsive.min.js"></script>
         <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
-        <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+        <script src="../assets/libs/datatables/dataTables.select.min.js"></script>
         
 		<script type="text/javascript" src="../assets/libs/datatables/dataTables.checkboxes.min.js"></script>
         <!-- Datatables init -->
@@ -207,10 +207,6 @@ $active_childs = $objUserModel->rewardUsers(0);
              var  res = location.search;
              res = res.split("=");
              //displayNotification(res[1],res[2]);
-
-             $('form').parsley().on('field:validated', function() {
-             	  
-       	  	 });
          	
         });
         function displayNotification(result,type){

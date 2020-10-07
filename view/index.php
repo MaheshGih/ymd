@@ -1,9 +1,7 @@
 <?php
     // session_start();
     include("../include/session.php");
-    include("../model/user_model.php");
-    include("../model/wallet_model.php");
-    
+    include("../model/user_model.php");    
 ?>
 <!DOCTYPE html>
 <html lang="en">

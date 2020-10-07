@@ -4,11 +4,12 @@
     include("../model/user_model.php");
     //include("../model/util_model.php");
     global $help_amount;
+    global $housefull_amount;
     global $royalty_amnt;
     
 ?>
 <?php
-$active_childs = $objUserModel->GetHousefullUsers(0);
+$royalty_credits = $objUserModel->GetHousefullUsers(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -92,6 +93,7 @@ $active_childs = $objUserModel->GetHousefullUsers(0);
                                                 <th>Mobile</th>
                                                 <th>Joined Date</th>
                                                 <th>Donated Amount</th>
+                                                <th>Housefull Amount</th>
                                                 <th>Royalty Amount</th>
                                                 <th>Rolyaty Expires</th>
                                             </tr>
@@ -99,7 +101,8 @@ $active_childs = $objUserModel->GetHousefullUsers(0);
                                             <tbody>
                                             <?php
                                                 $exp_date = $objUtilModel->getExactDateAfterMonths(time(), 12);
-                                                foreach ($active_childs as $r){
+                                                $exp_date =date('Y-m-d', $exp_date);
+                                                foreach ($royalty_credits as $r){
                                             ?>
                                                 <tr>
                                                     <td></td>
@@ -108,6 +111,7 @@ $active_childs = $objUserModel->GetHousefullUsers(0);
                                                     <td><?php echo $r['mobile'];?></td>
                                                     <td><?php echo date('Y-m-d',strtotime($r['date_created']));?></td>
                                                     <td><?php echo $help_amount;?></td>
+                                                    <td><?php echo $housefull_amount;?></td>
                                                     <td><?php echo $royalty_amnt;?></td>
                                                     <td><?php echo $exp_date;?></td>    
                                                 </tr>
@@ -173,7 +177,7 @@ $active_childs = $objUserModel->GetHousefullUsers(0);
         <!-- Responsive examples -->
         <script src="../assets/libs/datatables/dataTables.responsive.min.js"></script>
         <script src="../assets/libs/datatables/responsive.bootstrap4.min.js"></script>
-        <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+        <script src="../assets/libs/datatables/dataTables.select.min.js"></script>
         
 		<script type="text/javascript" src="../assets/libs/datatables/dataTables.checkboxes.min.js"></script>
         <!-- Datatables init -->

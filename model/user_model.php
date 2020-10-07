@@ -3,6 +3,7 @@ include('../include/config.php');
 include('plan_model.php');
 include('util_model.php');
 include('admin_model.php');
+include('wallet_model.php');
 include('../include/sms.php');
 ?>
 <?php
@@ -270,18 +271,18 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     
-    public function GetUserDetailsByUserId($vid){
+    public function GetUserDetailsByUserId($user_id){
         global $con;
-        //$qry = " select * from user_details where id =".$vid;
-        $qry = "select * from user_details where id=".$vid;
-        $res = mysqli_query($con,$qry);
-        if(!is_bool($res) && mysqli_num_rows($res)>0){
-            $rest = mysqli_fetch_assoc($res);
-            return $rest;
-        }else{
-            return false;
-        }
+        $sql = "select * from user_details where id=?";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param('i',$user_id);
+        $res = $stmt->execute();
+        $res = $stmt->get_result();
+        $res = $res->fetch_assoc();
+        $stmt->close();
+        return $res;
     }
+    
     public function GetUserDetailsByMobile($mobile){
         global $con;
         //$qry = " select * from user_details where id =".$vid;
@@ -401,17 +402,14 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $DateTime = new DateTime();
         $str = '-'.$time.' hours';
         $expDate = $DateTime->modify($str);
-        
-        $d = date("Y-m-d h:i:s",$expDate->getTimestamp());
-        
-        // $child_list = mysqli_query($con,"SELECT * FROM `user_details`  where sponsor_id=".$vuserid." OR spill_id=".$vuserid." and is_active=".$isactiv." order by date_created asc limit 6");
-        $res = mysqli_query($con,"SELECT * FROM `user_details`  where  is_active=".$isactive." and date_created < '".$d."' order by date_created asc");
+        $strExpDT = date("Y-m-d h:i:s",$expDate->getTimestamp());
+        $sql = "SELECT * FROM `user_details`  where  is_active=? and date_created < ? order by date_created asc";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("is", $isactive,$strExpDT);
+        $res = $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
         return $res;
-        //else{
-        //    $child_list2 = mysqli_query($con,"SELECT * FROM `user_details`  where (spill_id=".$vuserid." ) and is_active=".$isactiv." order by date_created asc limit 6");
-        //    return  $child_list2;
-        //}
-        //return $child_list;
     }
     
     public function GetEmployees(){
@@ -1060,7 +1058,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             $cur_date_str =date('Y-m-d',$cur_date); 
             $royp_ins_stmt->bind_param("isidsii",$user_id, $login_id, $royalty_point, $royalty_amnt, $cur_date_str, $is_exp, $royalty_id);
             $royp_ins_res = $royp_ins_stmt->execute();
-            
+            $is_exp = 0; //all other royalty points not done yet
             foreach ($royalty_dates as $key=>$exp_date){
                 $royaly_point = $key+2;
                 $royp_ins_stmt->bind_param("isidsii",$user_id, $login_id, $royaly_point, $royalty_amnt, $exp_date,$is_exp, $royalty_id);
@@ -1115,22 +1113,27 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     public function GetChilds($sponsorId) {
+        global $con;
         $sql_qry = "with recursive cte (id,login_id,sponsor_id,spill_id,full_name,mobile,side,is_active,lvl_id,reward_id,date_created,expired_date,lvl,id_path ) as (
               select id,login_id,sponsor_id,spill_id,full_name,mobile,side, is_active, lvl_id,reward_id,date_created,expired_date, 0 as lvl, cast(id as char(4194304)) as id_path from user_details
-              where  spill_id = $sponsorId and is_active=1
+              where  spill_id = ? and is_active=1
               union all
               select u.id,u.login_id,u.sponsor_id,u.spill_id,u.full_name,u.mobile,u.side, u.is_active, u.lvl_id,u.reward_id,u.date_created,u.expired_date,cte.lvl+1 lvl, concat(cte.id_path,',',u.id)id_path   from cte
               inner join user_details as u
             		  on cte.id = u.spill_id where u.is_active=cte.is_active
             )
             select cte.id,cte.login_id,cte.sponsor_id,cte.spill_id,cte.full_name,cte.mobile,cte.side,cte.date_created,cte.expired_date,cte.lvl_id,cte.id_path,
-            l.level_name,l.left_pairs,l.right_pairs,l.inr_value,l.auto_pool_inr,l.req_ref_cnt,l.l_order,
+            l.level_name,l.left_pairs,l.right_pairs,l.inr_value,l.auto_pool_inr,l.l_order,
             reward_id,ur.level_id as reward_lvl_id 
             from cte left join levels l on cte.lvl_id = l.id 
             left join user_rewards ur on cte.reward_id = ur.id order by id_path ";
-        global $con;
-        $child_count = mysqli_query($con,$sql_qry);
-        return $child_count;
+        
+        $stmt = $con->prepare($sql_qry);
+        $stmt->bind_param('i',$sponsorId);
+        $res = $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
     }
     
     public function GetNextLevelUsers($sponsorId) {
@@ -1762,16 +1765,14 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         global $con;
         global $objUtilModel;
         global $objAdminModel;
+        global $objWalletContactModel;
         
         $cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
         $user = self::GetUserDetailsByUserId($userId);
-        $tot_amount = mysqli_fetch_assoc(mysqli_query($con,"SELECT total_amount FROM `user_wallet_concat` where user_id=".$userId));
-        // get total sponsored users
+        $loginId = $user['login_id'];
+        $wallet = $objWalletContactModel->GetWalletByUserId($userId);
         
-        // get total  users based on spilling
-        // get total transactions
-        $tot_txn_sql = "SELECT count(trans_id) as tottrans FROM `user_paid_reciept` where paid_to='".$user['login_id']."'";
-        $tot_trans = mysqli_fetch_assoc(mysqli_query($con,$tot_txn_sql));
+        $tot_trans = self::GetUserReceivedAmntReceiptsCnt($loginId);
    
         $todayMyRefIncome = self::GetTotWalletTxnsByUserIdAndDate($userId, "REFERRAL",$cur_date);
         $myRefIncome = self::GetTotWalletTxnsByUserIdAndCause($userId, "REFERRAL");
@@ -1790,7 +1791,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $latestNews = $objAdminModel->GetActiveNews();
         $res = array (
             "news" => $latestNews,
-            "tot_amount" => $tot_amount['total_amount'], 
+            "tot_amount" => $wallet['total_amount'], 
             "tot_trans"=>$tot_trans['tottrans'],
             "todayMyRefIncome"=>$todayMyRefIncome['tot'],
             "myRefIncome"=>$myRefIncome['tot'],
@@ -1805,6 +1806,17 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             "present_lvl"=>$user_lvl,
             "next_lvl"=>$next_lvl
         );
+        return $res;
+    }
+    
+    public function GetUserReceivedAmntReceiptsCnt($login_id){
+        global $con;
+        $sql = "SELECT count(trans_id) as tottrans FROM `user_paid_reciept` where paid_to=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('s',$login_id);
+        $res = $wal_stmt->execute();
+        $res = mysqli_fetch_assoc($wal_stmt->get_result());
+        $wal_stmt->close();
         return $res;
     }
     
@@ -1826,6 +1838,17 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $wal_stmt->bind_param('i',$orderNo);
         $res = $wal_stmt->execute();
         $res = mysqli_fetch_assoc($wal_stmt->get_result());
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetUserRoyaltyPoints($user_id, $royalty_id){
+        global $con;
+        $sql = "select * from user_royalty_points where user_id=? and royalty_id=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('ii',$user_id,$royalty_id);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
         $wal_stmt->close();
         return $res;
     }

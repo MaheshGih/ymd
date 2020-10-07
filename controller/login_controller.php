@@ -52,6 +52,9 @@
             $_SESSION['mobile'] = $details['mobile'];
             $_SESSION['role'] = $details['role'];
             $_SESSION['kyc_done'] = $details['kyc_done'];
+            if($details['royalty_id']>=0){
+                $_SESSION['royalty_id'] = $details['royalty_id'];
+            }
             $_SESSION['start'] = time();
             $_SESSION['expire'] = $_SESSION['start'] + (1440* 60);
             $user_lvl = $objUserModel->GetLevelById($details['lvl_id']);

@@ -249,7 +249,7 @@ class LoginModel{
         global $con;
         $get_user_id = mysqli_fetch_assoc(mysqli_query($con,"select id as userid from user_details where login_id='".$vlogid."'"));
         $get_det = mysqli_fetch_assoc(mysqli_query($con,"select sponsor_id as sponsorid,full_name as fname,id as userid, login_id, mobile,role,date_created,
-    expired_date,lvl_id,is_active,kyc_done from user_details where id=".$get_user_id['userid'])) ;
+    expired_date,lvl_id,is_active,kyc_done,royalty_id from user_details where id=".$get_user_id['userid'])) ;
         return $get_det;
     }
     /*

@@ -280,9 +280,9 @@ if(isset($_POST['hdnBlockUsers'])){
     $loginIds = explode(",",$userIds);
     $res = $objUserModel->blockUser($loginIds);
     if($res){
-        echo "<script> location.href='../view/inactive_users_admin.php?success=block&expiryTime=".$_POST['expiryTime']."';</script>";
+        echo "<script> location.href='../view/block_users.php?success=block&expiryTime=".$_POST['expiryTime']."';</script>";
     }else{
-        echo "<script> location.href='../view/inactive_users_admin.php?failure=block&expiryTime=".$_POST['expiryTime']."';</script>";
+        echo "<script> location.href='../view/block_users.php?failure=block&expiryTime=".$_POST['expiryTime']."';</script>";
     }
 }
 
