@@ -4,7 +4,7 @@
     include("../model/user_model.php");
 ?>
 <?php
-$expiryTime=24;
+$expiryTime=48;
 if(isset($_GET['expiryTime'])){
     $expiryTime = $_GET['expiryTime'];
 }
@@ -92,8 +92,8 @@ $inactiv_childs = $objUserModel->GetAllUsersByStatus(0, $expiryTime);
                                             	<label for="txtLevelname" class="col-8 form-label">Expiry Time</label>
                                                 <div class="col-2">
                                                     <select name="expiryTime" id="expiryTime">
-                                                		<option value="24" <?php if($expiryTime==24){echo 'selected';} ?>>24</option>
-                                                		<option value="32" <?php if($expiryTime==32){echo 'selected';}?>>32</option>
+                                                		<!--<option value="24" <?php if($expiryTime==24){echo 'selected';} ?>>24</option>
+                                                		<option value="32" <?php if($expiryTime==32){echo 'selected';}?>>32</option>-->
                                                 		<option value="48" <?php if($expiryTime==48){echo 'selected';}?>>48</option>
                                             		</select>
                                                 </div>

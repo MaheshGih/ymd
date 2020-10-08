@@ -29,7 +29,7 @@ function getUserMessages(result, type) {
         return successInsertMsg;
     }
     else if (result == "failure" && type == "login") {
-        return 'Failed';
+        return 'Invalid userid and password!.';
     }else if(result == "success" && type == "resetpassword") {
     	return 'Password reset successfully!. Please login with new password.';
     }else if(result == "success" && type == "OTPValidated") {

@@ -7,7 +7,7 @@
     $db ="ymd";
     
     //Server 
-    /* $server ="62.141.37.114";
+    /* $server ="localhost";
     $user = "ymd";
     $pwd = "#Veera123";
     $db ="ymd"; */

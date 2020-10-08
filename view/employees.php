@@ -62,10 +62,10 @@ $employees = $objUserModel->GetEmployees();
                                         <ol class="breadcrumb m-0">
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Referrals</a></li>
-                                            <li class="breadcrumb-item active">Active Users</li>
+                                            <li class="breadcrumb-item active">Employees List</li>
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Users</h4>
+                                    <h4 class="page-title">Employees Details</h4>
                                 </div>
                             </div>
                         </div>     
@@ -77,7 +77,7 @@ $employees = $objUserModel->GetEmployees();
                                         <!-- <h4 class="header-title">USERS</h4> -->
                                         </div>
                                         <div class="">
-                                        	<a class="pull-right btn btn-success" href="add_emp.php">Add Emp</a>
+                                        	<a class="pull-right btn btn-success" href="add_emp.php">Add New Emp</a>
                                         </div>
                                         
                                         <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">

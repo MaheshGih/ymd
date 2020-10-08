@@ -35,6 +35,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 		<div class="row">
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="wallet.php">
 				<div class="card-box widget-box-two widget-two-custom">
 					<div class="media">
 						<div
@@ -51,10 +52,12 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -67,16 +70,30 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Total Users</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
+							<?php
+							$sql="SELECT * FROM `user_details`";
+
+							if ($result=mysqli_query($con,$sql))
+							  {
+							  // Return the number of rows in result set
+							  $rowcount=mysqli_num_rows($result);
+							  echo $rowcount;
+							  // Free result set
+							  mysqli_free_result($result);
+							  }
+							?>
+								<!--<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>-->
 							</h3>
 							<p class="m-0">Jan - Feb 2020</p>
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="wallet.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -94,6 +111,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 		</div>
@@ -102,6 +120,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 		<div class="row">
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="#">
 				<div class="card-box widget-box-two widget-two-custom">
 					<div class="media">
 						<div
@@ -118,10 +137,12 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="#">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -139,11 +160,13 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="referred_users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -162,6 +185,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 		</div>
@@ -169,6 +193,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 		<div class="row">
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="reward_users.php">
 				<div class="card-box widget-box-two widget-two-custom">
 					<div class="media">
 						<div
@@ -177,18 +202,32 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">My Royality Income</p>
+								title="Statistics">Reward Users History</p>
 							<h3 class="font-weight-medium my-2">
-								&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>
+							<?php
+							$sql="SELECT * FROM `user_rewards`";
+
+							if ($result=mysqli_query($con,$sql))
+							  {
+							  // Return the number of rows in result set
+							  $rowcount=mysqli_num_rows($result);
+							  echo $rowcount;
+							  // Free result set
+							  mysqli_free_result($result);
+							  }
+							?>
+							<!--	&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>-->
 							</h3>
 							<p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="housefull_users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -198,7 +237,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Pending Withdraw Income</p>
+								title="Statistics">Housefull users History</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
 							</h3>
@@ -206,10 +245,12 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="royalty_users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -219,14 +260,27 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Total Withdraws</p>
+								title="Statistics">Royality Users History</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $tot_det[2]; ?></span>
+							<?php
+							$sql="SELECT * FROM `user_royalty`";
+
+							if ($result=mysqli_query($con,$sql))
+							  {
+							  // Return the number of rows in result set
+							  $rowcount=mysqli_num_rows($result);
+							  echo $rowcount;
+							  // Free result set
+							  mysqli_free_result($result);
+							  }
+							?>
+								<!--<span data-plugin="counterup"><?php echo $tot_det[2]; ?></span>-->
 							</h3>
 							<p class="m-0">Jan - Feb 2020</p>
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 		</div>
@@ -240,6 +294,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 		<div class="row">
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="#">
 				<div class="card-box widget-box-two widget-two-custom">
 					<div class="media">
 						<div
@@ -248,7 +303,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Matching Rewards Income</p>
+								title="Statistics">Autopool History</p>
 							<h3 class="font-weight-medium my-2">
 								&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>
 							</h3>
@@ -256,10 +311,12 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="#">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -269,18 +326,32 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Right Team</p>
+								title="Statistics">Get Help History</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
+								<!--<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>-->
+								<?php
+							$sql="SELECT * FROM `provide_helpers`";
+
+								if ($result=mysqli_query($con,$sql))
+								  {
+								  // Return the number of rows in result set
+								  $rowcount=mysqli_num_rows($result);
+								  echo $rowcount;
+								  // Free result set
+								  mysqli_free_result($result);
+								  }
+								  ?>
 							</h3>
 							<p class="m-0">Jan - Feb 2020</p>
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="#">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -290,14 +361,27 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Left Team</p>
+								title="Statistics">Provide Help History</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $tot_det[2]; ?></span>
+								<!--<span data-plugin="counterup"><?php echo $tot_det[2]; ?></span>-->
+								<?php
+							$sql="SELECT * FROM `provide_helpers`";
+
+								if ($result=mysqli_query($con,$sql))
+								  {
+								  // Return the number of rows in result set
+								  $rowcount=mysqli_num_rows($result);
+								  echo $rowcount;
+								  // Free result set
+								  mysqli_free_result($result);
+								  }
+								  ?>
 							</h3>
 							<p class="m-0">Jan - Feb 2020</p>
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 		</div>
@@ -306,6 +390,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 		<div class="row">
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="invitation_master.php">
 				<div class="card-box widget-box-two widget-two-custom">
 					<div class="media">
 						<div
@@ -314,18 +399,32 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Fund Withdraws</p>
+								title="Statistics">Invetations</p>
 							<h3 class="font-weight-medium my-2">
-								&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>
+							<?php
+							$sql="SELECT * FROM `invitations`";
+
+								if ($result=mysqli_query($con,$sql))
+								  {
+								  // Return the number of rows in result set
+								  $rowcount=mysqli_num_rows($result);
+								  echo $rowcount;
+								  // Free result set
+								  mysqli_free_result($result);
+								  }
+								  ?>
+								<!--&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>-->
 							</h3>
 							<p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="active_users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -335,7 +434,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">YMD AutoPool Income</p>
+								title="Statistics">Active Users</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
 							</h3>
@@ -343,10 +442,12 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
+			<a href="inactive_users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -356,7 +457,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">More..</p>
+								title="Statistics">Blocked Users</p>
 							<h3 class="font-weight-medium my-2">
 								<span data-plugin="counterup"><?php echo $tot_det[2]; ?></span>
 							</h3>
@@ -364,6 +465,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 						</div>
 					</div>
 				</div>
+				</a>
 			</div>
 			<!-- end col -->
 		</div>
@@ -374,6 +476,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 	<div class="row">
 
 		<div class="col-xl-4 col-sm-4">
+		<a href="employees.php">
 			<div class="card-box widget-box-two widget-two-custom">
 				<div class="media">
 					<div
@@ -382,18 +485,21 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 					</div>
 					<div class="wigdet-two-content media-body">
 						<p class="m-0 text-uppercase font-weight-medium text-truncate"
-							title="Statistics">Matching Rewards Income</p>
+							title="Statistics">Our Employes</p>
 						<h3 class="font-weight-medium my-2">
-							&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>
+						1
+							<!--&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>-->
 						</h3>
 						<p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
 					</div>
 				</div>
 			</div>
+			</a>
 		</div>
 		<!-- end col -->
 
 		<div class="col-xl-4 col-sm-4">
+		<a href="userdetails.php">
 			<div class="card-box widget-box-two widget-two-custom ">
 				<div class="media">
 					<div
@@ -403,7 +509,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 
 					<div class="wigdet-two-content media-body">
 						<p class="m-0 text-uppercase font-weight-medium text-truncate"
-							title="Statistics">Right Team</p>
+							title="Statistics">User Full Deatils</p>
 						<h3 class="font-weight-medium my-2">
 							<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
 						</h3>
@@ -411,6 +517,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 					</div>
 				</div>
 			</div>
+			</a>
 		</div>
 		<!-- end col -->
 

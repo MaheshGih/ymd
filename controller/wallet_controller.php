@@ -3,7 +3,6 @@ include('../include/session.php');
 include("../model/user_model.php");
 include("../model/withdraw_model.php");
 ?>
-<?php include("../model/wallet_model.php");?>
 <?php 
 if(isset($_POST['withdrawReqBtn'])){
     $withdrawAmount = $_POST['withdrawAmount'];
@@ -19,8 +18,8 @@ if(isset($_POST['withdrawReqBtn'])){
         $err = true;
         $msg = 'Insufficient fund to withdraw!';
     }
-    
-    $afterBal = $wallet['total_amount'] - $totPendingAmnt['tot'] - $withdrawAmount;
+    $tot_pending_amnt = $totPendingAmnt['tot_with'] - $totPendingAmnt['tot_rec'];
+    $afterBal = $wallet['total_amount'] - $tot_pending_amnt - $withdrawAmount;
     
     if($afterBal < 0 ){
         $err = true;

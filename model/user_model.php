@@ -396,7 +396,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     public function GetAllUsersByStatus($isactive,$time){
         global $con;
         if(empty($time)){
-           $time = 24; 
+           $time = 48; 
         }
         date_default_timezone_set("Asia/Calcutta");
         $DateTime = new DateTime();
@@ -1033,6 +1033,9 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             $amnt=$royalty_amnt;            
             $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_type,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
             $wal_ins_res = $wal_ins_stmt->execute();
+            
+            $amnt = $help_amount + $housefull_amount + $royalty_amnt;
+            $wal_udp_res = self::UpdateWalletById($user_id,$amnt);
             
             $royaly_points = 1;
             $royalty_dates = [];

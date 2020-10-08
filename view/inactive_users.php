@@ -105,8 +105,8 @@
                                                 <th>Name</th>
                                                 <th>Mobile</th>
                                                 <th>Joined Date</th>
-                                                <th>Last Active on</th>
-                                                <!-- <th>Wallet</th> -->
+                                                <th>Verify</th>
+                                                
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -120,8 +120,17 @@
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
                                                     <td><?php echo $r['date_created'];?></td>
-                                                    <!--<td><a href="activate_process.php?id=<?php echo $r['id'];?>"><span class="badge label-table badge-danger">Activate</span></a></td>-->
-                                                     <td></td>   
+                                                    <td> 
+                                                    	<?php if(!$r['reg_verified']){
+                                                    	   $url = '../controller/tree_controller.php?send_reg_verify_otp=&'.'user_id='.$r['id'].'&full_name='.$r['full_name'].'&mobile='.$r['mobile'].'&login_id='.$r['login_id'];
+                                                    	?>
+                                                    	<a href="<?php echo $url;?>">
+                                                    	<span class="btn btn-primary">Send OTP</span></a>
+                                                    	<?php }else{?>
+                                                    	<span class="badge label-table badge-success">Verified</span>	
+                                                    	<?php }?>
+                                                    	</td>
+                                                        
                                                 </tr>
                                             <?php
                                                }
@@ -213,16 +222,13 @@
         	      'columnDefs': [
         	         {
         	            'targets': 0,
-        	            /* 'checkboxes': {
+        	            'checkboxes': {
         	               'selectRow': true
-        	            } */
+        	            }
         	         }
         	      ],
         	      
-        	      'select': {
-        	         'style': 'multi'
-        	      },
-        	      'order': [[1, 'asc']]
+        	      'order': [[3, 'asc']]
         	   });
 			  $('#btnBlockUsers').on('click', function(){ $('#blockModal').modal('show');});
         	   $('#btnConformBlock').on('click', function(evt){
@@ -269,6 +275,8 @@
                 var successActivMsg ="Users blocked successfully.";
                 if (result == "success" && type == "block"){
                     return successActivMsg;
+                }else if (result == "success" && type == "OTPValidated"){
+                    return 'Registion done successfully.';
                 }
         }
    </script>

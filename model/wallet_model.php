@@ -83,7 +83,7 @@ class WalletContactModel{
     
     public function GetTotPendingWithdrawAmntByUserId($userId){
         global $con;
-        $sql = "select sum(amount_req)as tot from user_withdrawls where  user_id = ? and is_done=0";
+        $sql = "select sum(amount_req)as tot_with, sum(amount_received) as tot_rec from user_withdrawls where  user_id = ? and is_done=0";
         $wal_stmt = $con->prepare($sql);
         $wal_stmt->bind_param('i',$userId);
         $res = $wal_stmt->execute();

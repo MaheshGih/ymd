@@ -43,12 +43,22 @@ if(isset($_POST['hdnSignupBtn'])){
     if($res){
         $objUserModel->sendRegOtpAndUpdate($mobile, $full_name, $login_id);
         $msg = $objSMS->getMobileEndDigitMsg($mobile);
-        echo "<script> location.href='../view/tree.php?=success=OTPValidate=msg=".$msg."=mobile=".$mobile."=login_id=".$login_id."';</script>";
+        echo "<script> location.href='../view/tree_reg_otp_validate.php?status=success&from=tree&type=OTPValidate&msg=".$msg."&mobile=".$mobile."&login_id=".$login_id."';</script>";
     }else{
         echo "<script> location.href='../view/tree.php?=failure=insert';</script>";
     }
 }
-
+if(isset($_GET['send_reg_verify_otp'])){
+    $user_id = $_GET['user_id'];
+    $full_name = $_GET['full_name'];
+    $login_id = $_GET['login_id'];
+    $mobile = $_GET['mobile'];
+    
+    $objUserModel->sendRegOtpAndUpdate($mobile, $full_name, $login_id);
+    $msg = $objSMS->getMobileEndDigitMsg($mobile);
+    echo "<script> location.href='../view/tree_reg_otp_validate.php?status=success&from=send_reg_verify_otp&type=OTPValidate&msg=".$msg."&mobile=".$mobile."&login_id=".$login_id."';</script>";
+    
+}
 if(isset($_GET['loadspills'])){
     //$tree_data = $objUserModel->GetSponsorChilds($_GET['sponsor_id']);
     $sponsor_id = '';
@@ -99,15 +109,26 @@ if(isset($_GET['loadspills'])){
 
 if(isset($_POST['btnOTPValidate'])){
     $login_id = $_POST['otpLoginId'];
+    $otpFrom = $_POST['otpFrom'];
+    $mobile = $_POST['otpMobile'];
     $res = $objUserModel->validateRegOTP($_POST['otpLoginId'], $_POST['otp']);
     if($res){
         $user = $objUserModel->GetUserDetails($_POST['otpLoginId']);
         $objSMS->sendWelcomeMsg($user['mobile'], $login_id, $user['full_name'], $user['password'], $user['txn_password']);
         $msg = "Registion done successfully.";
-        echo "<script> location.href='../view/tree.php?=success=OTPValidated=msg=".$msg."';</script>";
+        if($otpFrom == 'tree'){
+            echo "<script> location.href='../view/tree.php?=success=OTPValidated=msg=".$msg."';</script>";
+        }else if($otpFrom == 'send_reg_verify_otp'){
+            echo "<script> location.href='../view/inactive_users.php?=success=OTPValidated=msg=".$msg."';</script>";
+        }
+        
     }else{
-        $msg = "OTP validation failed.";
-        echo "<script> location.href='../view/tree.php?=failure=OTPValidationFailed=msg=".$msg."';</script>";
+        $msg = "Invalid OTP!.";
+        if($otpFrom == 'tree'){            
+            echo "<script> location.href='../view/tree_reg_otp_validate.php?status=failure&from=tree&type=OTPValidate&msg=".$msg."&mobile=".$mobile."&login_id=".$login_id."';</script>";
+        }else if($otpFrom == 'send_reg_verify_otp'){
+            echo "<script> location.href='../view/tree_reg_otp_validate.php?status=failure&from=send_reg_verify_otp&type=OTPValidate&msg=".$msg."&mobile=".$mobile."&login_id=".$login_id."';</script>";
+        }
     }
 }
 if(isset($_POST['resendRegOtp'])){

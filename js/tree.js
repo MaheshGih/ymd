@@ -27,7 +27,7 @@ var network = undefined;
 	      x:true,
 	      y:false
 	    },
-	    physics:false,
+	    physics:true,
     },
     edges: {
       arrows: "to",
