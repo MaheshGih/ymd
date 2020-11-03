@@ -81,6 +81,109 @@
         <script src="../assets/js/pages/toastr.init.js"></script>
         <script src="../assets/libs/echarts/echarts.min.js"></script>
         <script src="../assets/js/pages/dashboard.init.js"></script>
+        
+        <!--Flot chart  -->
+        <script src="../assets/libs/flot-charts/jquery.flot.js"></script>
+        <script src="../assets/libs/flot-charts/jquery.flot.time.js"></script>
+        <script src="../assets/libs/flot-charts/jquery.flot.tooltip.min.js"></script>
+        <script src="../assets/libs/flot-charts/jquery.flot.resize.js"></script>
+        <script src="../assets/libs/flot-charts/jquery.flot.pie.js"></script>
+        <script src="../assets/libs/flot-charts/jquery.flot.selection.js"></script>
+        <script src="../assets/libs/flot-charts/jquery.flot.stack.js"></script>
+        <script src="../assets/libs/flot-charts/jquery.flot.orderBars.js"></script>
+        <script src="../assets/libs/flot-charts/jquery.flot.crosshair.js"></script>
+        <script src="../assets/libs/flot-charts/curvedLines.js"></script>
+        <script src="../assets/libs/flot-charts/jquery.flot.axislabels.js"></script>        
+        <!-- <script src="../assets/js/pages/flot.init.js"></script> -->
+<script type="text/javascript">
+
+        !(function (b) {
+            "use strict";
+            var o = function () {
+                (this.$body = b("body")), (this.$realData = []);
+            };
+            
+                (o.prototype.createPlotDotGraph = function (o, a, t, r, e, l, i) {
+                    b.plot(
+                        b(o),
+                        [
+                            { data: a, label: r[0], color: e[0] },
+                            { data: t, label: r[1], color: e[1] },
+                        ],
+                        {
+                            series: {
+                                lines: { show: !0, fill: !1, lineWidth: 3, fillColor: { colors: [{ opacity: 0.3 }, { opacity: 0.3 }] } },
+                                curvedLines: { apply: !0, active: !0, monotonicFit: !0 },
+                                splines: { show: !0, tension: 0.4, lineWidth: 5, fill: 0.4 },
+                            },
+                            grid: { hoverable: !0, clickable: !0, borderColor: l, tickColor: "rgba(104, 115, 142, 0.1)", borderWidth: 1, labelMargin: 10, backgroundColor: i },
+                            legend: {
+                                position: "ne",
+                                margin: [0, -32],
+                                noColumns: 0,
+                                labelBoxBorderColor: null,
+                                backgroundColor: "transparent",
+                                labelFormatter: function (o, a) {
+                                    return o + "&nbsp;&nbsp;";
+                                },
+                                width: 30,
+                                height: 2,
+                            },
+                            yaxis: { axisLabel: "Quantity", tickColor: "rgba(104, 115, 142, 0.1)", font: { color: "#98a6ad" } },
+                            xaxis: { axisLabel: "Date", tickColor: "rgba(104, 115, 142, 0.1)", font: { color: "#98a6ad" } },
+                            tooltip: !1,
+                        }
+                    );
+                }),
+                
+                (o.prototype.init = function () {
+                	this.createPlotDotGraph(
+                            "#website-stats1",
+                            [
+                                [0, 2],
+                                [1, 4],
+                                [2, 7],
+                                [3, 9],
+                                [4, 6],
+                                [5, 3],
+                                [6, 10],
+                                [7, 8],
+                                [8, 5],
+                                [9, 14],
+                                [10, 10],
+                                [11, 10],
+                                [12, 8],
+                            ],
+                            [
+                                [0, 1],
+                                [1, 3],
+                                [2, 6],
+                                [3, 7],
+                                [4, 4],
+                                [5, 2],
+                                [6, 8],
+                                [7, 6],
+                                [8, 4],
+                                [9, 10],
+                                [10, 8],
+                                [11, 14],
+                                [12, 5],
+                            ],
+                            ["Joined Users", "Transaction Amount(1000)"],
+                            ["#34bd25", "#ff4433"],
+                            "rgba(104, 115, 142, 0.1)",
+                            "transparent"
+                        );
+                }),
+                (b.FlotChart = new o()),
+                (b.FlotChart.Constructor = o);
+        })(window.jQuery),
+            (function (o) {
+                "use strict";
+                window.jQuery.FlotChart.init();
+            })();
+        			
+        </script>
         <!-- App js -->
         <script src="../assets/js/app.min.js"></script>
         <script src="../assets/libs/jquery-countdown/jquery.countdownTimer.min.js"></script>
@@ -157,6 +260,8 @@
 
         	
         </script>
+        
+        
     </body>
 
 </html>

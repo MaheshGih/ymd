@@ -8,7 +8,7 @@
         
 ?>
 <?php
-$royalty_credits = $objUserModel->GetUserRoyaltyPoints($_SESSION['userid'],$_SESSION['royalty_id']);
+$invitations = $objUserModel->GetUserRoyaltyPoints($_SESSION['userid'],$_SESSION['royalty_id']);
 $royalty_rec_tot_amnt = 0;
 ?>
 <!DOCTYPE html>
@@ -80,9 +80,7 @@ $royalty_rec_tot_amnt = 0;
                                                 <i class="mdi mdi-currency-usd avatar-title font-30 text-white"></i>
                                             </div>
                                             <div class="wigdet-two-content media-body">
-                                                <p class="m-0 text-uppercase font-weight-medium" title="Statistics">Donation Return Amount</p>
-                                                <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup" id="totalAmount"><?php echo  $help_amount;?></span></h3>
-                                             	<p class="m-0 text-uppercase font-weight-medium" title="Statistics">Housefull Amount</p>
+                                                <p class="m-0 text-uppercase font-weight-medium" title="Statistics">Housefull Amount</p>
                                                 <h3 class="font-weight-medium my-2">&#8377 <span data-plugin="counterup" ><?php echo  $housefull_amount;?></span></h3>
                                                    
                                             </div>
@@ -134,7 +132,7 @@ $royalty_rec_tot_amnt = 0;
                                                 $success_class = "badge-success";
                                                 $partially_class = "badge-info";
                                             
-                                                foreach ($royalty_credits as $r){
+                                                foreach ($invitations as $r){
                                                     if($r['is_done'] == 1){
                                                         $status=$recvd_status;
                                                         $class = $success_class;
@@ -143,12 +141,14 @@ $royalty_rec_tot_amnt = 0;
                                                         $status = $not_recvd_status;
                                                         $class = $danger_class;
                                                     }
+                                                    
+                                                    $royalty_date  = $objUtilModel->formatStrDate($r['royalty_date'], $objUtilModel->date_format);
                                             ?>
                                                 <tr>
                                                     <td></td>
                                                     <td><?php echo $r['point_no'];?></td>
                                                     <td><?php echo $r['amount'];?></td>
-                                                    <td><?php echo $r['royalty_date'];?></td>
+                                                    <td><?php echo $royalty_date;?></td>
                                                     <td ><span class="badge label-table <?php echo $class;?>"><?php echo $status;?></span></td>    
                                                 </tr>
                                             <?php

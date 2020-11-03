@@ -35,6 +35,7 @@ function getUserData( btnName, loginId){
 		        obj.title = 'Failed!';
 		        obj.msg = "User Data retriving failed. Enter a valid Id.";
         		notification(obj);
+        		return;
         	}
         	res = JSON.parse(res);
         	if(!res){
@@ -43,6 +44,7 @@ function getUserData( btnName, loginId){
 		        obj.title = 'Failed!';
 		        obj.msg = "User Data retriving failed. Enter a valid Id.";
         		notification(obj);
+        		return;
         	}
             //res = res.split("+");
             $("#txtUserName").val(res['full_name']);

@@ -1,7 +1,7 @@
 <?php
     include('../include/session.php');
-    include('../model/admin_model.php');
-    include('../model/util_model.php');
+    #include('../model/admin_model.php');
+    include('../model/user_model.php');
     
     if(isset($_POST['btnSaveNews'])){
         $news = $_POST['txtNews'];
@@ -20,5 +20,32 @@
         }else{
             echo "<script> location.href='../view/news.php?=failure=saveNews';</script>";
         }
+    }
+    
+    if(isset($_POST['get_reciept_path'])){
+        $invitation_id = $_POST['invitation_id'];
+        $img = $objAdminModel->GetRecieptPath($invitation_id);
+        echo $img['img_path'];
+    }
+    
+    if(isset($_POST['get_all_invitations'])){
+        echo $objAdminModel->getAllInvitations();
+    }
+    
+    if(isset($_POST['get_users'])){
+        echo $objAdminModel->getAllUsers();
+    }
+    
+    if(isset($_POST['get_withdraws'])){
+        echo $objAdminModel->getAllWithdraws();
+    }
+    if(isset($_POST['get_all_txns'])){
+        echo $objAdminModel->getAllTransactions();
+    }
+    if(isset($_POST['get_royalty_users'])){
+        echo $objAdminModel->getAllRoyalityUsers();
+    }
+    if(isset($_POST['get_user_rewards'])){
+        echo $objAdminModel->getAllRewardUsers();
     }
 ?>

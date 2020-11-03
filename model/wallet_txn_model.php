@@ -15,14 +15,17 @@ class WalletTxnModel{
     
     public $txn_types = ["CREDIT"=>"CREDIT","DEBIT"=>"DEBIT"]; 
     public $causes = [ "WITHDRAWN"=>"WITHDRAWN","AUTO_POOL"=>"AUTO_POOL", "REFERRAL"=>"REFERRAL", 
-        "REFERRAL_BLOCKED"=>"REFERRAL_BLOCKED","LEVEL"=>"LEVEL","REWARD"=>"REWARD", "HOUSE_FULL"=>"HOUSE_FULL"];
-    
+        "REFERRAL_BLOCKED"=>"REFERRAL_BLOCKED","LEVEL"=>"LEVEL","REWARD"=>"REWARD", "HOUSE_FULL"=>"HOUSE_FULL","ROYALTY"=>"ROYALTY"];
+   
     public function getTxnTypeByKey($vtxntype){
         return array_search($vtxntype, $this->txn_types);
     }
     
     public function getCauseByKey($vcause){
         return array_search($vcause, $this->causes);
+    }
+    public function getCauses(){
+        return $this->causes;
     }
     
     public function getId(){return $this->id;}

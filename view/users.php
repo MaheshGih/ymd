@@ -123,14 +123,24 @@
                                         </div>
                                         <div class="form-group row">
                                             <label for="password" class="col-3 col-form-label">Password</label>
-                                            <div class="col-9">
-                                            <input class="form-control" type="password" required="" id="txtPassword" name="txtPassword" placeholder="Enter password">
+                                            <div class="col-9 input-group">
+                                                <input class="form-control" type="password" required="" id="txtPassword" name="txtPassword" placeholder="Enter password">
+                                                <div class="input-group-append">
+    													<button class="btn btn btn-outline-secondary" type="button" id="eyeBtn" onclick="showPassword('txtPassword');">
+														<i class="fa fa-eye"></i>
+													</button>
+												</div>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="txnPassword" class="col-3 col-form-label">Transaction Password</label>
-                                            <div class="col-9">
-                                            <input class="form-control" type="password" required="" id="txnPassword" name="txnPassword" placeholder="Enter Transaction password">
+                                            <div class="col-9 input-group">
+                                            	<input class="form-control" type="password" required="" id="txnPassword" name="txnPassword" placeholder="Enter Transaction password">
+                                            	<div class="input-group-append">
+    													<button class="btn btn btn-outline-secondary" type="button" id="eyeBtn1" onclick="showPassword('txnPassword')">
+														<i class="fa fa-eye"></i>
+													</button>
+												</div>
                                             </div>
                                         </div>
                                         <div class="form-group row">

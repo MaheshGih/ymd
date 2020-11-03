@@ -5,7 +5,7 @@
 ?>
 <?php
     //$active_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],1);
-$royalty_credits = $objUserModel->GetNextLevelUsers(0);
+$invitations = $objUserModel->GetNextLevelUsers(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -96,7 +96,7 @@ $royalty_credits = $objUserModel->GetNextLevelUsers(0);
                                             </thead>
                                             <tbody>
                                             <?php
-                                                    foreach ($royalty_credits as $r){
+                                                    foreach ($invitations as $r){
                                             ?>
                                                 <tr>
                                                 	<td></td>

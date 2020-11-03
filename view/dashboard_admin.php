@@ -1,10 +1,7 @@
 <?php 
-$wallet = $objWalletContactModel->GetWalletByUserId($_SESSION['userid']);
-$tot_con =  $objUserModel->GetTotalDetails($_SESSION['userid']);
-$tot_det = explode('-',$tot_con);
 $user_list = $objUserModel->GetRecentUsers();
-$tot_invitation = $objUserModel->GetTotalInvitations();
-$tot_activ_users = $objUserModel->GetActiveUsersCount();
+$metrics = $objUserModel->GetAdminDashboardMetrics();
+$cur_date = $objUtilModel->getCurDate($objUtilModel->date_format);
 ?>
 <div class="content">
 	<!-- Start Content-->
@@ -46,9 +43,9 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Wallet Balance</p>
 							<h3 class="font-weight-medium my-2">
-								&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>
+								&#8377 <span data-plugin="counterup"><?php echo $metrics['tot_amount']; ?></span>
 							</h3>
-							<p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
+							<p class="m-0">Till <?php echo $cur_date; ?></p>
 						</div>
 					</div>
 				</div>
@@ -57,7 +54,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="users.php">
+			<a href="all_users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -70,21 +67,9 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Total Users</p>
 							<h3 class="font-weight-medium my-2">
-							<?php
-							$sql="SELECT * FROM `user_details`";
-
-							if ($result=mysqli_query($con,$sql))
-							  {
-							  // Return the number of rows in result set
-							  $rowcount=mysqli_num_rows($result);
-							  echo $rowcount;
-							  // Free result set
-							  mysqli_free_result($result);
-							  }
-							?>
-								<!--<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>-->
+							 <span data-plugin="counterup"><?php echo $metrics['users_cnt']; ?></span>
 							</h3>
-							<p class="m-0">Jan - Feb 2020</p>
+							<p class="m-0"><?php echo $cur_date;?></p>
 						</div>
 					</div>
 				</div>
@@ -93,7 +78,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="wallet.php">
+			<a href="all_transactions.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
@@ -105,9 +90,9 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Total Transactions</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $tot_det[2]; ?></span>
+								<span data-plugin="counterup"><?php echo $metrics['txns_cnt']; ?></span>
 							</h3>
-							<p class="m-0">Jan - Feb 2020</p>
+							<p class="m-0"><?php echo $cur_date;?></p>
 						</div>
 					</div>
 				</div>
@@ -120,20 +105,20 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 		<div class="row">
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="#">
+			<a href="news.php">
 				<div class="card-box widget-box-two widget-two-custom">
 					<div class="media">
 						<div
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-currency-usd avatar-title font-30 text-white"></i>
+							<i class=" far fa-newspaper avatar-title font-30 text-white"></i>
 						</div>
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Today My Direct Income</p>
+								title="Statistics">News</p>
 							<h3 class="font-weight-medium my-2">
-								&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>
+							 <span data-plugin="counterup"><?php echo $metrics['news_cnt']; ?></span>
 							</h3>
-							<p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
+							<p class="m-0">Till <?php echo $cur_date; ?></p>
 						</div>
 					</div>
 				</div>
@@ -142,46 +127,44 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="#">
-				<div class="card-box widget-box-two widget-two-custom ">
-					<div class="media">
-						<div
-							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-currency-krw avatar-title font-30 text-white"></i>
-						</div>
-
-						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Today My Indirect Income</p>
-							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
-							</h3>
-							<p class="m-0">Jan - Feb 2020</p>
-						</div>
+			<a href="employees.php">
+			<div class="card-box widget-box-two widget-two-custom">
+				<div class="media">
+					<div
+						class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
+						<i
+							class="mdi mdi-account-multiple avatar-title font-30 text-white"></i>
+					</div>
+					<div class="wigdet-two-content media-body">
+						<p class="m-0 text-uppercase font-weight-medium text-truncate"
+							title="Statistics">Our Employes</p>
+						<h3 class="font-weight-medium my-2">
+						1
+							<!--&#8377 <span data-plugin="counterup"><?php echo $metrics['emp_cnt']; ?></span>-->
+						</h3>
+						<p class="m-0">Till <?php echo $cur_date; ?></p>
 					</div>
 				</div>
-				</a>
 			</div>
-			<!-- end col -->
+			</a>
+		</div>
+		<!-- end col -->
 
-
-			<div class="col-xl-4 col-sm-4">
-			<a href="referred_users.php">
-				<div class="card-box widget-box-two widget-two-custom ">
+		<div class="col-xl-4 col-sm-4">
+			<a href="all_invitations.php">
+				<div class="card-box widget-box-two widget-two-custom">
 					<div class="media">
 						<div
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i
-								class="mdi mdi-account-multiple avatar-title font-30 text-white"></i>
+							<i class=" mdi mdi-contact-mail-outline avatar-title font-30 text-white"></i>
 						</div>
-
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">My Direct Members</p>
+								title="Statistics">Invitations</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
+    							<span data-plugin="counterup"><?php echo $metrics['invi_cnt']; ?></span>
 							</h3>
-							<p class="m-0">Jan - Feb 2020</p>
+							<p class="m-0">Till <?php echo $cur_date; ?></p>
 						</div>
 					</div>
 				</div>
@@ -193,32 +176,20 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 		<div class="row">
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="reward_users.php">
+			<a href="all_user_rewards.php">
 				<div class="card-box widget-box-two widget-two-custom">
 					<div class="media">
 						<div
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-currency-try avatar-title font-30 text-white"></i>
+							<i class="fas fa-money-bill avatar-title font-30 text-white"></i>
 						</div>
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Reward Users History</p>
 							<h3 class="font-weight-medium my-2">
-							<?php
-							$sql="SELECT * FROM `user_rewards`";
-
-							if ($result=mysqli_query($con,$sql))
-							  {
-							  // Return the number of rows in result set
-							  $rowcount=mysqli_num_rows($result);
-							  echo $rowcount;
-							  // Free result set
-							  mysqli_free_result($result);
-							  }
-							?>
-							<!--	&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>-->
+								<span data-plugin="counterup"><?php echo $metrics['rwd_cnt']; ?></span>
 							</h3>
-							<p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
+							<p class="m-0">Till <?php echo $cur_date; ?></p>
 						</div>
 					</div>
 				</div>
@@ -227,21 +198,21 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="housefull_users.php">
+			<a href="all_royalty_users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-currency-rub avatar-title font-30 text-white"></i>
+							<i class=" fas fa-home avatar-title font-30 text-white"></i>
 						</div>
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Housefull users History</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
+								<span data-plugin="counterup"><?php echo $metrics['royalty_cnt']; ?></span>
 							</h3>
-							<p class="m-0">Jan - Feb 2020</p>
+							<p class="m-0"><?php echo $cur_date; ?></p>
 						</div>
 					</div>
 				</div>
@@ -250,33 +221,21 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="royalty_users.php">
+			<a href="all_royalty_users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-currency-btc avatar-title font-30 text-white"></i>
+							<i class="mdi mdi-cowboy avatar-title font-30 text-white"></i>
 						</div>
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Royality Users History</p>
 							<h3 class="font-weight-medium my-2">
-							<?php
-							$sql="SELECT * FROM `user_royalty`";
-
-							if ($result=mysqli_query($con,$sql))
-							  {
-							  // Return the number of rows in result set
-							  $rowcount=mysqli_num_rows($result);
-							  echo $rowcount;
-							  // Free result set
-							  mysqli_free_result($result);
-							  }
-							?>
-								<!--<span data-plugin="counterup"><?php echo $tot_det[2]; ?></span>-->
+								<span data-plugin="counterup"><?php echo $metrics['royalty_cnt']; ?></span>
 							</h3>
-							<p class="m-0">Jan - Feb 2020</p>
+							<p class="m-0"><?php echo $cur_date;?></p>
 						</div>
 					</div>
 				</div>
@@ -286,15 +245,10 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 		</div>
 		<!-- end row -->
 
-
-
-
-
-
 		<div class="row">
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="#">
+			<a href="all_user_rewards.php">
 				<div class="card-box widget-box-two widget-two-custom">
 					<div class="media">
 						<div
@@ -305,9 +259,9 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Autopool History</p>
 							<h3 class="font-weight-medium my-2">
-								&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>
+								<span data-plugin="counterup"><?php echo $metrics['tot_auto_pool']; ?></span>
 							</h3>
-							<p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
+							<p class="m-0">Till <?php echo $cur_date; ?></p>
 						</div>
 					</div>
 				</div>
@@ -316,33 +270,21 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="#">
+			<a href="all_invitations.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-hand-right avatar-title font-30 text-white"></i>
+							<i class="fas fa-hands-helping avatar-title font-30 text-white"></i>
 						</div>
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Get Help History</p>
 							<h3 class="font-weight-medium my-2">
-								<!--<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>-->
-								<?php
-							$sql="SELECT * FROM `provide_helpers`";
-
-								if ($result=mysqli_query($con,$sql))
-								  {
-								  // Return the number of rows in result set
-								  $rowcount=mysqli_num_rows($result);
-								  echo $rowcount;
-								  // Free result set
-								  mysqli_free_result($result);
-								  }
-								  ?>
+								<span data-plugin="counterup"><?php echo $metrics['tot_withdraws'] ?></span>
 							</h3>
-							<p class="m-0">Jan - Feb 2020</p>
+							<p class="m-0"><?php echo $cur_date;?></p>
 						</div>
 					</div>
 				</div>
@@ -351,33 +293,21 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 			<!-- end col -->
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="#">
+			<a href="all_invitations.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-hand-left avatar-title font-30 text-white"></i>
+							<i class="fas fa-hands-helping avatar-title font-30 text-white"></i>
 						</div>
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Provide Help History</p>
 							<h3 class="font-weight-medium my-2">
-								<!--<span data-plugin="counterup"><?php echo $tot_det[2]; ?></span>-->
-								<?php
-							$sql="SELECT * FROM `provide_helpers`";
-
-								if ($result=mysqli_query($con,$sql))
-								  {
-								  // Return the number of rows in result set
-								  $rowcount=mysqli_num_rows($result);
-								  echo $rowcount;
-								  // Free result set
-								  mysqli_free_result($result);
-								  }
-								  ?>
+								<span data-plugin="counterup"><?php echo $metrics['invi_cnt']; ?></span>
 							</h3>
-							<p class="m-0">Jan - Feb 2020</p>
+							<p class="m-0"><?php echo $cur_date;?></p>
 						</div>
 					</div>
 				</div>
@@ -389,54 +319,22 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 
 		<div class="row">
 
-			<div class="col-xl-4 col-sm-4">
-			<a href="invitation_master.php">
-				<div class="card-box widget-box-two widget-two-custom">
-					<div class="media">
-						<div
-							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-currency-ils avatar-title font-30 text-white"></i>
-						</div>
-						<div class="wigdet-two-content media-body">
-							<p class="m-0 text-uppercase font-weight-medium text-truncate"
-								title="Statistics">Invetations</p>
-							<h3 class="font-weight-medium my-2">
-							<?php
-							$sql="SELECT * FROM `invitations`";
-
-								if ($result=mysqli_query($con,$sql))
-								  {
-								  // Return the number of rows in result set
-								  $rowcount=mysqli_num_rows($result);
-								  echo $rowcount;
-								  // Free result set
-								  mysqli_free_result($result);
-								  }
-								  ?>
-								<!--&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>-->
-							</h3>
-							<p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
-						</div>
-					</div>
-				</div>
-				</a>
-			</div>
-			<!-- end col -->
+			
 
 			<div class="col-xl-4 col-sm-4">
-			<a href="active_users.php">
+			<a href="all_users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-currency-cny avatar-title font-30 text-white"></i>
+							<i class="fas fa-user-check avatar-title font-30 text-white"></i>
 						</div>
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Active Users</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
+								<span data-plugin="counterup"><?php echo $metrics['active_cnt']; ?></span>
 							</h3>
 							<p class="m-0">Jan - Feb 2020</p>
 						</div>
@@ -445,23 +343,46 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 				</a>
 			</div>
 			<!-- end col -->
-
+			
 			<div class="col-xl-4 col-sm-4">
-			<a href="inactive_users.php">
+			<a href="all_users.php">
 				<div class="card-box widget-box-two widget-two-custom ">
 					<div class="media">
 						<div
 							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-							<i class="mdi mdi-currency-eur avatar-title font-30 text-white"></i>
+							<i class=" fas fa-user-slash avatar-title font-30 text-white"></i>
+						</div>
+
+						<div class="wigdet-two-content media-body">
+							<p class="m-0 text-uppercase font-weight-medium text-truncate"
+								title="Statistics">In Active Users</p>
+							<h3 class="font-weight-medium my-2">
+								<span data-plugin="counterup"><?php echo $metrics['inactive_cnt'] ?></span>
+							</h3>
+							<p class="m-0"><?php echo $cur_date;?></p>
+						</div>
+					</div>
+				</div>
+				</a>
+			</div>
+			<!-- end col -->
+
+			<div class="col-xl-4 col-sm-4">
+			<a href="all_users.php">
+				<div class="card-box widget-box-two widget-two-custom ">
+					<div class="media">
+						<div
+							class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
+							<i class=" fas fa-user-times avatar-title font-30 text-white"></i>
 						</div>
 
 						<div class="wigdet-two-content media-body">
 							<p class="m-0 text-uppercase font-weight-medium text-truncate"
 								title="Statistics">Blocked Users</p>
 							<h3 class="font-weight-medium my-2">
-								<span data-plugin="counterup"><?php echo $tot_det[2]; ?></span>
+								<span data-plugin="counterup"><?php echo $metrics['blocked_cnt'] ?></span>
 							</h3>
-							<p class="m-0">Jan - Feb 2020</p>
+							<p class="m-0"><?php echo $cur_date;?></p>
 						</div>
 					</div>
 				</div>
@@ -472,133 +393,8 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 		<!-- end row -->
 	</div>
 
-
 	<div class="row">
-
-		<div class="col-xl-4 col-sm-4">
-		<a href="employees.php">
-			<div class="card-box widget-box-two widget-two-custom">
-				<div class="media">
-					<div
-						class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-						<i class="mdi mdi-currency-inr avatar-title font-30 text-white"></i>
-					</div>
-					<div class="wigdet-two-content media-body">
-						<p class="m-0 text-uppercase font-weight-medium text-truncate"
-							title="Statistics">Our Employes</p>
-						<h3 class="font-weight-medium my-2">
-						1
-							<!--&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>-->
-						</h3>
-						<p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
-					</div>
-				</div>
-			</div>
-			</a>
-		</div>
-		<!-- end col -->
-
-		<div class="col-xl-4 col-sm-4">
-		<a href="userdetails.php">
-			<div class="card-box widget-box-two widget-two-custom ">
-				<div class="media">
-					<div
-						class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-						<i class="mdi mdi-hand-right avatar-title font-30 text-white"></i>
-					</div>
-
-					<div class="wigdet-two-content media-body">
-						<p class="m-0 text-uppercase font-weight-medium text-truncate"
-							title="Statistics">User Full Deatils</p>
-						<h3 class="font-weight-medium my-2">
-							<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
-						</h3>
-						<p class="m-0">Jan - Feb 2020</p>
-					</div>
-				</div>
-			</div>
-			</a>
-		</div>
-		<!-- end col -->
-
-		<div class="col-xl-4 col-sm-4">
-			<div class="card-box widget-box-two widget-two-custom ">
-				<div class="media">
-					<div
-						class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-						<i class="mdi mdi-hand-left avatar-title font-30 text-white"></i>
-					</div>
-
-					<div class="wigdet-two-content media-body">
-						<p class="m-0 text-uppercase font-weight-medium text-truncate"
-							title="Statistics">Left Team</p>
-						<h3 class="font-weight-medium my-2">
-							<span data-plugin="counterup"><?php echo $tot_det[2]; ?></span>
-						</h3>
-						<p class="m-0">Jan - Feb 2020</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- end col -->
-	</div>
-
-
-
-
-
-
-
-	<div class="row">
-
-		<div class="col-xl-8 col-sm-4">
-			<div class="card-box widget-box-two widget-two-custom">
-				<div class="media">
-					<div
-						class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-						<i class="mdi mdi-currency-ils avatar-title font-30 text-white"></i>
-					</div>
-					<div class="wigdet-two-content media-body">
-						<p class="m-0 text-uppercase font-weight-medium text-truncate"
-							title="Statistics">Fund Withdraws</p>
-						<h3 class="font-weight-medium my-2">
-							&#8377 <span data-plugin="counterup"><?php echo $wallet['total_amount']; ?></span>
-						</h3>
-						<p class="m-0">Till <?php echo date('d-m-Y'); ?></p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- end col -->
-
-		<div class="col-xl-4 col-sm-4">
-			<div class="card-box widget-box-two widget-two-custom ">
-				<div class="media">
-					<div
-						class="avatar-lg rounded-circle bg-primary widget-two-icon align-self-center">
-						<i class="mdi mdi-currency-cny avatar-title font-30 text-white"></i>
-					</div>
-
-					<div class="wigdet-two-content media-body">
-						<p class="m-0 text-uppercase font-weight-medium text-truncate"
-							title="Statistics">YMD AutoPool Income</p>
-						<h3 class="font-weight-medium my-2">
-							<span data-plugin="counterup"><?php echo $tot_det[1]; ?></span>
-						</h3>
-						<p class="m-0">Jan - Feb 2020</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- end col -->
-
-
-	</div>
-	<!-- end row -->
-	<!-- </div> -->
-
-	<div class="row">
-		<div class="col-xl-6 col-lg-12">
+		<!--<div class="col-xl-6 col-lg-12">
 			<div class="card-box">
 				<h4 class="header-title">Recent Users</h4>
 				<p class="sub-header">Recently joined user details here</p>
@@ -608,7 +404,7 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 
 						<thead>
 							<tr>
-								<!--<th></th>-->
+								
 								<th>Name</th>
 								<th>Mobile</th>
 								<th>Date of Joining</th>
@@ -638,51 +434,14 @@ $tot_activ_users = $objUserModel->GetActiveUsersCount();
 				</div>
 			</div>
 
-		</div>
-		<!-- end col -->
-		<div class="col-xl-6 col-lg-6">
-			<div class="row">
-				<div class="col-xl-12 col-lg-12">
-					<div class="card-box widget-box-two widget-two-custom ">
-						<div class="media">
-							<div
-								class="avatar-lg rounded-circle bg-info widget-two-icon align-self-center">
-								<i class="mdi mdi-human-handsup avatar-title font-30 text-white"></i>
-							</div>
-
-							<div class="wigdet-two-content media-body">
-								<p class="m-0 text-uppercase font-weight-medium text-truncate"
-									title="Statistics">Total Active Visitors</p>
-								<h3 class="font-weight-medium my-2">
-									<span data-plugin="counterup"><?php echo $tot_activ_users; ?></span>
-								</h3>
-								<p class="m-0"><?php  echo "Till ".date('M-Y');  ?></p>
-							</div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xl-12 col-lg-12">
-					<div class="card-box widget-box-two widget-two-custom ">
-						<div class="media">
-							<div
-								class="avatar-lg rounded-circle bg-info widget-two-icon align-self-center">
-								<i class="mdi mdi-email avatar-title font-30 text-white"></i>
-							</div>
-							<div class="wigdet-two-content media-body">
-								<p class="m-0 text-uppercase font-weight-medium text-truncate"
-									title="Statistics">Total Invitations</p>
-								<h3 class="font-weight-medium my-2">
-									<span data-plugin="counterup"><?php echo $tot_invitation; ?></span>
-								</h3>
-								<p class="m-0"><?php echo "Till ".date('M-Y'); ?></p>
-							</div>
-						</div>
-					</div>
-
-				</div>
+		</div> -->
+		<div class="col-12">
+			<div class="card-box">
+				<h4 class="header-title">Statistics</h4>
+				<!-- <p class="sub-header">Recently joined user details here</p> -->
+				<div class="text-center">
+					<div id="website-stats1" style="height: 320px;" class="flot-chart mt-3"></div>
+				</div>				
 			</div>
 
 		</div>

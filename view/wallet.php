@@ -129,6 +129,8 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                                             <th>Amount</th>
                                             <th>Request Date</th>
                                             <th>Status</th>
+                                            <th>Received Amount</th>
+                                            
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -154,6 +156,7 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                                                 <td><?php echo $r['amount_req'];?></td>
                                                 <td><?php echo $r['date_req'];?></td>
                                                 <td ><span class="badge label-table <?php echo $class;?>"><?php echo $status;?></span></td>
+                                                <td><?php echo $r['amount_received'];?></td>
                                                 
                                             </tr>
                                             <?php
@@ -170,11 +173,12 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                                     <table id="txn-dt" class=" datatable table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                         <tr>
-                                        	<th>Txn User</th>
                                         	<th>Amount</th>
-                                            <th>Txn</th>
-                                            <th>Txn Type</th>
-                                            <th>Date</th>
+                                        	<th>Txn Type</th>
+                                        	<th>Txn</th>
+                                        	<th>User Id</th>
+                                        	<th>Txn User</th>
+                                        	<th>Date</th>
                                             
                                         </tr>
                                         </thead>
@@ -190,12 +194,12 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                                                 }     
                                             ?>
                                              <tr>
-                                                <td><?php echo $r['cause_full_name']?></td>
-                                                <td><?php echo $r['amount'];?></td>
-                                                <td><?php echo ucfirst(strtolower($r['cause_type']))?></td>
+                                             	<td><?php echo $r['amount'];?></td>
                                                 <td><span class="badge label-table <?php echo $class;?>"><?php echo ucfirst(strtolower($r['txn_type']));?></span></td>
+                                                <td><?php echo ucfirst(strtolower($r['cause_type']))?></td>
+                                                <td><?php echo $r['cause_login_id'];?></td>
+                                                <td><?php echo $r['cause_full_name']?></td>
                                                 <td><?php echo $r['cr_date'];?></td>
-                                                
                                             </tr>
                                             <?php } ?>
                                             
@@ -272,7 +276,7 @@ $txns = $objUserModel->GetWalletTxnsByUserId($_SESSION['userid']);
                 });
 
                 $('#txn-dt').DataTable({
-                	"order": [[ 4, "desc" ]]
+                	"order": [[ 5, "desc" ]]
                 });
           });
           function withdrawReq(){

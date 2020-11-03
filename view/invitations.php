@@ -56,13 +56,9 @@ $invitaions = $objUserModel->GetInvitationsByUserId($_SESSION['loginid']);
                         <div class="col-12">
                             <div class="page-title-box">
                                 <div class="page-title-right">
-                                    <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Adminox</a></li>
-                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Basic Details</a></li>
-                                        <li class="breadcrumb-item active">Reciept Uploads</li>
-                                    </ol>
+                                    
                                 </div>
-                                <h4 class="page-title">Payment Details</h4>
+                                <h4 class="page-title">Payment Details <a href="invitations.php" class="ml-3 " title="Referesh"><i class="icon-refresh"></i></a></h4>
                             </div>
                         </div>
                     </div>     

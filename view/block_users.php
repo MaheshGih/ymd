@@ -8,7 +8,7 @@ $expiryTime=48;
 if(isset($_GET['expiryTime'])){
     $expiryTime = $_GET['expiryTime'];
 }
-$inactiv_childs = $objUserModel->GetAllUsersByStatus(0, $expiryTime);
+$inactiv_childs = $objUserModel->GetAllInvitationExpiredUsers($expiryTime);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -108,9 +108,8 @@ $inactiv_childs = $objUserModel->GetAllUsersByStatus(0, $expiryTime);
                                             	<th>Login Id</th>
                                                 <th>Name</th>
                                                 <th>Mobile</th>
-                                                <th>Joined Date</th>
-                                                <th>Last Active on</th>
-                                                <!-- <th>Wallet</th> -->
+                                                <th>Invitation Sent</th>
+                                                
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -120,12 +119,11 @@ $inactiv_childs = $objUserModel->GetAllUsersByStatus(0, $expiryTime);
                                                 <tr>
                                                     <!--<td><input type="checkbox" id="<?php echo $r['id'];?>" name="<?php echo $r['id'];?>" /></td>-->
                                                     <td></td>
-                                                    <td><?php echo $r['login_id'];?></td>
-                                                    <td><?php echo $r['full_name'];?></td>
-                                                    <td><?php echo $r['mobile'];?></td>
-                                                    <td><?php echo $r['date_created'];?></td>
-                                                    <!--<td><a href="activate_process.php?id=<?php echo $r['id'];?>"><span class="badge label-table badge-danger">Activate</span></a></td>-->
-                                                     <td></td>   
+                                                    <td><?php echo $r['provide_help_id'];?></td>
+                                                    <td><?php echo $r['provide_help_name'];?></td>
+                                                    <td><?php echo $r['provide_mobile'];?></td>
+                                                    <td><?php echo $r['date_sent'];?></td>
+                                                       
                                                 </tr>
                                             <?php
                                                }

@@ -5,7 +5,7 @@
     
 ?>
 <?php
-$royalty_credits = $objUserModel->GetRoyaltyUsers();
+$invitations = $objUserModel->GetRoyaltyUsers();
 
 ?>
 <!DOCTYPE html>
@@ -61,8 +61,8 @@ $royalty_credits = $objUserModel->GetRoyaltyUsers();
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Referrals</a></li>
-                                            <li class="breadcrumb-item active">Active Users</li>
+                                            
+                                            <li class="breadcrumb-item active">Royalty Users</li>
                                         </ol>
                                     </div>
                                     <h4 class="page-title">Royalty Users</h4>
@@ -76,7 +76,7 @@ $royalty_credits = $objUserModel->GetRoyaltyUsers();
                                     	<form class="form-horizontal" id="blockUsersForm" action="../controller/payment_controller.php" method="post">
                                           <div Class="form-group row">
                                                 <div class="  col-lg-3 col-sm-12">
-                                                    <input type="submit" name="btnAddUserRoyalty" id="btnAddUserRoyalty" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Royality"></input>
+                                                    <input type="submit" name="btnAddUserRoyalty" id="btnAddUserRoyalty" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Royality Amount"></input>
                                                 </div>    
                                         	</div>
                                     	</form>
@@ -95,7 +95,7 @@ $royalty_credits = $objUserModel->GetRoyaltyUsers();
                                             </thead>
                                             <tbody>
                                             <?php
-                                                foreach ($royalty_credits as $r){
+                                                foreach ($invitations as $r){
                                             ?>
                                                 <tr>
                                                     <td></td>

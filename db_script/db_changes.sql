@@ -1,4 +1,6 @@
 /* 16-08-2020: Done in local, done in serever  */
+#utf8mb4_0900_ai_ci
+#utf8mb4_general_ci
 use ymd;
 SET SQL_SAFE_UPDATES = 0;
 alter table user_details add column reg_otp varchar(10);
@@ -195,4 +197,46 @@ alter table user_wallet_credit add column casue_type varchar(10);
 alter table user_wallet_credit add column cause_user_id int;
 alter table user_wallet_credit add column cause_full_name int;
 alter table user_wallet_credit rename user_wallet_txn;
+
+/*18-10-2020: Done in local ,  Not Done in server */
+drop table user_details_old;
+CREATE TABLE `user_details_old` (
+  `delete_id` int NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `mobile` varchar(25) NOT NULL,
+  `sponsor_id` int DEFAULT NULL,
+  `spill_id` int DEFAULT NULL,
+  `login_id` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `address_1` text,
+  `address_2` text,
+  `acc_name` varchar(50) DEFAULT NULL,
+  `acc_no` varchar(50) DEFAULT NULL,
+  `ifsc` varchar(50) DEFAULT NULL,
+  `bank_name` varchar(50) DEFAULT NULL,
+  `Gpay` varchar(50) DEFAULT NULL,
+  `PhonePe` varchar(50) DEFAULT NULL,
+  `PayTm` varchar(50) DEFAULT NULL,
+  `date_created` datetime NOT NULL,
+  `is_active` int NOT NULL,
+  `side` varchar(10) DEFAULT NULL,
+  `city` varchar(250) DEFAULT NULL,
+  `state` varchar(250) DEFAULT NULL,
+  `position` varchar(50) DEFAULT NULL,
+  `reg_otp` varchar(10) DEFAULT NULL,
+  `reg_verified` tinyint(1) DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  `role` varchar(20) DEFAULT NULL,
+  `lvl_id` varchar(45) DEFAULT NULL,
+  `reward_id` int DEFAULT NULL,
+  `royalty_id` int DEFAULT NULL,
+  `expired_date` datetime DEFAULT NULL,
+  `txn_password` varchar(45) DEFAULT NULL,
+  `kyc_done` tinyint DEFAULT '0',
+  `deleted_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `delete_status` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`delete_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

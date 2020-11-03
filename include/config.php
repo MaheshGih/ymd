@@ -12,6 +12,12 @@
     $pwd = "#Veera123";
     $db ="ymd"; */
     
+    $sql_details = array(
+        'user' => $user,
+        'pass' => $pwd,
+        'db'   => $db,
+        'host' => $server
+    );
     
     $con = mysqli_connect($server,$user,$pwd,$db);
     if(mysqli_connect_errno()){
@@ -29,6 +35,7 @@
     $housefull_size = 10;
     $royalty_points=12; //12 months
     $user_expired_in_months = 12;
-    
     $ref_link = "http://ymd1000us.com/app/view/registration_tree.php?ref=";
+    $admin_user_id = 1;
+    $host_url = "http://localhost/ymd/";
 ?>

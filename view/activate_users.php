@@ -87,10 +87,11 @@
                                         <thead>
                                             <tr>
                                                 <!--<th>Select</th>-->
+                                                <th>Login Id</th>
                                                 <th>Name</th>
                                                 <th>Mobile</th>
                                                 <th>Joined Date</th>
-                                                <th>Status</th>
+                                                <th>Action</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -99,6 +100,7 @@
                                             ?>
                                                 <tr>
                                                     <!--<td><input type="checkbox" id="<?php echo $r['id'];?>" name="<?php echo $r['id'];?>" /></td>-->
+                                                    <td><?php echo $r['login_id'];?></td>
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
                                                     <td><?php echo $r['date_created'];?></td>

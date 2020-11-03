@@ -396,14 +396,14 @@ background:grey;
                                                 <input type="hidden" id="hdnId" name="hdnId" />
                                                 <select id="ddlSponsors" name="ddlSponsors" class="form-control">
                                                     <option value="none">-- Select Spill Id --</option>    
-                                                    <?php
+                                                    /*<?php
                                                     $in_act_list = $objUserModel->GetInactiveUsers($_SESSION['userid']);
                                                     while($r= mysqli_fetch_assoc($in_act_list)){
                                                     ?>
                                                         <option value="<?php echo $r['id'];?>"><?php echo $r['full_name']; ?></option>   
                                                     <?php
                                                     }
-                                                    ?>
+                                                    ?>*/
                                                 </select>
                                             </td>
                                         </tr>

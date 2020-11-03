@@ -69,7 +69,7 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
             <li>
                 <a href="referred_users.php">
                     <i class=" fas fa-link "></i>
-                    <span> Referred Users </span>
+                    <span> Referral Users </span>
                     <!-- <span class="menu-arrow"></span> -->
                 </a>
             </li>
@@ -102,8 +102,8 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                 </a>
             </li>            
             <li>
-                <a href="transactions.php">
-                    <i class=" fas fa-chart-line "></i>
+                <a href="invitations.php">
+                    <i class=" mdi mdi-contact-mail-outline "></i>
                     <span>  Invitations </span>
                 </a>
             </li>
@@ -144,7 +144,7 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                 <a href="users.php">
                     <i class="fas fa-users-cog"></i>
                     <!-- <span class="badge badge-warning badge-pill float-right">12</span> -->
-                    <span> Users </span>
+                    <span> Edit User </span>
                 </a>
             </li>
             <li>
@@ -175,29 +175,67 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
             <li>
                 <a href="reward_users.php">
                     <i class="fas fa-money-bill "></i>
-                    <span> Reward Users </span>
+                    <span> Reward Winners </span>
                 </a>
             </li>
             <li>
                 <a href="housefull_users.php">
-                    <i class="fas fa-money-bill "></i>
+                    <i class="fas fa-home "></i>
                     <span> Housefull Users </span>
                 </a>
             </li>
             <li>
                 <a href="royalty_users.php">
-                    <i class="fas fa-money-bill "></i>
+                    <i class="mdi mdi-cowboy "></i>
                     <span> Royalty Users </span>
                 </a>
             </li>
             <?php if($isAdmin){ ?>
             <li>
                 <a href="news.php">
-                    <i class="fas fa-money-bill "></i>
+                    <i class="far fa-newspaper "></i>
                     <span> News </span>
                 </a>
             </li>
             <?php }?>
+            <li class="menu-title">Reports</li>
+            <li>
+                <a href="all_users.php">
+                    <i class=" fas fa-users "></i>
+                    <span> Users </span>
+                </a>
+            </li>
+            <li>
+                <a href="all_invitations.php">
+                    <i class="mdi mdi-contact-mail-outline "></i>
+                    <span> Invitations </span>
+                </a>
+            </li>
+            <li>
+                <a href="all_transactions.php">
+                    <i class="mdi mdi-currency-inr"></i>
+                    <span> Transactions </span>
+                </a>
+            </li>
+            <li>
+                <a href="all_withdraws.php">
+                    <i class="mdi mdi-currency-inr"></i>
+                    <span> Withdraws </span>
+                </a>
+            </li>
+            
+            <li>
+                <a href="all_royalty_users.php">
+                    <i class="mdi mdi-cowboy "></i>
+                    <span> Royalty Users </span>
+                </a>
+            </li>
+            <li>
+                <a href="all_user_rewards.php">
+                    <i class="fas fa-money-bill "></i>
+                    <span> User Rewards</span>
+                </a>
+            </li>
             <?php }?>
         </ul>
 

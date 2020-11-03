@@ -38,7 +38,12 @@ class UtilModel{
             
             return $exact_date_after_months;
     }
-    
+
+    public function getBeforeDateByDays($noDays){
+        $cur_date= self::getCurDate($this->date_format);
+        $last_date = date('Y-m-d', strtotime("-".$noDays." days $cur_date"));
+        return $last_date;
+    }
     public function generateOTP(){
         return rand(1000,9999);
     }

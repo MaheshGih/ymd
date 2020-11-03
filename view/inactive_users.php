@@ -125,7 +125,7 @@
                                                     	   $url = '../controller/tree_controller.php?send_reg_verify_otp=&'.'user_id='.$r['id'].'&full_name='.$r['full_name'].'&mobile='.$r['mobile'].'&login_id='.$r['login_id'];
                                                     	?>
                                                     	<a href="<?php echo $url;?>">
-                                                    	<span class="btn btn-primary">Send OTP</span></a>
+                                                    	<span class="btn btn-primary btn-sm">Send OTP</span></a>
                                                     	<?php }else{?>
                                                     	<span class="badge label-table badge-success">Verified</span>	
                                                     	<?php }?>

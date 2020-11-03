@@ -395,6 +395,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     
     public function GetAllUsersByStatus($isactive,$time){
         global $con;
+        global $objUtilModel;
         if(empty($time)){
            $time = 48; 
         }
@@ -402,12 +403,45 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $DateTime = new DateTime();
         $str = '-'.$time.' hours';
         $expDate = $DateTime->modify($str);
-        $strExpDT = date("Y-m-d h:i:s",$expDate->getTimestamp());
+        $strExpDT = $expDate->format($objUtilModel->datetime_format);
+        //$strExpDT = date("Y-m-d h:i:s",$expDate->getTimestamp());
         $sql = "SELECT * FROM `user_details`  where  is_active=? and date_created < ? order by date_created asc";
         $stmt = $con->prepare($sql);
         $stmt->bind_param("is", $isactive,$strExpDT);
         $res = $stmt->execute();
         $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+    
+    public function GetAllInvitationExpiredUsers($time){
+        global $con;
+        global $objUtilModel;
+        if(empty($time)){
+            $time = 48;
+        }
+        date_default_timezone_set("Asia/Calcutta");
+        $DateTime = new DateTime();
+        $str = '-'.$time.' hours';
+        $expDate = $DateTime->modify($str);
+        $strExpDT = $expDate->format($objUtilModel->datetime_format);
+        //$strExpDT = date("Y-m-d h:i:s",$expDate->getTimestamp());
+        $sql = "SELECT * FROM `invitations`  where  status='SENT' and date_sent < ? order by date_sent asc";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("s", $strExpDT);
+        $res = $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+    
+    public function GetInvitationByProvidhelpLoginId($providhelp_loginId){
+        global $con;
+        $sql = "SELECT * FROM `invitations` where provide_help_id=?";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("s", $providhelp_loginId);
+        $res = $stmt->execute();
+        $res = mysqli_fetch_assoc($stmt->get_result());
         $stmt->close();
         return $res;
     }
@@ -747,11 +781,16 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     public function AcceptInvitationPaymentReceived($invitationId,$txn_type,$cause_type){
         global $con;
         global $help_amount;
+        global $housefull_size;
         global $objSMS;
-        $status=self::getInvitationStausByKey("ACCEPTED");
+        global $objUtilModel;
         
+        $status=self::getInvitationStausByKey("ACCEPTED");
         $con -> autocommit(FALSE);
+        
         $invitation = self::GetInvitationById($invitationId);
+        $provd_user = self::GetUserDetails($invitation['provide_help_id']);
+        $sponsor_id = $provd_user['sponsor_id'];
         $withdrawReqId = $invitation['withdraw_req_id'];
         $res = self::UpdateInvitationStatus($status,$invitationId);
         $wal_ins_res = self::addWalletTxn($_SESSION['userid'], $_SESSION['fname'], $help_amount, $txn_type, 1, $cause_type, $invitation['provide_help_name'],$invitation['provide_help_userid']);
@@ -762,7 +801,31 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         
         $sms = $objSMS->sendActivationMsg($invitation['provide_mobile'], $invitation['provide_help_id'],$invitation['provide_help_name']);
         
+        $sponsor = self::GetUserDetailsByUserId($sponsor_id);
+        if(empty($sponsor['royalty_id'])){
+            print('adding royalty');
+            $last_date = $objUtilModel->getBeforeDateByDays(4);
+            print($last_date);
+            $referral_cnt = self::GetReferralCountByAfterDate($sponsor_id, $last_date);
+            print('count:'.$referral_cnt['cnt']);
+            if($housefull_size<$referral_cnt['cnt']){
+                $users = array($sponsor);
+                self::AddRoyalty($users);
+            }
+        }
+        
         $res = $con -> commit();
+        return $res;
+    }
+    
+    public function GetReferralCountByAfterDate($sponsor_id, $vdate){
+        global $con;
+        $sql = "select count(*) as cnt from user_details where sponsor_id=? and is_active =1 and date_created>=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('is',$sponsor_id,$vdate);
+        $res = $wal_stmt->execute();
+        $res = mysqli_fetch_assoc($wal_stmt->get_result());
+        $wal_stmt->close();
         return $res;
     }
     
@@ -1022,19 +1085,20 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             
             $user_id=$user['id'];
             $name=$user['full_name'];
-            $amnt=$help_amount+$housefull_amount;
+            $amnt=$housefull_amount;
             $txn_type='CREDIT';
             $txn_is_done =1 ;
-            $txn_ref_cause='HOUSE_FULL';
+            $txn_royalty_cause='ROYALTY';
+            $txn_house_cause='HOUSE_FULL';
             $cause_user_name=null;
             $cause_user_id=null;
-            $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_type,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
+            $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_type,$txn_is_done,$txn_house_cause,$cause_user_name,$cause_user_id);
             $wal_ins_res = $wal_ins_stmt->execute();
             $amnt=$royalty_amnt;            
-            $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_type,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
+            $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_type,$txn_is_done,$txn_royalty_cause,$cause_user_name,$cause_user_id);
             $wal_ins_res = $wal_ins_stmt->execute();
             
-            $amnt = $help_amount + $housefull_amount + $royalty_amnt;
+            $amnt = $housefull_amount + $royalty_amnt;
             $wal_udp_res = self::UpdateWalletById($user_id,$amnt);
             
             $royaly_points = 1;
@@ -1103,7 +1167,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             $amnt=$user['royalty_amount'];
             $txn_type='CREDIT';
             $txn_is_done =1 ;
-            $txn_ref_cause='HOUSE_FULL';
+            $txn_ref_cause='ROYALTY';
             $cause_user_name=null;
             $cause_user_id=null;
             $wal_ins_stmt->bind_param("isdsissi",$user_id,$name,$amnt,$txn_type,$txn_is_done,$txn_ref_cause,$cause_user_name,$cause_user_id);
@@ -1638,7 +1702,8 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
     
     public function GetWalletTxnsByUserId($userId){
         global $con;
-        $sql = "select * from user_wallet_txn where user_id=? order by cr_date desc";
+        $sql = "select txn.*, ud.login_id as cause_login_id from user_wallet_txn txn left join user_details ud on txn.cause_user_id = ud.id 
+            where user_id=? order by cr_date desc;";
         $wal_stmt = $con->prepare($sql);
         $wal_stmt->bind_param('i',$userId);
         $res = $wal_stmt->execute();
@@ -1660,11 +1725,11 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         return $res;
     }
     
-    public function GetTotWalletTxnsByUserIdAndDate($userId,$txn_cause,$cur_date){
+    public function GetTotWalletTxnsByUserIdAndDate($userId,$cur_date){
         global $con;
-        $sql = "SELECT sum(amount) as tot FROM user_wallet_txn where user_id=? and cause_type=? and cr_date=?";
+        $sql = "SELECT sum(amount) as tot FROM user_wallet_txn where user_id=? and cr_date=?";
         $wal_stmt = $con->prepare($sql);
-        $wal_stmt->bind_param('iss',$userId,$txn_cause,$cur_date);
+        $wal_stmt->bind_param('is',$userId,$cur_date);
         $res = $wal_stmt->execute();
         $res = $wal_stmt->get_result();
         $res = $res->fetch_assoc();
@@ -1777,11 +1842,11 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         
         $tot_trans = self::GetUserReceivedAmntReceiptsCnt($loginId);
    
-        $todayMyRefIncome = self::GetTotWalletTxnsByUserIdAndDate($userId, "REFERRAL",$cur_date);
+        $todayMyTotIncome = self::GetTotWalletTxnsByUserIdAndDate($userId,$cur_date);
         $myRefIncome = self::GetTotWalletTxnsByUserIdAndCause($userId, "REFERRAL");
         $myLVLIncome = self::GetTotWalletTxnsByUserIdAndCause($userId, "LEVEL");
         $myReferralTot = self::GetRefCountByUserId($userId);
-        $myRoyalIncome = self::GetTotWalletTxnsByUserIdAndCause($userId, "HOUSE_FULL");
+        $myRoyalIncome = self::GetTotWalletTxnsByUserIdAndCause($userId, "ROYALTY");
         $totPendingWithdrawAmnt = self::GetTotPendingWithdrawAmntByUserId($userId);
         $totWithdrawnAmnt = self::GetTotWithdrawnAmntByUserId($userId);
         $totRewardAmnt = self::GetTotWalletTxnsByUserIdAndCause($userId, "REWARD");
@@ -1796,7 +1861,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             "news" => $latestNews,
             "tot_amount" => $wallet['total_amount'], 
             "tot_trans"=>$tot_trans['tottrans'],
-            "todayMyRefIncome"=>$todayMyRefIncome['tot'],
+            "todayMyTotIncome"=>$todayMyTotIncome['tot'],
             "myRefIncome"=>$myRefIncome['tot'],
             "myLVLIncome"=>$myLVLIncome['tot'],
             "myReferralTot"=>$myReferralTot['tot'],
@@ -1850,6 +1915,156 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $sql = "select * from user_royalty_points where user_id=? and royalty_id=?";
         $wal_stmt = $con->prepare($sql);
         $wal_stmt->bind_param('ii',$user_id,$royalty_id);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetAdminDashboardMetrics(){
+        global $con;
+        global $objUtilModel;
+        global $objAdminModel;
+        global $objWalletContactModel;
+        global $admin_user_id;
+        
+        $wallet = $objWalletContactModel->GetWalletByUserId($admin_user_id);
+        $usersCnt = self::GetAllUsersCount();
+        $txns_cnt = self::GetAllTxnsCount();
+        $news_cnt = self::GetAllNewsCount();
+        $emp_cnt = self::GetAllEmpsCount();
+        $invi_cnt = self::GetAllInvitationCount();
+        $rwd_cnt = self::GetAllRewardUsersCount();
+        $royalty_cnt = self::GetAllRoyaltyUsersCount();
+        $tot_auto_pool = self::GetTotalAutoPoolGiven();
+        $tot_withdraws = self::GetAllWithdrawsCount();
+        $active_cnt = self::GetAllUsersCountByStatus(1);
+        $inactive_cnt = self::GetAllUsersCountByStatus(0);
+        $blocked_cnt = self::GetAllUsersBlockedCount();
+        $latestNews = $objAdminModel->GetActiveNews();
+        $res = array (
+            "news"=>$latestNews,
+            "tot_amount" => $wallet['total_amount'],
+            "users_cnt" => $usersCnt['cnt'],
+            "txns_cnt" => $txns_cnt['cnt'],
+            "news_cnt" => $news_cnt['cnt'],
+            "emp_cnt" => $emp_cnt['cnt'],
+            "invi_cnt" =>$invi_cnt['cnt'],
+            "rwd_cnt" =>$rwd_cnt['cnt'],
+            "royalty_cnt" =>$royalty_cnt['cnt'],
+            "tot_auto_pool" =>$tot_auto_pool['tot'],
+            "tot_withdraws" =>$tot_withdraws['cnt'],
+            "active_cnt" => $active_cnt['cnt'],
+            "inactive_cnt" => $inactive_cnt['cnt'],
+            "blocked_cnt" =>$blocked_cnt['cnt']
+            
+        );
+        return $res;
+    }
+    
+    public function GetAllUsersBlockedCount(){
+        global $con;
+        $sql = "SELECT count(1) as cnt FROM user_details_old";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    public function GetAllUsersCountByStatus($is_active){
+        global $con;
+        $sql = "select count(1) as cnt  from user_details where role='ROLE_USER' and is_active=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$is_active);
+        $res = $wal_stmt->execute();
+        $res = mysqli_fetch_assoc($wal_stmt->get_result());
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetAllWithdrawsCount(){
+        global $con;
+        $sql = "SELECT count(1) as cnt FROM user_withdrawls";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    
+    public function GetTotalAutoPoolGiven(){
+        global $con;
+        $sql = "SELECT sum(auto_pool) as tot FROM user_rewards";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    
+    public function GetAllRoyaltyUsersCount(){
+        global $con;
+        $sql = "select count(1) as cnt from user_royalty";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    
+    public function GetAllRewardUsersCount(){
+        global $con;
+        $sql = "select count(1) as cnt from user_rewards";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    
+    public function GetAllInvitationCount(){
+        global $con;
+        $sql = "select count(1) as cnt from invitations";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    
+    public function GetAllUsersCount(){
+        global $con;
+        $sql = "select count(1) as cnt from user_details where role='ROLE_USER'";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    public function GetAllTxnsCount(){
+        global $con;
+        $sql = "select count(1) as cnt from user_wallet_txn ";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    public function GetAllNewsCount(){
+        global $con;
+        $sql = "select count(1) as cnt from news ";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    public function GetAllEmpsCount(){
+        global $con;
+        $sql = "select count(1) as cnt from user_details where role='ROLE_EMP'";
+        $res = mysqli_fetch_assoc(mysqli_query($con,$sql));
+        return $res;
+    }
+    public function GetAllInvitationsByStaus($status,$page,$size){
+        global $con;
+        $next = 0;
+        if($page>1){
+            $next = $page * $size;
+        }
+        $last = $next + $size;
+        $sql = "select * from invitations where status=? limit ?,?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('sii',$status,$next,$last);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetAllInvitations($page,$size){
+        global $con;
+        $next = 0;
+        if($page>1){
+            $next = $page * $size;
+        }
+        $last = $next + $size;
+        
+        $sql = "select * from invitations limit ?,?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('ii',$next,$last);
         $res = $wal_stmt->execute();
         $res = $wal_stmt->get_result();
         $wal_stmt->close();

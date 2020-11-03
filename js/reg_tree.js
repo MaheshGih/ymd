@@ -196,7 +196,10 @@ var network = undefined;
 	    	$('#txtSponsorName').val(master['full_name']);
 	    	
 		    $('#hdnSpillId').val(clickedNodes[0].master_id);
-			$('#activateusersmodal').modal('show');	
+			$('#activateusersmodal').modal({
+				 backdrop: 'static',
+            	keyboard: false
+			});
 		}else{
 			$('#ddlSide').removeAttr('disabled');
 			//$('#activateusersmodal2').modal('show');

@@ -3,13 +3,12 @@
     include("../include/session.php");
     include("../model/user_model.php");
     //include("../model/util_model.php");
-    global $help_amount;
     global $housefull_amount;
     global $royalty_amnt;
     
 ?>
 <?php
-$royalty_credits = $objUserModel->GetHousefullUsers(0);
+$invitations = $objUserModel->GetHousefullUsers(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,8 +63,7 @@ $royalty_credits = $objUserModel->GetHousefullUsers(0);
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Referrals</a></li>
-                                            <li class="breadcrumb-item active">Active Users</li>
+                                            <li class="breadcrumb-item active">Housefull Users</li>
                                         </ol>
                                     </div>
                                     <h4 class="page-title">Housefull Users</h4>
@@ -79,7 +77,7 @@ $royalty_credits = $objUserModel->GetHousefullUsers(0);
                                     	<form class="form-horizontal" id="blockUsersForm" action="../controller/payment_controller.php" method="post">
                                           <div Class="form-group row">
                                                 <div class="col-lg-3 col-sm-12">
-                                                    <input type="submit" name="btnAddRoyaltyUser" id="btnAddRoyaltyUser" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Housefull User"></input>
+                                                    <input type="submit" name="btnAddRoyaltyUser" id="btnAddRoyaltyUser" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Housefull Users"></input>
                                                 </div>    
                                         	</div>
                                     	</form>
@@ -92,7 +90,6 @@ $royalty_credits = $objUserModel->GetHousefullUsers(0);
                                                 <th>Name</th>
                                                 <th>Mobile</th>
                                                 <th>Joined Date</th>
-                                                <th>Donated Amount</th>
                                                 <th>Housefull Amount</th>
                                                 <th>Royalty Amount</th>
                                                 <th>Rolyaty Expires</th>
@@ -102,7 +99,7 @@ $royalty_credits = $objUserModel->GetHousefullUsers(0);
                                             <?php
                                                 $exp_date = $objUtilModel->getExactDateAfterMonths(time(), 12);
                                                 $exp_date =date('Y-m-d', $exp_date);
-                                                foreach ($royalty_credits as $r){
+                                                foreach ($invitations as $r){
                                             ?>
                                                 <tr>
                                                     <td></td>
@@ -110,7 +107,6 @@ $royalty_credits = $objUserModel->GetHousefullUsers(0);
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
                                                     <td><?php echo date('Y-m-d',strtotime($r['date_created']));?></td>
-                                                    <td><?php echo $help_amount;?></td>
                                                     <td><?php echo $housefull_amount;?></td>
                                                     <td><?php echo $royalty_amnt;?></td>
                                                     <td><?php echo $exp_date;?></td>    

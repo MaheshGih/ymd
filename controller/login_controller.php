@@ -22,21 +22,29 @@
                     
                 }else{
                     
-                    $date_created = $details['date_created'];
-                    //date("Y-m-d H:i:s", strtotime($date_created,strtotime('+5 hours')));
-                    $cur_date = $objUtilModel->getCurDate($objUtilModel->datetime_format);
-                    $diff = strtotime($cur_date) - strtotime($date_created);
-                    $hours = $diff/3600;
-                    $hourdiff = round($hours, 2);
-                    $expTime = 0;
-                    if($hourdiff<$inactive_user_exp_time){
-                        $expTime = $inactive_user_exp_time - $hourdiff;
+                    $invitation = $objUserModel->GetInvitationByProvidhelpLoginId($details['login_id']);
+                    if($invitation){
+                        $date_created = $invitation['date_sent'];
+                        //date("Y-m-d H:i:s", strtotime($date_created,strtotime('+5 hours')));
+                        $cur_date = $objUtilModel->getCurDate($objUtilModel->datetime_format);
+                        $diff = strtotime($cur_date) - strtotime($date_created);
+                        $hours = $diff/3600;
+                        $hourdiff = round($hours, 2);
+                        $expTime = 0;
+                        if($hourdiff<$inactive_user_exp_time){
+                            $expTime = $inactive_user_exp_time - $hourdiff;
+                        }else{
+                            echo "<script> location.href='../view/login.php?=failure=account_expired';</script>";
+                            return;
+                        }
+                        $_SESSION['expiredin'] = $expTime.' Hours';
+                        $_SESSION['expTime'] = $expTime;
                     }else{
-                        echo "<script> location.href='../view/login.php?=failure=account_expired';</script>";
-                        return;
+                        $expTime = $inactive_user_exp_time;
+                        $_SESSION['expiredin'] = $expTime.' Hours';
+                        $_SESSION['expTime'] = $expTime;
                     }
-                    $_SESSION['expiredin'] = $expTime.' Hours';
-                    $_SESSION['expTime'] = $expTime;
+                    
                 }
                 
             }
@@ -45,6 +53,9 @@
             }else{
                 $_SESSION['profileUrl'] = '../assets/images/maninactive.png';
             }
+            $_SESSION['expired_date'] = $details['expired_date'];
+            $_SESSION['date_created'] = $details['date_created'];
+            $_SESSION["is_active"] = $details['is_active'];  
             $_SESSION["uname"] = $details['sponsorid'];  
             $_SESSION["loginid"] = $details['login_id'];  
             $_SESSION["fname"] = $details['fname'];  

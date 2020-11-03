@@ -19,3 +19,12 @@ function disableBtn(btnId){
 		$(btnId).attr('disabled','disabled');
     });
 }
+
+function showPassword(ele) {
+ var x = document.getElementById(ele);
+ if (x.type === "password") {
+   x.type = "text";
+ } else {
+   x.type = "password";
+ }
+}
