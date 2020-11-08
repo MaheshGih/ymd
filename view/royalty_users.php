@@ -5,7 +5,7 @@
     
 ?>
 <?php
-$invitations = $objUserModel->GetRoyaltyUsers();
+$users = $objUserModel->GetRoyaltyUsers();
 
 ?>
 <!DOCTYPE html>
@@ -95,7 +95,7 @@ $invitations = $objUserModel->GetRoyaltyUsers();
                                             </thead>
                                             <tbody>
                                             <?php
-                                                foreach ($invitations as $r){
+                                                foreach ($users as $r){
                                             ?>
                                                 <tr>
                                                     <td></td>

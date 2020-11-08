@@ -107,9 +107,13 @@ include('../model/wallet_txn_model.php');
         }        
     }
     
-    if(isset($_POST['btnAddRoyaltyUser'])){
-        $users = $objUserModel->GetHousefullUsers(0);
+    if(isset($_POST['hdnHouseMaturity'])){
+        //$users = $objUserModel->GetHousefullUsers(0);
+        //$users = $objUserModel->GetHousefullUsersByStatus(0);
+        $userIds = $_POST['userIds'];
+        $users = $objUserModel->GetHousefullUsersByIds($userIds);
         $res = $objUserModel->AddRoyalty($users);
+        
         if($res){
             echo "<script> location.href='../view/housefull_users.php?=success=add_royalty';</script>";
         }else{

@@ -787,7 +787,6 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         
         $status=self::getInvitationStausByKey("ACCEPTED");
         $con -> autocommit(FALSE);
-        
         $invitation = self::GetInvitationById($invitationId);
         $provd_user = self::GetUserDetails($invitation['provide_help_id']);
         $sponsor_id = $provd_user['sponsor_id'];
@@ -803,15 +802,24 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         
         $sponsor = self::GetUserDetailsByUserId($sponsor_id);
         if(empty($sponsor['royalty_id'])){
-            print('adding royalty');
-            $last_date = $objUtilModel->getBeforeDateByDays(4);
-            print($last_date);
-            $referral_cnt = self::GetReferralCountByAfterDate($sponsor_id, $last_date);
-            print('count:'.$referral_cnt['cnt']);
-            if($housefull_size<$referral_cnt['cnt']){
-                $users = array($sponsor);
-                self::AddRoyalty($users);
-            }
+            $cur_date= $objUtilModel->getCurDate($objUtilModel->date_format);
+            $cur_date=strtotime($cur_date);
+            $user_exp_date = strtotime($sponsor['expired_date']);
+            if($cur_date>$user_exp_date){ //check user expired or not
+                $isUserHousefulled = self::IsUserHousefulled($sponsor_id);
+                if($isUserHousefulled['cnt']<=0){
+                    print('adding royalty');
+                    $last_date = $objUtilModel->getBeforeDateByDays(4);
+                    print($last_date);
+                    $referral_cnt = self::GetReferralCountByAfterDate($sponsor_id, $last_date);
+                    print('count:'.$referral_cnt['cnt']);
+                    if($housefull_size<=$referral_cnt['cnt']){
+                        //$users = array($sponsor);
+                        //self::AddRoyalty($users);
+                        self::AddHousefullUser($sponsor);
+                    }
+                }
+            }   
         }
         
         $res = $con -> commit();
@@ -825,6 +833,56 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $wal_stmt->bind_param('is',$sponsor_id,$vdate);
         $res = $wal_stmt->execute();
         $res = mysqli_fetch_assoc($wal_stmt->get_result());
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function IsUserHousefulled($user_id){
+        global $con;
+        $sql = "select count(*) as cnt from housefull_user where user_id=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$user_id);
+        $res = $wal_stmt->execute();
+        $res = mysqli_fetch_assoc($wal_stmt->get_result());
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function AddHousefullUser($user){
+        global $con;
+        global $objUtilModel;
+        $sql = "insert into housefull_user(user_id,login_id,full_name,mobile,cr_date,royalty_added) values(?,?,?,?,?,?)";
+        $user_id=$user['id'];
+        $login_id=$user['login_id'];
+        $full_name=$user['full_name'];
+        $mobile=$user['mobile'];
+        $cr_date=$objUtilModel->getCurDate($objUtilModel->datetime_format);
+        $royalty_added=0;
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('issssi',$user_id,$login_id,$full_name,$mobile,$cr_date,$royalty_added);
+        $res = $wal_stmt->execute();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetHousefullUsersByIds($login_ids){
+        global $con;
+        $sql = "select * from user_details where login_id in(?)";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('s',$login_ids);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
+        $wal_stmt->close();
+        return $res;
+    }
+    
+    public function GetHousefullUsersByStatus($royalty_added){
+        global $con;
+        $sql = "select * from housefull_user where royalty_added=?";
+        $wal_stmt = $con->prepare($sql);
+        $wal_stmt->bind_param('i',$royalty_added);
+        $res = $wal_stmt->execute();
+        $res = $wal_stmt->get_result();
         $wal_stmt->close();
         return $res;
     }
@@ -1075,6 +1133,10 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $royp_ins_stmt = $con->prepare($royp_ins_sql);
         $user_ud_sql = "update user_details set royalty_id=? where login_id=?";
         $user_ud_tmt = $con->prepare($user_ud_sql);
+        
+        $housefull_ud_sql = "update housefull_user set royalty_added=? where login_id=?";
+        $housefull_ud_stmt = $con->prepare($housefull_ud_sql);
+        
         $cur_date= $objUtilModel->getCurDate($objUtilModel->date_format);
         $cur_date=strtotime($cur_date);
         foreach ($users as $user){
@@ -1134,6 +1196,9 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
             $user_ud_tmt->bind_param("is",$royalty_id,$login_id);
             $user_ud_res = $user_ud_tmt->execute();
             
+            $royalty_added=1;
+            $housefull_ud_stmt->bind_param("is",$royalty_added,$login_id);
+            $housefull_ud_stmt->execute();
         }
         $res = $con->commit();
         return $res;

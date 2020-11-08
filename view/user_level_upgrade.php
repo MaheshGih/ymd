@@ -5,7 +5,7 @@
 ?>
 <?php
     //$active_childs = $objUserModel->GetChildsByUserId($_SESSION['userid'],1);
-$invitations = $objUserModel->GetNextLevelUsers(0);
+$users = $objUserModel->GetNextLevelUsers(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -96,7 +96,7 @@ $invitations = $objUserModel->GetNextLevelUsers(0);
                                             </thead>
                                             <tbody>
                                             <?php
-                                                    foreach ($invitations as $r){
+                                                    foreach ($users as $r){
                                             ?>
                                                 <tr>
                                                 	<td></td>

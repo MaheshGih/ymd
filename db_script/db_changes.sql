@@ -240,3 +240,14 @@ CREATE TABLE `user_details_old` (
   PRIMARY KEY (`delete_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+/*11-08-2020: Done in local ,  Not Done in server */
+CREATE TABLE `housefull_user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `login_id` varchar(20) DEFAULT NULL,
+  `full_name` varchar(100) DEFAULT NULL,
+  `mobile` varchar(15) DEFAULT NULL,
+  `cr_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `royalty_added` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

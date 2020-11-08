@@ -8,7 +8,7 @@
     
 ?>
 <?php
-$invitations = $objUserModel->GetHousefullUsers(0);
+$users = $objUserModel->GetHousefullUsersByStatus(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -74,10 +74,13 @@ $invitations = $objUserModel->GetHousefullUsers(0);
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card-box table-responsive">
-                                    	<form class="form-horizontal" id="blockUsersForm" action="../controller/payment_controller.php" method="post">
-                                          <div Class="form-group row">
+                                    	<form class="form-horizontal" id="addRoyaltyUserForm" action="../controller/payment_controller.php" method="post">
+                                          	<input type="hidden" name="userIds" id="userIds"/>
+                                      		<input type="hidden" name="hdnHouseMaturity" id="hdnHouseMaturity"/>
+                                          	<div Class="form-group row">
                                                 <div class="col-lg-3 col-sm-12">
-                                                    <input type="submit" name="btnAddRoyaltyUser" id="btnAddRoyaltyUser" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Housefull Users"></input>
+                                                    <!-- <input type="submit" name="btnAddRoyaltyUser" id="btnAddRoyaltyUser" class="btn btn-md btn-block btn-primary waves-effect waves-light" value="Add Housefull Users"></input> -->
+                                                    <button type="button" name="btnAddRoyaltyUser" id="btnAddRoyaltyUser" class="btn btn-md btn-block btn-primary waves-effect waves-light" >Add Housefull Maturity</button>
                                                 </div>    
                                         	</div>
                                     	</form>
@@ -99,14 +102,14 @@ $invitations = $objUserModel->GetHousefullUsers(0);
                                             <?php
                                                 $exp_date = $objUtilModel->getExactDateAfterMonths(time(), 12);
                                                 $exp_date =date('Y-m-d', $exp_date);
-                                                foreach ($invitations as $r){
+                                                foreach ($users as $r){
                                             ?>
                                                 <tr>
                                                     <td></td>
                                                     <td><?php echo $r['login_id'];?></td>
                                                     <td><?php echo $r['full_name'];?></td>
                                                     <td><?php echo $r['mobile'];?></td>
-                                                    <td><?php echo date('Y-m-d',strtotime($r['date_created']));?></td>
+                                                    <td><?php echo date('Y-m-d',strtotime($r['cr_date']));?></td>
                                                     <td><?php echo $housefull_amount;?></td>
                                                     <td><?php echo $royalty_amnt;?></td>
                                                     <td><?php echo $exp_date;?></td>    
@@ -209,8 +212,27 @@ $invitations = $objUserModel->GetHousefullUsers(0);
         	      'order': [[1, 'asc']]
         	   });
 
-
-        	   
+        	    $('#btnAddRoyaltyUser').on('click', function(evt){
+        		    //evt.preventDefault();
+					var rows = table.rows({selected:true}).data();
+					var ids = [];
+					rows.each(function(row, ind){
+						ids.push(row[1]);
+					});
+					$('#userIds').val(ids.join());
+					if(ids.length>0)
+						$('form[id=addRoyaltyUserForm]').submit();
+						//return true;
+					else {
+						Swal.fire({
+		                    type: "error",
+		                    title: "Select at least one user to Add Maturity",
+		                    confirmButtonClass: "btn btn-confirm mt-2",
+		                });		
+						return false;
+					}
+               });
+                        	   
         	});			
             function displayNotification(result,type){
                 if(result == "failure"){

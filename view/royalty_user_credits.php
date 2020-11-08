@@ -8,7 +8,7 @@
         
 ?>
 <?php
-$invitations = $objUserModel->GetUserRoyaltyPoints($_SESSION['userid'],$_SESSION['royalty_id']);
+$users = $objUserModel->GetUserRoyaltyPoints($_SESSION['userid'],$_SESSION['royalty_id']);
 $royalty_rec_tot_amnt = 0;
 ?>
 <!DOCTYPE html>
@@ -132,7 +132,7 @@ $royalty_rec_tot_amnt = 0;
                                                 $success_class = "badge-success";
                                                 $partially_class = "badge-info";
                                             
-                                                foreach ($invitations as $r){
+                                                foreach ($users as $r){
                                                     if($r['is_done'] == 1){
                                                         $status=$recvd_status;
                                                         $class = $success_class;

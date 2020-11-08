@@ -127,6 +127,12 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
             <li class="menu-title">Administartion</li>
 			<?php if($isAdmin){ ?>
 			<li>
+                <a href="invitation_master.php">
+                    <i class=" fas fa-hands-helping "></i>
+                    <span> Get/Provide Help </span>
+                </a>
+            </li>
+			<li>
                 <a href="employees.php">
                     <i class=" fas fa-users"></i>
                     <span> Admin Team </span>
@@ -160,12 +166,7 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Block Users </span>
                 </a>
             </li>
-            <li>
-                <a href="invitation_master.php">
-                    <i class=" fas fa-hands-helping "></i>
-                    <span> Get/Provide Help </span>
-                </a>
-            </li>
+            
 			<!-- <li>
                 <a href="user_level_upgrade.php">
                     <i class="fas fa-share-alt"></i>
