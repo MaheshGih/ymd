@@ -698,7 +698,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $gh_list = mysqli_query($con,"select up.id,up.full_name,up.mobile,up.amount_req,up.date_req ,ud.login_id  from user_payments as up join user_details as ud on ud.id = up.user_id");
         return $gh_list;
     }
-    public function UpdateWalletById($wid,$amnt){
+    public function UpdateWalletById($wid,$amnt,$txn_ref_type=NULL){
         global $con;
         $res="testing";
         $in_date = self::setDate();
@@ -734,8 +734,11 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
                 
                 $txn_ctype = 'CREDIT';
                 $txn_is_done = 1;
-                $txn_ref_cause='REFERRAL_BLOCKED';
-                
+                if(empty($txn_ref_type)){
+                    $txn_ref_cause='REFERRAL_BLOCKED';
+                }else{
+                    $txn_ref_cause = $txn_ref_type;
+                }
                 $wal_ins_qry = "insert into user_wallet_txn(user_id,full_name,amount,txn_type,is_done,cause_type,cause_full_name,cause_user_id) values(?,?,?,?,?,?,?,?)";
                 $wal_ins_stmt = $con->prepare($wal_ins_qry);
                 $wal_ins_stmt->bind_param("isdsissi",$admin_id,$admin_name,$admin_amt,$txn_ctype,$txn_is_done,$txn_ref_cause,$user_name,$user_id);
@@ -1038,7 +1041,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         while($row = $spill_result->fetch_assoc()) {
             array_push($data,$row);
         }
-        return json_encode($data);;
+        return json_encode($data);
     }
     
     public function GetChildLevels($sponsorId, $vside, $lvl_size) {
@@ -2135,6 +2138,7 @@ join user_kyc as uk on ub.id = uk.user_id  where ul.login_id='YMD1011101'";
         $wal_stmt->close();
         return $res;
     }
+    
 }
 $objUserModel =  new UserModel();
 ?>

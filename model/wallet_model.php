@@ -81,6 +81,23 @@ class WalletContactModel{
         return $res;
     }
     
+    public function GetWalletByLoginId($loginId){
+        global $con;
+        
+        $res = mysqli_fetch_assoc(mysqli_query($con,"select id from user_details where login_id='".$loginId."'"));
+        if(!$res){
+            $res = array("status"=>"ERROR","code"=>"invalid_id");
+            return $res;
+        } 
+        $res = mysqli_fetch_assoc(mysqli_query($con,"select u.id as uid,u.login_id, u.full_name,u.mobile,uw.* from user_details u left join user_wallet_concat uw on u.id=uw.user_id where u.id=".$res['id']));
+        if(!$res){
+            $res = array("status"=>"OK","code"=>"no_wallet");
+            return $res;
+        }
+        $res = array("status"=>"OK","data"=>$res);
+        return $res;
+    }
+    
     public function GetTotPendingWithdrawAmntByUserId($userId){
         global $con;
         $sql = "select sum(amount_req)as tot_with, sum(amount_received) as tot_rec from user_withdrawls where  user_id = ? and is_done=0";

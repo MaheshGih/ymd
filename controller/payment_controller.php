@@ -107,6 +107,7 @@ include('../model/wallet_txn_model.php');
         }        
     }
     
+    
     if(isset($_POST['hdnHouseMaturity'])){
         //$users = $objUserModel->GetHousefullUsers(0);
         //$users = $objUserModel->GetHousefullUsersByStatus(0);
@@ -128,6 +129,39 @@ include('../model/wallet_txn_model.php');
             echo "<script> location.href='../view/housefull_users.php?=success=add_royalty';</script>";
         }else{
             echo "<script> location.href='../view/housefull_users.php?=failure=add_royalty';</script>";
+        }
+    }
+    
+    if(isset($_POST['btnUserWallet'])){
+        $login_id = $_POST['login_id'];
+        $wallet = $objWalletContactModel->GetWalletByLoginId($login_id);
+        echo json_encode($wallet);
+    }
+    
+    if(isset($_POST['btnWalletAddTxn'])){
+        $login_id = $_POST['login_id'];
+        $user_id = $_POST['user_id'];
+        $full_name = $_POST['full_name'];
+        $cause_type = $_POST['txn_type'];
+        $txn_amount = $_POST['txn_amount'];
+        if(!empty($login_id)||!empty($cause_type)||!empty($txn_amount)){
+            if($cause_type=='OFFER'||$cause_type=='CASH_BACK'||$cause_type=='REFUND'){
+                $txn_type = 'CREDIT';
+            }else{
+                $txn_type = 'DEBIT';
+                $txn_amount = -($txn_amount);
+            }
+            
+            $wal_ins_res = $objUserModel->addWalletTxn($user_id, $full_name, $txn_amount, $txn_type, 1, $cause_type, '','');
+            $wal_udp_res = $objUserModel->UpdateWalletById($user_id,$txn_amount,$cause_type);
+            
+            if($wal_udp_res){
+                echo "<script> location.href='../view/change_wallet.php?=success=txn_add';</script>";
+            }else{
+                echo "<script> location.href='../view/change_wallet.php?=failure=txn_add';</script>";
+            }            
+        }else{
+            echo "<script> location.href='../view/change_wallet.php?=failure=txn_add';</script>";
         }
     }
 ?>

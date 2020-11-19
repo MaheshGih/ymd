@@ -2,11 +2,30 @@
 class SMS{
     
     public function sendSms($mobile, $msg) {
-        $url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".trim($mobile)."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
+        //$url = "http://smslogin.mobi/spanelv2/api.php?username=donatesms&password=Donate@2020&to=".trim($mobile)."&from=DONATE&message=".urlencode($msg);    //Store data into URL variable
+        $url ="http://bulksms.co/sendmessage.php?user=ymdsms&password=7288073968&sender=YMDSMS&type=3&mobile=".trim($mobile)."&message=".urlencode($msg);
         $ret = file($url);    //Call Url variable by using file() function
         return $ret;
     }
     
+    public function sendSms_old($mobile, $msg)
+    {
+        $smsmessage="No Test Message";
+        
+        $smsmessage=urlencode($smsmessage);
+        $url="http://sms.adnectics.com/sendSMS?username=".urlencode("Narayani Steels")."&numbers=".trim($mobile)."&message=".$smsmessage."&sendername=Nsteel&smstype=TRANS&apikey=fe3386ab-fd82-47e8-ac6b-b44791b8857b";
+        
+        if (!function_exists('curl_init')){
+            die('Sorry cURL is not installed!');
+        }
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        return $output;
+    }
     public function smsDeliveryStatus($smsid) {
         // this link is used to get delivery result
         //http://smslogin.mobi/spanelv2/api.php?username=xxxx&password=xxxx&msgid=417a3b098442ba35

@@ -132,6 +132,12 @@ $isUser= $_SESSION['role']=='ROLE_USER'?true:false;
                     <span> Get/Provide Help </span>
                 </a>
             </li>
+            <li>
+                <a href="change_wallet.php">
+                    <i class=" mdi mdi-currency-inr "></i>
+                    <span> Add Wallet Txn</span>
+                </a>
+            </li>
 			<li>
                 <a href="employees.php">
                     <i class=" fas fa-users"></i>
